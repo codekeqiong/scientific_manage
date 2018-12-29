@@ -2,26 +2,26 @@
   <div id="app">
     <el-container>
       <el-header>
-        <header></header>
+        <my-header></my-header>
       </el-header>
       <el-container>
-        <el-aside width="200px"><sidebar></sidebar></el-aside>
-        <el-container>
-          <el-main><router-view /></el-main>
-          <!-- <el-footer><footer></footer></el-footer> -->
-        </el-container>
+        <el-aside width="200px"><my-sidebar></my-sidebar></el-aside>
+        <el-main><router-view/></el-main>
       </el-container>
+      <el-footer>
+        <my-footer></my-footer>
+      </el-footer>
     </el-container>
   </div>
 </template>
 
 <script>
-import Header from './components/header'
-import Sidebar from './components/sidebar'
-import Footer from './components/footer'
+import myHeader from './components/header'
+import mySidebar from './components/sidebar'
+import myFooter from './components/footer'
 export default {
   name: 'App',
-  components: {Header, Sidebar, Footer}
+  components: {myHeader, mySidebar, myFooter}
 }
 </script>
 
