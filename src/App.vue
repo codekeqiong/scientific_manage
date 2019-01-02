@@ -5,12 +5,13 @@
         <my-header></my-header>
       </el-header>
       <el-container>
-        <el-aside width="200px"><my-sidebar></my-sidebar></el-aside>
-        <el-main><router-view/></el-main>
+        <el-aside width="200px">
+          <my-sidebar>sidebar</my-sidebar>
+        </el-aside>
+        <el-container>
+          <el-main><router-view/></el-main>
+        </el-container>
       </el-container>
-      <el-footer>
-        <my-footer></my-footer>
-      </el-footer>
     </el-container>
   </div>
 </template>
