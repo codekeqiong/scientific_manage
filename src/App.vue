@@ -6,7 +6,7 @@
       </el-header>
       <el-container>
         <el-aside width="200px">
-          <my-sidebar>sidebar</my-sidebar>
+          <my-sidebar></my-sidebar>
         </el-aside>
         <el-container>
           <el-main><router-view/></el-main>

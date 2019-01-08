@@ -1,49 +1,85 @@
 export const MENULIST = [
     {
       menuName: '科研项目管理',
-      menuUrl: '/',
+      menuUrl: '/project',
       menuIndex: '1',
       menuSubLink: [
         {
           menuName: '科研项目申报',
-          menuUrl: '/promotionPlan',
+          menuUrl: '/apply',
           menuIndex: '1-1'
         },
         {
           menuName: '科研项目查询',
-          menuUrl: '/promotionPlan',
+          menuUrl: '/query',
           menuIndex: '1-2'
         },
         {
           menuName: '科研项目审批',
-          menuUrl: '/promotionPlan',
+          menuUrl: '/approval',
           menuIndex: '1-3'
         },
       ]
     },
     {
       menuName: '科研分数统计',
-      menuUrl: '/create_ad',
+      menuUrl: '/fractional',
       menuIndex: '2'
     },
     {
       menuName: '留言管理',
-      menuUrl: '/create_ad',
-      menuIndex: '3'
+      menuUrl: '/leave',
+      menuIndex: '3',
+      menuSubLink: [
+        {
+          menuName: '添加留言',
+          menuUrl: '/add_leave',
+          menuIndex: '3-1'
+        },
+        {
+          menuName: '删除留言',
+          menuUrl: '/del_leave',
+          menuIndex: '3-2'
+        }
+      ]
     },
     {
       menuName: '个人信息管理',
-      menuUrl: '/create_ad',
-      menuIndex: '4'
+      menuUrl: '/info_manage',
+      menuIndex: '4',
+      menuSubLink: [
+        {
+          menuName: '完善个人信息',
+          menuUrl: '/perfect',
+          menuIndex: '4-1'
+        },
+        {
+          menuName: '修改密码',
+          menuUrl: '/change_psw',
+          menuIndex: '4-2'
+        }
+      ]
     },
     {
       menuName: '系统设置',
-      menuUrl: '/create_ad',
-      menuIndex: '5'
+      menuUrl: '/system_set',
+      menuIndex: '5',
+      menuSubLink: [
+        {
+          menuName: '角色权限设置',
+          menuUrl: '/role_set',
+          menuIndex: '5-1'
+        },
+        {
+          menuName: '用户管理',
+          menuUrl: '/user_manage',
+          menuIndex: '5-2'
+        }
+      ]
     },
     {
       menuName: '退出登录',
-      menuUrl: '/create_ad',
+      menuUrl: '/login_out',
       menuIndex: '6'
     }
 ]

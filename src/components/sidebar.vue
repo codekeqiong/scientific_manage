@@ -2,7 +2,7 @@
   <div class="sidebar">
   <el-col :span="24">
     <el-menu
-      :default-active="activePath"
+      :default-active="activePath"    
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
@@ -32,34 +32,40 @@
 </template>
 
 <script>
+import { MENULIST } from './menuList'
 export default {
   name: 'sidebar',
   data () {
     return {
-      msg: 'Welcome to sidebar'
+      msg: 'Welcome to sidebar',
+      menulist: MENULIST,
+      activeNav: '0',
+      activePath: ''
+    }
+  },
+  created: function () {
+    this.activePath = '/' + this.$route.path.split('/')[1]
+    console.log(this.activePath)
+  },
+  methods:{
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath)
+    }
+  },
+  watch: {
+    '$route': function () {
+      this.activePath = '/' + this.$route.path.split('/')[1]
     }
   }
 }
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.sidebar{
+ .sidebar{
   height: 870px;
   background-color: #fff;
-}
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
 }
 </style>
