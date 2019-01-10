@@ -2,7 +2,8 @@
   <div class="header">
     <div class="title">
       <img src="../assets/logo.png" alt="">
-      <div>{{ title }}</div>
+      <div class="system-title">高校科研管理系统</div>
+      <div class="hello">June, 欢迎您 !</div>
     </div>
   </div>
 </template>
@@ -12,7 +13,7 @@ export default {
   name: 'header',
   data () {
     return {
-      title: '高校科研管理系统'
+
     }
   }
 }
@@ -40,12 +41,23 @@ export default {
   height: 68px;
   border-radius: 50%;
 }
-.title>div{
+.title .system-title{
+  width: 200px;
+  height: 68px;
   display: inline-block;
   position: absolute;
   font-size: 22px;
   top: 2px;
   left: 90px;
+}
+.title .hello{
+  width: 200px;
+  height: 68px;
+  position:absolute;
+  top: 2px;
+  right: 80px;
+  display: inline-block;
+  font-size: 18px;
 }
 h1, h2 {
   font-weight: normal;
@@ -61,4 +73,5 @@ li {
 a {
   color: #42b983;
 }
+
 </style>
