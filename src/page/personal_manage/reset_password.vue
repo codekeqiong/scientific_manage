@@ -1,19 +1,19 @@
 <template>
   <div class="password">
     <div class="password-content">
-      <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="旧密码:" prop="oldPass">
-          <el-input type="password" v-model="ruleForm2.oldPass"></el-input>
+          <el-input type="password" v-model="ruleForm.oldPass"></el-input>
         </el-form-item>
         <el-form-item label="新密码:" prop="newPass">
-          <el-input type="password" v-model="ruleForm2.newPass" autocomplete="off"></el-input>
+          <el-input type="password" v-model="ruleForm.newPass" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认密码:" prop="checkPass" autocomplete="off">
-          <el-input type="password" v-model.number="ruleForm2.checkPass"></el-input>
+          <el-input type="password" v-model.number="ruleForm.checkPass"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
-          <el-button @click="resetForm('ruleForm2')">重置</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>   
@@ -33,10 +33,10 @@ export default {
         if (value === '') {
           callback(new Error('请输入新密码'));
         } else {
-          if (value === this.ruleForm2.oldPass){
+          if (value === this.ruleForm.oldPass){
             callback(new Error('输入密码与旧密码重复!'));
-          } else if (this.ruleForm2.newPass !== '') {
-            this.$refs.ruleForm2.validateField('newPass');
+          } else if (this.ruleForm.newPass !== '') {
+            this.$refs.ruleForm.validateField('newPass');
           }
           callback();
         }
@@ -44,19 +44,19 @@ export default {
       var validateCheckPass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.newPass) {
+        } else if (value !== this.ruleForm.newPass) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
         }
       };
       return {
-        ruleForm2: {
+        ruleForm: {
           oldPass: '',
           newPass: '',
           checkPass: ''
         },
-        rules2: {
+        rules: {
           oldPass: [
             { validator: validateOldPass, trigger: 'blur' }
           ],
