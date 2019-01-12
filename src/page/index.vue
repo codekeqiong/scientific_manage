@@ -39,11 +39,10 @@ export default {
       },
       rules:{
         account: [
-          { type: "number", required: true, message: '请输入账号', trigger: 'blur' },
+          { type: "number", required: true, message: '请输入账号', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入登录密码', trigger: 'blur' },
-          // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入登录密码', trigger: 'blur' }
         ],
         verification: [
           { required: true, message: '请填写验证码', trigger: 'blur' }
