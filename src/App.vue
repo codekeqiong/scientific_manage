@@ -22,7 +22,12 @@ import mySidebar from './components/sidebar'
 import myFooter from './components/footer'
 export default {
   name: 'App',
-  components: {myHeader, mySidebar, myFooter}
+  components: {myHeader, mySidebar, myFooter},
+  created() {
+    this.$http.get('/api/login&id=1').then((res) => {
+      console.log(res);
+    })
+  }
 }
 </script>
 
