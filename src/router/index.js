@@ -4,11 +4,14 @@ import ResetPassword from '../page/personal_manage/reset_password'
 import Login from '../page/index'
 import UserManage from '../page/system_set/user_manage/user_manage'
 import PerfectInfo from '../page/personal_manage/perfect_info'
+import ApplyProject from '../page/projects_manage/add_project'
+import QueryProject from '../page/projects_manage/query_project'
+import ApprovalProject from '../page/projects_manage/approval_manage'
 Vue.use(Router)
 
 export default new Router({
   mode: 'history',
-  base: '/vue',
+  base: '/scientific',
   routes: [
     {
       path: '/change_psw',
@@ -20,7 +23,7 @@ export default new Router({
     },
     {
       path: '/user_manage',
-      component: UserManage,
+      component: UserManage
       // children: [
       //   {
       //     path: '/add_user',
@@ -30,7 +33,19 @@ export default new Router({
     },
     {
       path: '/perfect',
-      component: PerfectInfo,
+      component: PerfectInfo
+    },
+    {
+      path: '/apply',
+      component: ApplyProject
+    },
+    {
+      path: '/query',
+      component: QueryProject
+    },
+    {
+      path: '/approval',
+      component: ApprovalProject
     }
   ]
 })

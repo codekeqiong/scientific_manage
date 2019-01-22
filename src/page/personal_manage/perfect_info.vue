@@ -45,13 +45,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="出生年月" prop="birth_place">
-          <el-input v-model="rulesForm.birth_place"></el-input>
+          <el-date-picker v-model="rulesForm.birth_place" type="date" placeholder="选择出生日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
-          <el-input type="number" v-model="rulesForm.phone"></el-input>
+          <el-input v-model="rulesForm.phone"></el-input>
         </el-form-item>
-        <el-form-item> 
-          <el-button>取消</el-button>
+        <el-form-item>
+          <el-button style="margin-right:30px;">取消</el-button>
           <el-button type="primary" @click="onSubmit">更新</el-button>
         </el-form-item>
       </el-form>
@@ -104,20 +104,12 @@ export default {
       ],
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        account_name: [
-          { required: true, message: "请输入姓名", trigger: "blur" }
-        ],
+        account_name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
-        second_college: [
-          { required: true, message: "请输选择二级学院", trigger: "blur" }
-        ],
-        native_place: [
-          { required: true, message: "请输入籍贯", trigger: "blur" }
-        ],
+        second_college: [{ required: true, message: "请输选择二级学院", trigger: "blur" }],
+        native_place: [{ required: true, message: "请输入籍贯", trigger: "blur" }],
         education: [{ required: true, message: "请选择学历", trigger: "blur" }],
-        birth_place: [
-          { required: true, message: "请输入出生年月", trigger: "blur" }
-        ],
+        birth_place: [{ required: true, message: "请输入出生年月", trigger: "blur" }],
         phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
       }
     };
@@ -140,15 +132,16 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.info-content {
-  /* border: 1px solid #409EFF; */
+.perfect_info .info-content {
+  border: 1px solid #dcdfe6;
   margin-top: 30px;
+  margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.el-input--suffix .el-input__inner{
+.perfect_info .el-input .el-input__inner {
   padding-right: 30px;
   width: 649px;
 }
