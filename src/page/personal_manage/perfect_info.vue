@@ -52,7 +52,7 @@
         </el-form-item>
         <el-form-item>
           <el-button style="margin-right:30px;">取消</el-button>
-          <el-button type="primary" @click="onSubmit">更新</el-button>
+          <el-button type="primary" @click="onSubmit('rulesForm')">更新</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -113,6 +113,11 @@ export default {
         phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
       }
     };
+  },
+  methods:{
+    onSubmit(){
+      console.log("数据更新成功")
+    }
   }
 };
 </script>
@@ -133,7 +138,7 @@ export default {
   position: relative;
 }
 .perfect_info .info-content {
-  border: 1px solid #dcdfe6;
+  /* border: 1px solid #dcdfe6; */
   margin-top: 30px;
   margin-left: 40px;
   width: 800px;

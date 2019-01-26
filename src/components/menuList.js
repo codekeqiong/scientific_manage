@@ -1,5 +1,10 @@
 export const MENULIST = [
     {
+      menuName: '首页',
+      menuUrl: '/',
+      menuIndex: '0'
+    },
+    {
       menuName: '科研项目管理',
       menuUrl: '/project',
       menuIndex: '1',
@@ -32,13 +37,13 @@ export const MENULIST = [
       menuIndex: '3',
       menuSubLink: [
         {
-          menuName: '添加留言',
-          menuUrl: '/add_leave',
+          menuName: '留言详情',
+          menuUrl: '/leave_detail',
           menuIndex: '3-1'
         },
         {
-          menuName: '删除留言',
-          menuUrl: '/del_leave',
+          menuName: '管理留言',
+          menuUrl: '/manage_leave',
           menuIndex: '3-2'
         }
       ]

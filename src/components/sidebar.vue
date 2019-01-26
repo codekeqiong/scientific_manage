@@ -45,14 +45,13 @@ export default {
   },
   created: function () {
     this.activePath = '/' + this.$route.path.split('/')[1]
-    console.log(this.activePath)
   },
   methods:{
     handleOpen(key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     }
   },
   watch: {

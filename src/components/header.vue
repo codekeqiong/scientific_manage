@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="title">
-      <img src="../assets/logo.png" alt="">
+      <div><img src="../assets/logo.png" alt=""></div>
       <div class="system-title">高校科研管理系统</div>
       <div class="hello">June, 欢迎您 !</div>
     </div>
@@ -35,10 +35,17 @@ export default {
   height: 100%;
   position: relative;
 }
-.title img{
+.title div:nth-child(1){
   display: inline-block;
-  width: 68px;
-  height: 68px;
+  margin-top: 9px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.title div:nth-child(1) img{
+  display: inline-block;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
 }
 .title .system-title{
@@ -48,7 +55,7 @@ export default {
   position: absolute;
   font-size: 22px;
   top: 2px;
-  left: 90px;
+  left: 70px;
 }
 .title .hello{
   width: 200px;

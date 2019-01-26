@@ -15,5 +15,18 @@
 }
 .add_project .el-checkbox{
   text-align: left;
-  width: 250px;
+  width: 200px;
+}
+.add_project .el-select>.el-input{
+  width: 630px;
+}
+.query_project .el-input,
+.approval_project .el-input{
+  width: 260px;
+}
+.query_project .search,
+.approval_project .search{
+  width: 320px;
+  margin: 12px;
+  margin-left: 80%;
 }

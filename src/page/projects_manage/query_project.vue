@@ -2,6 +2,9 @@
   <div class="query_project">
     <div class="title">项目查询</div>
     <div class="table-content">
+      <div class="search">搜索：
+        <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info"></el-input>
+      </div>
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -11,18 +14,18 @@
       >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" label="编号" width="120"></el-table-column>
-        <!-- <el-table-column v-for="(index,item) in tableHead" :key="item.index" :prop="item.prop" :label="item.label"></el-table-column> -->
         <el-table-column prop="account" label="账号"></el-table-column>
+        <el-table-column prop="name" label="项目名称"></el-table-column>
         <el-table-column prop="userName" label="用户名"></el-table-column>
-        <el-table-column prop="sex" label="性别"></el-table-column>
         <el-table-column prop="role" label="角色"></el-table-column>
         <el-table-column prop="school" label="院系"></el-table-column>
-        <el-table-column prop="phone" label="电话"></el-table-column>
+        <el-table-column prop="phone" label="联系电话"></el-table-column>
+        <el-table-column prop="add_time" label="申报时间"></el-table-column>
         <el-table-column prop="operation" label="操作">
           <template slot-scope="scope">
             {{scope.row.operation}}
             <el-button type="text" size="small" @click="modify()">修改</el-button>
-            <el-button type="text" size="small" @click="delet()">删除</el-button>
+            <el-button type="text" size="small" @click="remove()">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -34,43 +37,45 @@ export default {
   name: "query_project",
   data() {
     return {
-      // tableHead:[
-      //   {prop: 'account', label: '账号'},
-      //   {prop: 'userName', label: '用户名'},
-      //   {prop: 'sex', label: '性别'},
-      //   {prop: 'role', label: '角色'},
-      //   {prop: 'school', label: '学院'},
-      //   {prop: 'phone', label: '联系电话'}
-      // ]
+      search_info: "",
       tableData: [
         {
           account: 1234567,
           userName: "墨轩",
-          sex: 321456,
+          name: 321456,
           role: "教师",
           school: "数计",
-          phone: "13198487982"
+          phone: "13198487982",
+          add_time: "2019-01-01"
         },
         {
           account: 1234567,
           userName: "墨轩",
-          sex: 321456,
+          name: 321456,
           role: "教师",
           school: "数计",
-          phone: "13198487982"
+          phone: "13198487982",
+          add_time: "2019-01-01"
         }
       ],
       account: "",
       userName: "",
-      sex: "",
+      name: "",
       role: "",
       school: "",
-      phone: ""
+      phone: "",
+      add_time: ""
     };
   },
   methods: {
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    modify() {
+      console.log("点击修改成功");
+    },
+    remove() {
+      console.log("点击删除成功");
     }
   }
 };
@@ -92,6 +97,6 @@ export default {
   position: relative;
 }
 .query_project .table-content {
-  margin-top: 30px;
+  
 }
 </style>

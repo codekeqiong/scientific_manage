@@ -2,6 +2,9 @@
   <div class="approval_project">
     <div class="title">项目审批</div>
     <div class="table-content">
+      <div class="search">搜索：
+        <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info"></el-input>
+      </div>
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -14,7 +17,7 @@
         <!-- <el-table-column v-for="(index,item) in tableHead" :key="item.index" :prop="item.prop" :label="item.label"></el-table-column> -->
         <el-table-column prop="account" label="账号"></el-table-column>
         <el-table-column prop="userName" label="申请人"></el-table-column>
-        <el-table-column prop="number" label="项目编号"></el-table-column>
+        <el-table-column prop="faculty" label="院系"></el-table-column>
         <el-table-column prop="project_name" label="项目名称"></el-table-column>
         <el-table-column prop="date" label="申报日期"></el-table-column>
         <el-table-column prop="status" label="审核状态"></el-table-column>
@@ -34,11 +37,12 @@ export default {
   name: "query_project",
   data() {
     return {
+      search_info: "",
       tableData: [
         {
           account: 1234567,
           userName: "墨轩",
-          number: "13453436",
+          faculty: "数计",
           project_name: "数学与科技研究",
           date: "2019-01-01",
           status: "未审核"
@@ -46,7 +50,7 @@ export default {
         {
           account: 1234567,
           userName: "墨轩",
-          number: "13453436",
+          faculty: "数计",
           project_name: "数学与科技研究",
           date: "2019-01-01",
           status: "未审核"
@@ -54,7 +58,7 @@ export default {
       ],
       account: "",
       userName: "",
-      number: "",
+      faculty: "",
       project_name: "",
       date: "",
       status: ""
@@ -82,8 +86,5 @@ export default {
   text-align: left;
   border-bottom: 1px solid #eee;
   position: relative;
-}
-.approval_project .table-content {
-  margin-top: 30px;
 }
 </style>
