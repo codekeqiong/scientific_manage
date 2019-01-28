@@ -30,3 +30,9 @@
   margin: 12px;
   margin-left: 80%;
 }
+.manage_leave  .leave_list .el-input__inner{
+  width: 200px;
+}
+.manage_leave  .leave_list .el-input{
+  width: 200px;
+}

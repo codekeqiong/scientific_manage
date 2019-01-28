@@ -7,7 +7,7 @@
     <div class="manage-content">
       <div class="right-corner">
         <el-input placeholder="请输入搜索内容" class="input-search" v-model="input_search" clearable style="width:200px; height:40px;"></el-input>
-        <el-button class="search" type="primary" style="padding: 11px 15px; margin-right: 12px;">查询</el-button>
+        <el-button class="search" type="primary" style="padding: 11px 15px;margin-left:-7px;">查询</el-button>
         <el-button class="add_user" @click="add_user()" type="primary" style="padding: 11px 15px;"><i class="el-icon-plus"></i> 新增用户</el-button>
       </div>
       <el-table
@@ -187,7 +187,7 @@ export default {
 .manage-content{
   width: 100%;
   height: 100px;
-  padding: 0 50px;
+  padding: 0 20px;
   box-sizing: border-box;
 }
 .right-corner{

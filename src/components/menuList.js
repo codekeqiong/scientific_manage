@@ -42,7 +42,7 @@ export const MENULIST = [
           menuIndex: '3-1'
         },
         {
-          menuName: '管理留言',
+          menuName: '留言列表',
           menuUrl: '/manage_leave',
           menuIndex: '3-2'
         }

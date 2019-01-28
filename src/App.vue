@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import myHeader from './components/header'
-import mySidebar from './components/sidebar'
-import myFooter from './components/footer'
+import myHeader from './components/my_header'
+import mySidebar from './components/my_sidebar'
+import myFooter from './components/my_footer'
 export default {
   name: 'App',
   components: {myHeader, mySidebar, myFooter},

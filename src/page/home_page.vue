@@ -2,7 +2,7 @@
   <div class="home_page">
     <div class="tips" @click="skip">
       <i class="el-icon-bell"></i> [最新留言]：
-      <span>各二级学院的负责人注意，接近春节，请安排好相关工作</span>    
+      <span>春节将至请大家安排好相关工作</span>    
     </div>
   </div>
 </template>

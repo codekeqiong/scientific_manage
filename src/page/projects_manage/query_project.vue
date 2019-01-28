@@ -2,8 +2,9 @@
   <div class="query_project">
     <div class="title">项目查询</div>
     <div class="table-content">
-      <div class="search">搜索：
+      <div class="search_line">
         <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info"></el-input>
+        <el-button type="primary" @click="search()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
       </div>
       <el-table
         ref="multipleTable"
@@ -44,7 +45,7 @@ export default {
           userName: "墨轩",
           name: 321456,
           role: "教师",
-          school: "数计",
+          school: "数计1",
           phone: "13198487982",
           add_time: "2019-01-01"
         },
@@ -53,7 +54,7 @@ export default {
           userName: "墨轩",
           name: 321456,
           role: "教师",
-          school: "数计",
+          school: "数计2",
           phone: "13198487982",
           add_time: "2019-01-01"
         }
@@ -76,7 +77,7 @@ export default {
     },
     remove() {
       console.log("点击删除成功");
-    }
+    },
   }
 };
 </script>
@@ -96,7 +97,9 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.query_project .table-content {
-  
+.query_project .search_line{
+  margin: 10px;
+  height: 40px;
+  text-align: right;
 }
 </style>

@@ -2,8 +2,9 @@
   <div class="approval_project">
     <div class="title">项目审批</div>
     <div class="table-content">
-      <div class="search">搜索：
+      <div class="search_line">
         <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info"></el-input>
+        <el-button type="primary" @click="search()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
       </div>
       <el-table
         ref="multipleTable"
@@ -86,5 +87,10 @@ export default {
   text-align: left;
   border-bottom: 1px solid #eee;
   position: relative;
+}
+.approval_project .search_line{
+  margin: 10px;
+  text-align: right;
+  height: 40px;
 }
 </style>
