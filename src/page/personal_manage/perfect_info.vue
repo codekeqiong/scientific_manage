@@ -44,8 +44,8 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="出生年月" prop="birth_place">
-          <el-date-picker v-model="rulesForm.birth_place" type="date" placeholder="选择出生日期"></el-date-picker>
+        <el-form-item label="出生年月" prop="birth_date">
+          <el-date-picker v-model="rulesForm.birth_date" type="date" placeholder="选择出生日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
           <el-input v-model="rulesForm.phone"></el-input>
@@ -69,7 +69,7 @@ export default {
         second_college: "",
         native_place: "",
         education: "",
-        birth_place: "",
+        birth_date: "",
         phone: ""
       },
       collegeArr: [
@@ -109,7 +109,7 @@ export default {
         second_college: [{ required: true, message: "请输选择二级学院", trigger: "blur" }],
         native_place: [{ required: true, message: "请输入籍贯", trigger: "blur" }],
         education: [{ required: true, message: "请选择学历", trigger: "blur" }],
-        birth_place: [{ required: true, message: "请输入出生年月", trigger: "blur" }],
+        birth_date: [{ required: true, message: "请输入出生年月", trigger: "blur" }],
         phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
       }
     };

@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
 let UsersSchema = new mongoose.Schema({
-  id: Number,
+  _id: Number,
+  account: Number,
   userName: String,
-  paw: String,
+  password: Number,
+  role: String,
   meta: {
     createAt: {
       type: Date,
@@ -26,7 +28,7 @@ UsersSchema.pre('save', function(next) {
   next();
 })
 
-//查询的静态方法
+//查询的静态方法  Express 提供了内置的中间件 express.static 来设置静态文件如：图片， CSS, JavaScript 等
 UsersSchema.statics = {
   fetch: function(cb) { //查询所有数据
     return this
@@ -40,6 +42,5 @@ UsersSchema.statics = {
       .exec(cb)
   }
 }
-
 //暴露出去的方法
 module.exports = UsersSchema

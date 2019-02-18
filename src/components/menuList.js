@@ -2,6 +2,8 @@ export const MENULIST = [
     {
       menuName: '首页',
       menuUrl: '/',
+
+      
       menuIndex: '0'
     },
     {
@@ -70,11 +72,11 @@ export const MENULIST = [
       menuUrl: '/system_set',
       menuIndex: '5',
       menuSubLink: [
-        {
-          menuName: '角色权限设置',
-          menuUrl: '/role_set',
-          menuIndex: '5-1'
-        },
+        // {
+        //   menuName: '角色权限设置',
+        //   menuUrl: '/role_set',
+        //   menuIndex: '5-1'
+        // },
         {
           menuName: '用户管理',
           menuUrl: '/user_manage',
@@ -82,9 +84,9 @@ export const MENULIST = [
         }
       ]
     },
-    {
-      menuName: '退出登录',
-      menuUrl: '/login_out',
-      menuIndex: '6'
-    }
+    // {
+    //   menuName: '退出登录',
+    //   menuUrl: '/login_out',
+    //   menuIndex: '6'
+    // }
 ]

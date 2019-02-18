@@ -39,6 +39,33 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-dialog title="添加留言" :visible.sync="dialogVisible" width="30%">
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="留言标题" prop="leave_title">
+            <el-input v-model="ruleForm.title"></el-input>
+          </el-form-item>
+          <el-form-item label="留言内容" prop="leave_content">
+            <el-input type="textarea" v-model="ruleForm.content"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="sure('ruleForm')">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog title="提示" :visible.sync="dialogRemove" width="30%">
+        <span>确定删除该留言？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogRemove = false" style="padding:8px 15px;">取 消</el-button>
+          <el-button type="primary" @click="dialogRemove = false" style="padding:8px 15px;">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -47,24 +74,42 @@ export default {
   name: "manage_leave",
   data() {
     return {
-      current_time: '',
+      current_time: "",
       search_input: "",
+      dialogVisible: false,
+      dialogRemove: false,
+      ruleForm: {
+        title: "",
+        content: ""
+      },
+      rules: {
+        leave_title: [
+          { required: true, message: "请输入留言标题", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符范围内",
+            trigger: "blur"
+          }
+        ],
+        leave_content: [
+          { required: true, message: "请输入留言内容", trigger: "blur" },
+          { max: 200, message: "长度在 200 个字符以内", trigger: "blur" }
+        ]
+      },
       tableData: [
         {
           title: "春节放假通知",
           autor: "June",
-          add_time: '2019-1-28 18:00:00'
+          add_time: "2019-1-28 18:00:00"
         },
         {
           title: "2019上半年放假安排",
           autor: "June",
-          add_time: '2019-1-28 18:01:00'
+          add_time: "2019-1-28 18:01:00"
         }
       ]
     };
-  },
-  created: {
-
   },
   methods: {
     handleSelectionChange() {
@@ -75,16 +120,24 @@ export default {
     },
     add_leave() {
       console.log("点击添加留言成功");
+      this.dialogVisible = true;
     },
     detail() {
+      this.$router.push({
+        path: "/leave_detail"
+      });
       console.log("查看详情");
     },
     remove() {
+      this.dialogRemove = true;
       console.log("删除留言");
     },
     getTime(date) {
       this.current_time = new Date();
       console.log(this.current_time);
+    },
+    sure() {
+      this.dialogVisible = false;
     }
   }
 };

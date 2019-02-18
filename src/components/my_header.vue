@@ -1,28 +1,43 @@
 <template>
   <div class="header">
     <div class="title">
-      <div><img src="../assets/logo.png" alt=""></div>
+      <div>
+        <img src="../assets/logo.png" alt>
+      </div>
       <div class="system-title">高校科研管理系统</div>
-      <div class="hello">June, 欢迎您 !</div>
+      <div class="hello">
+        <el-dropdown @command="handleCommand">
+          <span class="el-dropdown-link">June<i class="el-icon-arrow-down el-icon--right"></i></span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'my_header',
-  data () {
-    return {
-
+  name: "my_header",
+  data() {
+    return {};
+  },
+  methods: {
+    handleCommand(command) {
+      this.$router.push({
+        path: "/login"
+      });
+      this.$message("已退出登录");
     }
   }
-}
+};
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .header {
   height: 68px;
-  background: #19203C;
+  background: #19203c;
   padding: 0 25px 0 30px;
   line-height: 68px;
   text-align: left;
@@ -31,24 +46,24 @@ export default {
   z-index: 2000;
   color: #fff;
 }
-.header .title{
+.header .title {
   height: 100%;
   position: relative;
 }
-.title div:nth-child(1){
-  display: inline-block;
-  margin-top: 9px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-.title div:nth-child(1) img{
+.title div:nth-child(1) {
   display: inline-block;
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
-.title .system-title{
+.title div:nth-child(1) img {
+  display: inline-block;
+  margin-top: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.title .system-title {
   width: 200px;
   height: 68px;
   display: inline-block;
@@ -57,16 +72,20 @@ export default {
   top: 2px;
   left: 70px;
 }
-.title .hello{
-  width: 200px;
+.title .hello {
+  width: 100px;
   height: 68px;
-  position:absolute;
+  position: absolute;
   top: 2px;
-  right: 80px;
+  right: 120px;
   display: inline-block;
   font-size: 18px;
 }
-h1, h2 {
+.title .hello .el-dropdown{
+  width: 100%;
+}
+h1,
+h2 {
   font-weight: normal;
 }
 ul {
@@ -80,5 +99,9 @@ li {
 a {
   color: #42b983;
 }
-
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+  font-size: 18px;
+}
 </style>

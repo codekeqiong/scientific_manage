@@ -30,9 +30,20 @@
   margin: 12px;
   margin-left: 80%;
 }
-.manage_leave  .leave_list .el-input__inner{
+.manage_leave  .leave_list .search_line .el-input__inner{
   width: 200px;
 }
-.manage_leave  .leave_list .el-input{
+.manage_leave  .leave_list .search_line .el-input{
   width: 200px;
+}
+.manage_leave  .leave_list .el-dialog__header{
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.manage_leave .el-textarea__inner{
+  height: 120px;
+}
+.query_project .el-dialog__header,
+.approval_project .el-dialog__header{
+  text-align: left;
 }

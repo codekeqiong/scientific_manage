@@ -1,7 +1,9 @@
 <template>
   <div class="home_page">
     <div class="tips" @click="skip">
-      <i class="el-icon-bell"></i> [最新留言]：
+      <el-badge :value="100" :max="10" class="item">
+        <i class="el-icon-bell"></i> 
+      </el-badge>[最新留言]：
       <span>春节将至请大家安排好相关工作</span>    
     </div>
   </div>

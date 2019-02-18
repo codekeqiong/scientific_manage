@@ -47,7 +47,7 @@
           <template slot-scope="scope">
              {{scope.row.operation}}
             <el-button type="text" size="small" @click="modify()">修改</el-button>
-            <el-button type="text" size="small" @click="delet()">删除</el-button>
+            <el-button type="text" size="small" @click="remove()">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,14 +55,17 @@
       <el-dialog
       title="添加用户"
       :visible.sync="addUserDialog"
-      width="30%"
+      width="500px"
       center>
       <div class="add-user">
         <div class="add-content">
           <el-form :model="rulesForm" :rules="rules" ref="rulesForm" label-width="100px" class="rulesForm">
+            <el-form-item label="添加姓名" prop="userName">
+              <el-input v-model="rulesForm.userName" style="width:90%"></el-input>
+            </el-form-item>
             <el-form-item label="添加账号" prop="account">
               <el-input v-model="rulesForm.account" style="width:90%"></el-input>
-            </el-form-item>
+            </el-form-item>          
             <el-form-item label="设置密码" prop="password">
               <el-input type="password" v-model="rulesForm.password" autocomplete="off" style="width:90%"></el-input>
             </el-form-item>
@@ -78,12 +81,19 @@
             </el-form-item>
             <div style="text-align: center;">
               <el-button type="primary" plain  @click="resetForm('rulesForm')" style="margin-right: 30px;">重置</el-button>
-              <el-button type="primary" @click="submit('rulesForm')">提交</el-button>
+              <el-button type="primary" @click="submit('rulesForm')">确定</el-button>
             </div>
           </el-form>
         </div>
       </div>
     </el-dialog>
+     <el-dialog title="提示" :visible.sync="dialogRemove" width="500px">
+        <span>确定删除该用户？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogRemove = false" style="padding:8px 15px;">取 消</el-button>
+          <el-button type="primary" @click="dialogRemove = false" style="padding:8px 15px;">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -108,6 +118,7 @@ export default {
       };
       return{
         input_search: '',
+        dialogRemove: false,
         tableData:[{
           account: 1234567,
           userName: '墨轩',
@@ -127,13 +138,17 @@ export default {
         addUserDialog: false,
         rulesForm:{
           account: '',
+          userName: '',
           password: '',
           password2: '',
           identity: '教师',
         },
         rules:{
           account: [
-            { required: true, message: '请输入账号', trigger: 'blur' },
+            { required: true, message: '请输入用户账号', trigger: 'blur' }
+          ],
+          userName:[
+            { required: true, message: '请输入用户的姓名', trigger: 'blur'}
           ],
           password: [
             { required: true, validator: validateNewPass, trigger: 'blur' }
@@ -145,12 +160,11 @@ export default {
             { required: true, message:'请选择身份', trigger: 'blur' }
           ]
         },
-
       }
     },
     methods:{
       resetForm(formName) {
-        this.$refs[formName].resetFields();
+        this.$refs[formName].resetFields()
       },
       submit(){
         console.log("提交成功")
@@ -159,7 +173,13 @@ export default {
         this.addUserDialog = true
       },
       handleSelectionChange(val) {
-        this.multipleSelection = val;
+        this.multipleSelection = val
+      },
+      remove(){
+        this.dialogRemove = true
+      },
+      modify(){
+        this.addUserDialog = true
       }
     }
 }
@@ -196,6 +216,9 @@ export default {
   height: 40px;
   line-height: 40px;
   float: right;
+}
+.user_manage .el-dialog__header{
+  text-align: left;
 }
 </style>
 

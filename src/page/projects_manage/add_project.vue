@@ -9,8 +9,11 @@
         label-width="120px"
         class="demo-ruleForm"
       >
-        <el-form-item label="项目名称" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+        <el-form-item label="项目名称" prop="projectName">
+          <el-input v-model="ruleForm.projectName"></el-input>
+        </el-form-item>
+        <el-form-item label="申请人" prop="userName">
+          <el-input v-model="ruleForm.userName"></el-input>
         </el-form-item>
         <el-form-item label="院系" prop="second_college">
           <el-select v-model="ruleForm.second_college" placeholder="请选择院系">
@@ -22,20 +25,17 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="主题词" prop="theme">
-          <el-input v-model="ruleForm.theme"></el-input>
+        <el-form-item label="关键词" prop="keywords">
+          <el-input v-model="ruleForm.keywords"></el-input>
+        </el-form-item>
+        <el-form-item label="内容摘要" prop="abstract">
+          <el-input type="textarea" v-model="ruleForm.abstract"></el-input>
         </el-form-item>
         <el-form-item label="研究领域" prop="field">
           <el-input v-model="ruleForm.field"></el-input>
         </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="ruleForm.keywords"></el-input>
-        </el-form-item>
         <el-form-item label="课题批准单位" prop="approval">
           <el-input v-model="ruleForm.approval"></el-input>
-        </el-form-item>
-        <el-form-item label="内容摘要" prop="abstract">
-          <el-input type="textarea" v-model="ruleForm.abstract"></el-input>
         </el-form-item>
         <el-form-item label="项目经费" prop="fund">
           <el-input v-model="ruleForm.fund"></el-input>
@@ -69,8 +69,8 @@ export default {
   data() {
     return {
       ruleForm: {
-        name: "",
-        theme: "",
+        projectName: "",
+        userName: "",
         field: "",
         keywords: "",
         approval: "",
@@ -98,8 +98,8 @@ export default {
         { label: "智能制造学院", value: "智能" }
       ],
       rules: {
-        name: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
-        theme: [{ required: true, message: "请输入主题词", trigger: "blur" }],
+        projectName: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
+        userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
         field: [{ required: true, message: "请输入研究领域", trigger: "blur" }],
         keywords: [{ required: true, message: "请输入关键词", trigger: "blur" }],
         approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],

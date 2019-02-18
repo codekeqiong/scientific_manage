@@ -23,9 +23,10 @@ import myFooter from './components/my_footer'
 export default {
   name: 'App',
   components: {myHeader, mySidebar, myFooter},
+  // 请求信息详情
   created() {
-    this.$http.get('/api/login&id=1').then((res) => {
-      console.log(res);
+    this.$http.get('/api/login?id=1').then((res) => {
+      console.log(res)
     })
   }
 }

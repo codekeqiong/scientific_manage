@@ -8,9 +8,9 @@
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="rulesForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="验证码" prop="verification">
+        <!-- <el-form-item label="验证码" prop="verification">
           <el-input v-model="rulesForm.verification"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="身份" prop="identity">
          <el-radio-group v-model="rulesForm.identity">
             <el-radio label="教师"></el-radio>
@@ -34,7 +34,7 @@ export default {
       rulesForm:{
         account: '',
         password: '',
-        verification: '',
+        // verification: '',
         identity: '教师',
       },
       rules:{
@@ -44,9 +44,9 @@ export default {
         password: [
           { required: true, message: '请输入登录密码', trigger: 'blur' }
         ],
-        verification: [
-          { required: true, message: '请填写验证码', trigger: 'blur' }
-        ],
+        // verification: [
+        //   { required: true, message: '请填写验证码', trigger: 'blur' }
+        // ],
         identity: [       
           { type: "number", required: true, message: '请选择身份', trigger: 'change' }
         ],
@@ -74,7 +74,6 @@ export default {
   .login-content{
     padding: 40px 40px;
     padding-left: 0;
-    /* padding-right: 40px; */
     width: 500px;
     height: 350px;
     box-sizing: border-box;
