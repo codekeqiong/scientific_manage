@@ -7,11 +7,11 @@ let UsersSchema = new mongoose.Schema({
   password: Number,
   role: String,
   meta: {
-    createAt: {
+    createTime: {
       type: Date,
       default: Date.now()
     },
-    updateAt: {
+    updateTime: {
       type: Date,
       default: Date.now()
     }
