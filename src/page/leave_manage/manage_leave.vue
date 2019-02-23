@@ -67,6 +67,17 @@
         </span>
       </el-dialog>
     </div>
+    <!-- tableData分页 -->
+    <el-pagination
+      background
+      @current-change="handleCurrentChange"
+      @size-change="handleSizeChange"
+      :page-size="pageSize"
+      :current-page="currentPage"
+      :total="total"
+      layout="total, prev, pager, next"
+      style="text-align:right; padding: 49px 29px 50px 0;"
+    ></el-pagination>
   </div>
 </template>
 <script>
@@ -78,6 +89,10 @@ export default {
       search_input: "",
       dialogVisible: false,
       dialogRemove: false,
+      total: 0,
+      pageSize: 10,
+      currentPage: 1,
+      pageNum: 1,
       ruleForm: {
         title: "",
         content: ""
@@ -97,21 +112,31 @@ export default {
           { max: 200, message: "长度在 200 个字符以内", trigger: "blur" }
         ]
       },
-      tableData: [
-        {
-          title: "春节放假通知",
-          autor: "June",
-          add_time: "2019-1-28 18:00:00"
-        },
-        {
-          title: "2019上半年放假安排",
-          autor: "June",
-          add_time: "2019-1-28 18:01:00"
-        }
-      ]
+      tableData: []
     };
   },
+  created() {
+    this.getLeaveInfo()
+  },
   methods: {
+    // 获取留言列表
+    getLeaveInfo:function(){
+      this.$http.post('/api/leave?id=1',this.qs.stringify({})).then((result) => {
+      if (result.status === 200) {
+        this.tableData = result.data
+        this.total = this.tableData.length
+      } else {
+        this.$message.error("列表数据获取失败", result.data);
+      }
+    })
+    },
+    // 分页
+    handleSizeChange(val) {
+      this.pageSize = val
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val
+    },
     handleSelectionChange() {
       this.multipleSelection = val;
     },

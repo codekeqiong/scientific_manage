@@ -40,6 +40,17 @@
         </span>
       </el-dialog>
     </div>
+    <!-- tableData分页 -->
+    <el-pagination
+      background
+      @current-change="handleCurrentChange"
+      @size-change="handleSizeChange"
+      :page-size="pageSize"
+      :current-page="currentPage"
+      :total="total"
+      layout="total, prev, pager, next"
+      style="text-align:right; padding: 49px 29px 50px 0;"
+    ></el-pagination>
   </div>
 </template>
 <script>
@@ -57,6 +68,10 @@ export default {
       phone: "",
       add_time: "",
       status: "",
+      total: 10,
+      pageSize: 10,
+      currentPage: 1,
+      pageNum: 1,
       tableData: [
         {
           // account: 1234567,
@@ -82,6 +97,13 @@ export default {
     };
   },
   methods: {
+    // 分页
+    handleSizeChange(val) {
+      this.pageSize = val
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
