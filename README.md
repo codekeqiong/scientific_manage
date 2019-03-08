@@ -68,19 +68,23 @@ login:{
 }
 
 // 项目申报
-apply:{
-  "projectId": Number,
-  "projectName": String,
-  "userName": String,
-  "second_college": String,
-  "keywords": String,
-  "abstract": String,
-  "field": String,
-  "approval": String,
-  "fund": Number,
-  "createDate": Number,
-  "phone": Number,
-  "remarks": String
+projects:{
+  projectName: String,
+  userName: String,
+  second_college: String,
+  keywords: String,
+  abstract: String,
+  field: String,
+  approval: String,
+  fund: Number,
+  createDate: {
+    type: Date,
+    default: Date.now()
+  },
+  endTime: Date,
+  phone: Number,
+  remarks: String,
+  status: String,
 }
 
 // 项目查询

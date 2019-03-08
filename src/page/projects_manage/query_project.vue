@@ -17,18 +17,19 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" label="编号" width="120"></el-table-column>
         <!-- <el-table-column prop="account" label="账号"></el-table-column> -->
-        <el-table-column prop="name" label="项目名称"></el-table-column>
+        <el-table-column prop="projectName" label="项目名称"></el-table-column>
         <el-table-column prop="userName" label="申请人"></el-table-column>
-        <el-table-column prop="role" label="角色"></el-table-column>
-        <el-table-column prop="school" label="院系"></el-table-column>
+        <!-- <el-table-column prop="role" label="角色"></el-table-column> -->
+        <el-table-column prop="second_college" label="院系"></el-table-column>
         <el-table-column prop="phone" label="联系电话"></el-table-column>
-        <el-table-column prop="add_time" label="申报时间"></el-table-column>
+        <el-table-column prop="createDate" label="申报时间"></el-table-column>
+        <el-table-column prop="endTime" label="截止时间"></el-table-column>
         <el-table-column prop="status" label="审核状态"></el-table-column>
         <el-table-column prop="operation" label="操作">
           <template slot-scope="scope">
             {{scope.row.operation}}
             <el-button type="text" size="small" @click="modify()">修改</el-button>
-            <el-button type="text" size="small" @click="remove()">删除</el-button>
+            <el-button type="text" size="small" @click="remove(scope.row.projectName)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -36,7 +37,7 @@
         <span>确定删除？</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false" style="padding:8px 15px;">确 定</el-button>
+          <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -62,60 +63,71 @@ export default {
       search_info: "",
       // account: "",
       userName: "",
-      name: "",
-      role: "",
-      school: "",
+      projectName: "",
+      // role: "",
+      second_college: "",
       phone: "",
-      add_time: "",
+      createDate: "",
+      endTime: "",
       status: "",
       total: 10,
       pageSize: 10,
       currentPage: 1,
       pageNum: 1,
-      tableData: [
-        {
-          // account: 1234567,
-          userName: "墨轩",
-          name: 321456,
-          role: "教师",
-          school: "数计1",
-          phone: "13198487982",
-          add_time: "2019-01-01",
-          status: "待审核"
-        },
-        {
-          // account: 1234567,
-          userName: "墨轩",
-          name: 321456,
-          role: "院级管理员",
-          school: "数计2",
-          phone: "13198487982",
-          add_time: "2019-01-01",
-          status: "待审核"
-        }
-      ]
+      tableData: []
     };
   },
+  created() {
+    this.queryProject();
+  },
   methods: {
+    queryProject: function() {
+      let param = {
+        page: this.pageNum,
+        pageSize: this.pageSize
+      };
+      this.$http
+        .post("/api/query-project", this.qs.stringify(param))
+        .then(result => {
+          if (result.status === 200) {
+            this.tableData = result.data;
+            this.total = this.tableData.length;
+          } else {
+            this.$message.error("项目列表数据获取失败", result.data);
+          }
+        });
+    },
     // 分页
     handleSizeChange(val) {
-      this.pageSize = val
+      this.pageSize = val;
     },
     handleCurrentChange(val) {
-      this.pageNum = val
+      this.pageNum = val;
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
     modify() {
-      console.log("点击修改成功")
+      let param = this.tableData[index]
       this.$router.push({
-        path: "/apply"
-      });
+        path: "/apply",
+        // query: { id: param.audience_id }
+      })
     },
-    remove() {
-      console.log("点击删除成功")
-      this.dialogVisible = true
+    remove(projectName) {
+      this.removeId = { projectName: projectName };
+      this.dialogVisible = true;
+    },
+    sureRemove(){
+      this.$http.post("/api/delete-project", this.qs.stringify(this.removeId)).then(result => {
+        if (result.data.status === 0) {
+          this.$message.success("删除用户成功");
+          this.dialogVisible = false;
+          this.queryProject();
+        } else {
+          this.$message.error("数据删除失败");
+        }
+      });
     }
   }
 };

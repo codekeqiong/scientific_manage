@@ -16,12 +16,13 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" label="编号" width="120"></el-table-column>
         <!-- <el-table-column prop="account" label="账号"></el-table-column> -->
-        <el-table-column prop="project_name" label="项目名称"></el-table-column>
+        <el-table-column prop="projectName" label="项目名称"></el-table-column>
         <el-table-column prop="userName" label="申请人"></el-table-column>
-        <el-table-column prop="role" label="角色"></el-table-column>
-        <el-table-column prop="faculty" label="院系"></el-table-column>
+        <!-- <el-table-column prop="role" label="角色"></el-table-column> -->
+        <el-table-column prop="second_college" label="院系"></el-table-column>
         <el-table-column prop="phone" label="联系电话"></el-table-column>
-        <el-table-column prop="date" label="申报日期"></el-table-column>
+        <el-table-column prop="createDate" label="申报日期"></el-table-column>
+        <el-table-column prop="endTime" label="截止日期"></el-table-column>
         <el-table-column prop="operation" label="审核操作">
           <template slot-scope="scope">
             {{scope.row.operation}}
@@ -66,40 +67,39 @@ export default {
       dialogVisible: false,
       backDialog: false,
       search_info: "",
-      // account: "",
       userName: "",
-      role: "",
-      faculty: "",
+      second_college: "",
       phone: "",
-      project_name: "",
-      date: "",
+      projectName: "",
+      createDate: "",
+      endTime: "",
       total: 10,
       pageSize: 10,
       currentPage: 1,
       pageNum: 1,
-      tableData: [
-        {
-          // account: 1234567,
-          userName: "墨轩",
-          faculty: "数计",
-          role: "教师",
-          phone: 13198487982,
-          project_name: "数学与科技研究",
-          date: "2019-01-01"
-        },
-        {
-          // account: 1234567,
-          userName: "墨轩",
-          faculty: "数计",
-          role: "院级管理员",
-          phone: 13198487982,
-          project_name: "数学与科技研究",
-          date: "2019-01-01"
-        }
-      ]
+      tableData: []
     };
   },
+  created(){
+    this.queryProject()
+  },
   methods: {
+    queryProject: function() {
+      let param = {
+        page: this.pageNum,
+        pageSize: this.pageSize
+      };
+      this.$http
+        .post("/api/query-project", this.qs.stringify(param))
+        .then(result => {
+          if (result.status === 200) {
+            this.tableData = result.data;
+            this.total = this.tableData.length;
+          } else {
+            this.$message.error("项目列表数据获取失败", result.data);
+          }
+        });
+    },
     // 分页
     handleSizeChange(val) {
       this.pageSize = val

@@ -9,5 +9,5 @@ const UsersSchema = new Schema({
   role: String,
 
 },{versionKey: false})
-const UsersModel = mongoose.model('Users', UsersSchema)
+const UsersModel = db.model('Users', UsersSchema)
 module.exports = UsersModel

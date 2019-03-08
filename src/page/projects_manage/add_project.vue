@@ -40,14 +40,8 @@
         <el-form-item label="项目经费" prop="fund">
           <el-input v-model="ruleForm.fund"></el-input>
         </el-form-item>
-        <el-form-item label="起止日期" prop="date">
-          <el-date-picker
-            v-model="ruleForm.date"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+        <el-form-item label="截止日期" prop="endTime">
+          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择截止日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input v-model="ruleForm.phone"></el-input>
@@ -98,15 +92,27 @@ export default {
         { label: "智能制造学院", value: "智能" }
       ],
       rules: {
-        projectName: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
-        userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
+        projectName: [
+          { required: true, message: "请输入项目名称", trigger: "blur" }
+        ],
+        userName: [
+          { required: true, message: "请输入申请人姓名", trigger: "blur" }
+        ],
         field: [{ required: true, message: "请输入研究领域", trigger: "blur" }],
-        keywords: [{ required: true, message: "请输入关键词", trigger: "blur" }],
-        approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
-        abstract: [{ required: true, message: "请输入内容摘要", trigger: "blur" }],
+        keywords: [
+          { required: true, message: "请输入关键词", trigger: "blur" }
+        ],
+        approval: [
+          { required: true, message: "请输入课题批准单位", trigger: "blur" }
+        ],
+        abstract: [
+          { required: true, message: "请输入内容摘要", trigger: "blur" }
+        ],
         fund: [{ required: true, message: "请输入项目经费", trigger: "blur" }],
-        second_college:[{required: true, message: "请选择二级学院", trigger: "blur"}],
-        phone: [{required: true, message: "请输入联系方式", trigger: "blur"}],
+        second_college: [
+          { required: true, message: "请选择二级学院", trigger: "blur" }
+        ],
+        phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
         date: [
           { required: true, message: "请选择起止日期", trigger: "change" }
         ],
@@ -114,12 +120,86 @@ export default {
       }
     };
   },
-  methods:{
+  created() {
+    // this.onSubmit()
+  },
+  methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    onSubmit(){
-      console.log("提交申请成功")
+    onSubmit: function() {
+      this.judge();
+      let params = {
+        projectName: this.ruleForm.projectName,
+        userName: this.ruleForm.userName,
+        second_college: this.ruleForm.second_college,
+        keywords: this.ruleForm.keywords,
+        abstract: this.ruleForm.abstract,
+        field: this.ruleForm.field,
+        approval: this.ruleForm.approval,
+        fund: this.ruleForm.fund,
+        endTime: this.ruleForm.endTime,
+        phone: this.ruleForm.phone,
+        remarks: this.ruleForm.remarks,
+        status: "待审核"
+      };
+      console.log(params);
+      this.$http
+        .post("/api/add-project", this.qs.stringify(params))
+        .then(result => {
+          if (result.data.status === 0) {
+            this.$message.success("科研项目申报成功!");
+          } else {
+            this.$message.error("k科研项目申报失败", result.data);
+          }
+        });
+    },
+    // 验证是否填写必填项
+    judge: function() {
+      if (this.ruleForm.projectName == "") {
+        this.$message.error("请填写项目名称");
+        return;
+      }
+      if (this.ruleForm.userName == "") {
+        this.$message.error("请填写申请人");
+        return;
+      }
+      if (this.ruleForm.second_college == "") {
+        this.$message.error("请选择院系");
+        return;
+      }
+      if (this.ruleForm.keywords == "") {
+        this.$message.error("请填写科研项目关键字");
+        return;
+      }
+      if (this.ruleForm.abstract == "") {
+        this.$message.error("请填写内容摘要");
+        return;
+      }
+      if (this.ruleForm.field == "") {
+        this.$message.error("请填写研究领域");
+        return;
+      }
+      if (this.ruleForm.approval == "") {
+        this.$message.error("请填写项目批准单位");
+        return;
+      }
+      if (this.ruleForm.fund == "") {
+        this.$message.error("请填写项目所需经费");
+        return;
+      }
+      if (this.ruleForm.endTime == "") {
+        this.$message.error("请填写项目的起止日期");
+        return;
+      }
+      if (this.ruleForm.phone == "") {
+        this.$message.error("请填写申请人联系方式");
+        return;
+      }
+      if (this.ruleForm.remarks == "") {
+        this.$message.error("请填写备注");
+        return;
+      }
     }
   }
 };
@@ -146,5 +226,8 @@ export default {
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
+}
+.add_project .el-date-editor.el-input, .el-date-editor.el-input__inner{
+  width: 320px;
 }
 </style>
