@@ -3,12 +3,13 @@ const Schema = mongoose.Schema;
 const db = require('../config/db')
 const PersonInfoSchema = new Schema({
   account: String,
-  accountName: String,
+  account_name: String,
+  role: String,
   sex: String,
   second_College: String,
   native_Place: String,
   education: String,
-  birthDate: Date,
+  birth_date: Date,
   phone: Number,
 },{versionKey: false})
 

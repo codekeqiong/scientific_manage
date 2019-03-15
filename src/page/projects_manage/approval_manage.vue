@@ -22,27 +22,35 @@
         <el-table-column prop="second_college" label="院系"></el-table-column>
         <el-table-column prop="phone" label="联系电话"></el-table-column>
         <el-table-column prop="createDate" label="申报日期"></el-table-column>
-        <el-table-column prop="endTime" label="截止日期"></el-table-column>
+        <el-table-column prop="endTime" label="结项日期"></el-table-column>
+        <el-table-column prop="status" label="审核状态">
+          <template slot-scope="scope1">
+            <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+            <span v-else-if="scope1.row.status =='已通过'" style="color:#00ff00">{{scope1.row.status}}</span>
+            <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="operation" label="审核操作">
           <template slot-scope="scope">
             {{scope.row.operation}}
-            <el-button type="text" size="small" @click="pass()">通过</el-button>
-            <el-button type="text" size="small" @click="back()">退回</el-button>
+            <el-button type="text" size="small" @click="look(scope.$index)">查看详情</el-button>
+            <el-button type="text" size="small" @click="pass(scope.$index)">通过</el-button>
+            <el-button type="text" size="small" @click="back(scope.$index)">退回</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
-        <span>审核该资料通过？</span>
+        <span>通过该审核资料？</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false" style="padding:8px 15px;">确 定</el-button>
+          <el-button type="primary" @click="surePass()" style="padding:8px 15px;">确 定</el-button>
         </span>
       </el-dialog>
       <el-dialog title="提示" :visible.sync="backDialog" width="30%">
-        <span>审核结果未通过，确定撤回？</span>
+        <span>审核结果未通过，确定退回？</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="backDialog = false" style="padding:8px 15px;">取 消</el-button>
-          <el-button type="primary" @click="backDialog = false" style="padding:8px 15px;">确 定</el-button>
+          <el-button type="primary" @click="sureBack()" style="padding:8px 15px;">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -54,7 +62,7 @@
       :page-size="pageSize"
       :current-page="currentPage"
       :total="total"
-      layout="total, prev, pager, next"
+      layout="total, prev, pager, next, jumper"
       style="text-align:right; padding: 49px 29px 50px 0;"
     ></el-pagination>
   </div>
@@ -93,6 +101,14 @@ export default {
         .post("/api/query-project", this.qs.stringify(param))
         .then(result => {
           if (result.status === 200) {
+            result.data.forEach(v => {
+              if(v.createDate){
+                v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              } 
+              if(v.endTime){
+                v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              }
+            });
             this.tableData = result.data;
             this.total = this.tableData.length;
           } else {
@@ -110,13 +126,47 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    pass() {
-      this.dialogVisible = true
-      console.log("审批通过")
+    look(index){
+      this.$router.push({
+        path: "/apply",
+        query: { _id: this.tableData[index]._id }
+      })
     },
-    back() {
-      this.backDialog = true
-      console.log("审批不通过，退回")
+    pass(index) {
+      if(this.tableData[index].status=='已通过'){
+        this.$message.error('该项目已审核通过，请勿重复操作!')
+      }else{
+        this.dialogVisible = true
+        this.paramId = { _id: this.tableData[index]._id}
+      }
+    },
+    surePass(){
+      this.$http.post('/api/pass-one', this.qs.stringify(this.paramId)).then((result) => {
+        if(result.data.status === 0){
+          this.$message.success('该项目已通过审核')
+          this.dialogVisible = false
+        } else {
+          this.$message.error('操作失败',result.data.data)
+        }
+      })
+    },
+    back(index) {
+      if(this.tableData[index].status=='已通过'){
+        this.$message.error('该项目已审核通过，不能退回!')
+      }else{
+        this.backDialog = true
+        this.paramId = { _id: this.tableData[index]._id}
+      }
+    },
+    sureBack(){
+      this.$http.post('/api/back-one', this.qs.stringify(this.paramId)).then((result) => {
+        if(result.data.status === 0){
+          this.$message.success('该项目经审核未通过已退回')
+          this.backDialog = false
+        } else {
+          this.$message.error('操作失败',result.data.data)
+        }
+      })
     }
   }
 };

@@ -35,7 +35,7 @@
           <template slot-scope="scope">
             {{scope.row.operation}}
             <el-button type="text" size="small" @click="modify(scope.row)">修改</el-button>
-            <el-button type="text" size="small" @click="remove(scope.row.account)">删除</el-button>
+            <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,7 +47,7 @@
         :page-size="pageSize"
         :current-page="currentPage"
         :total="total"
-        layout="total, prev, pager, next"
+        layout="total, prev, pager, next, jumper"
         style="text-align:right; padding: 49px 29px 50px 0;"
       ></el-pagination>
       <el-dialog :title="dialogTitle" :visible.sync="addUserDialog" width="500px" center>
@@ -239,12 +239,12 @@ export default {
       }
     },
     // 删除用户
-    remove: function(account) {
+    remove: function(index) {
       this.dialogRemove = true;
-      this.accountParam = { account: account };
+      this.user_id = { _id: this.tableData[index]._id };
     },
     removeUser: function() {
-      this.$http.post("/api/delete-users", this.qs.stringify(this.accountParam)).then(result => {
+      this.$http.post("/api/delete-users", this.qs.stringify(this.user_id)).then(result => {
         if (result.data.status === 0) {
           this.$message.success("删除用户成功");
           this.dialogRemove = false;

@@ -22,14 +22,20 @@
         <!-- <el-table-column prop="role" label="角色"></el-table-column> -->
         <el-table-column prop="second_college" label="院系"></el-table-column>
         <el-table-column prop="phone" label="联系电话"></el-table-column>
-        <el-table-column prop="createDate" label="申报时间"></el-table-column>
-        <el-table-column prop="endTime" label="截止时间"></el-table-column>
-        <el-table-column prop="status" label="审核状态"></el-table-column>
+        <el-table-column prop="createDate" label="申报日期"></el-table-column>
+        <el-table-column prop="endTime" label="结项日期"></el-table-column>
+        <el-table-column prop="status" label="审核状态">
+          <template slot-scope="scope1">
+            <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+            <span v-else-if="scope1.row.status =='已通过'" style="color:#00ff00">{{scope1.row.status}}</span>
+            <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="operation" label="操作">
           <template slot-scope="scope">
             {{scope.row.operation}}
-            <el-button type="text" size="small" @click="modify()">修改</el-button>
-            <el-button type="text" size="small" @click="remove(scope.row.projectName)">删除</el-button>
+            <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
+            <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -49,7 +55,7 @@
       :page-size="pageSize"
       :current-page="currentPage"
       :total="total"
-      layout="total, prev, pager, next"
+      layout="total, prev, pager, next, jumper"
       style="text-align:right; padding: 49px 29px 50px 0;"
     ></el-pagination>
   </div>
@@ -81,15 +87,37 @@ export default {
     this.queryProject();
   },
   methods: {
+    // 仅前端的模糊查询
+    // search(){
+    //   const searchText = this.search_info
+    //    if(searchText){
+    //      return this.tableData.filter(function(data) {
+    //        return Object.keys(data).some(function(key) {
+    //          // filter()对大小写敏感，使用toLowerCase就是将它们都转为小写
+    //          return String(data[key]).toLowerCase().indexOf(searchText) > -1
+    //        })
+    //      })
+    //    }
+    //    return this.tableData
+    // },
+    search(){
+      console.log('点击搜索成功')
+    },
     queryProject: function() {
       let param = {
         page: this.pageNum,
         pageSize: this.pageSize
       };
-      this.$http
-        .post("/api/query-project", this.qs.stringify(param))
-        .then(result => {
+      this.$http.post("/api/query-project", this.qs.stringify(param)).then(result => {
           if (result.status === 200) {
+            result.data.forEach(v => {
+              if(v.createDate){
+                v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              } 
+              if(v.endTime){
+                v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              }
+            });
             this.tableData = result.data;
             this.total = this.tableData.length;
           } else {
@@ -107,16 +135,24 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    modify() {
+    modify(index) {
       let param = this.tableData[index]
-      this.$router.push({
-        path: "/apply",
-        // query: { id: param.audience_id }
-      })
+      if(param.status=='已通过'){
+        this.$message.error('该项目已通过审核不能修改!')
+      }else{
+        this.$router.push({
+          path: "/apply",
+          query: { _id: param._id }
+        })
+      }
     },
-    remove(projectName) {
-      this.removeId = { projectName: projectName };
-      this.dialogVisible = true;
+    remove(index) {
+      if(this.tableData[index].status == '已通过'){
+        this.$message.error('该项目已通过审核不能删除!')
+      }else{
+        this.removeId = { _id: this.tableData[index]._id };
+        this.dialogVisible = true;
+      }
     },
     sureRemove(){
       this.$http.post("/api/delete-project", this.qs.stringify(this.removeId)).then(result => {
@@ -129,7 +165,7 @@ export default {
         }
       });
     }
-  }
+  },
 };
 </script>
 <style scoped>

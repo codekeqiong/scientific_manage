@@ -4,11 +4,9 @@
     <div class="leave-bg">
       <img src="../../assets/leave_bg.jpg" alt="">
       <div class="leave-text">
-        <div class="text_title">春节将至请大家安排好相关工作</div>
-        <div class="text_content">
-          攀枝花学院是教育部布点在川西南、滇西北唯一一所以工为主的综合性普通本科院校。学校座落于中国著名的“钒钛之都”、
-          中国优秀旅游城市、国家首批新型工业产业化基地、国家创业城市、国家卫生城市、全国唯一一座以花命名的山水园林城市。
-        </div>
+        <div class="text_title">{{title}}</div>
+        <div class="text_content">{{content}}</div>
+        <div class="text_autor">{{autor}}</div>
       </div>
     </div>
   </div>
@@ -18,13 +16,41 @@ export default {
   name: "leave_detail",
   data() {
     return {
-
+      title: '',
+      content: '',
+      autor: ''
     };
   },
+  created(){
+    if(!this.$route.query){
+      this.getLeaveInfo() 
+    } else {
+      this.title = this.$route.query.title
+      this.content = this.$route.query.content
+      this.autor = this.$route.query.autor
+    }
+  },
   methods: {
-    
+    getLeaveInfo:function(){
+      this.$http.post('/api/leave?id=1',this.qs.stringify({})).then((result) => {
+      if (result.status === 200) {
+        result.data.forEach(v => {
+        //UTC日期转换为正常日期显示 
+          if(v.add_time){
+            v.add_time = new Date(+new Date(v.add_time) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+          }
+        });
+        let newIndex = result.data.length - 1
+        this.title = result.data[newIndex].title
+        this.content = result.data[newIndex].content
+        this.autor = result.data[newIndex].autor
+      } else {
+        this.$message.error("数据获取失败", result.data);
+      }
+    })
   }
-};
+}
+}
 </script>
 <style scoped>
 .leave_detail {
@@ -56,10 +82,18 @@ export default {
   left: 70px;
 }
 .leave_detail .text_title{
-  text-align: left;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 .leave_detail .text_content{
   text-align: left;
   text-indent: 2em;
+  height: 230px;
+}
+.leave_detail .text_autor{
+  text-align: right;
+  margin-right: 30px;
 }
 </style>
