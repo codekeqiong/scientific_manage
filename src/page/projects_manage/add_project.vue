@@ -29,7 +29,7 @@
           <el-input v-model="ruleForm.keywords"></el-input>
         </el-form-item>
         <el-form-item label="内容摘要" prop="abstract">
-          <el-input type="textarea" v-model="ruleForm.abstract"></el-input>
+          <el-input type="textarea" v-model="ruleForm.abstract" maxlength="300"></el-input>
         </el-form-item>
         <el-form-item label="研究领域" prop="field">
           <el-input v-model="ruleForm.field"></el-input>
@@ -40,17 +40,11 @@
         <el-form-item label="项目经费" prop="fund">
           <el-input v-model="ruleForm.fund"></el-input>
         </el-form-item>
-        <el-form-item label="起止日期" prop="date">
-          <el-date-picker
-            v-model="ruleForm.date"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+        <el-form-item label="预计结项日期" prop="endTime">
+          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择结项日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
-          <el-input v-model="ruleForm.phone"></el-input>
+          <el-input type="text" autocomplete="off" v-model="ruleForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input type="textarea" v-model="ruleForm.remarks"></el-input>
@@ -67,6 +61,15 @@
 export default {
   name: "apply",
   data() {
+    //全局定义电话验证规则
+    const validatePhone = (rule, value, callback) => {
+      let reg = /^1[345789]\d{9}$/;
+      if (value != '' && reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确的手机号'))
+      }
+    }
     return {
       ruleForm: {
         projectName: "",
@@ -98,29 +101,155 @@ export default {
         { label: "智能制造学院", value: "智能" }
       ],
       rules: {
-        projectName: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
-        userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
+        projectName: [
+          { required: true, message: "请输入项目名称", trigger: "blur" }
+        ],
+        userName: [
+          { required: true, message: "请输入申请人姓名", trigger: "blur" }
+        ],
         field: [{ required: true, message: "请输入研究领域", trigger: "blur" }],
-        keywords: [{ required: true, message: "请输入关键词", trigger: "blur" }],
-        approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
-        abstract: [{ required: true, message: "请输入内容摘要", trigger: "blur" }],
+        keywords: [
+          { required: true, message: "请输入关键词", trigger: "blur" }
+        ],
+        approval: [
+          { required: true, message: "请输入课题批准单位", trigger: "blur" }
+        ],
+        abstract: [
+          { required: true, message: "请输入内容摘要", trigger: "blur" }
+        ],
         fund: [{ required: true, message: "请输入项目经费", trigger: "blur" }],
-        second_college:[{required: true, message: "请选择二级学院", trigger: "blur"}],
-        phone: [{required: true, message: "请输入联系方式", trigger: "blur"}],
-        date: [
-          { required: true, message: "请选择起止日期", trigger: "change" }
+        second_college: [
+          { required: true, message: "请选择二级学院", trigger: "blur" }
+        ],
+        phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话", trigger: "blur" }],
+        endTime: [
+          { required: true, message: "请选择预计结项日期", trigger: "blur" }
         ],
         remarks: [{ required: true, message: "请输入备注", trigger: "blur" }]
       }
     };
   },
-  methods:{
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    onSubmit(){
-      console.log("提交申请成功")
+  created() {
+    this.routeId = this.$route.query._id
+    if (this.routeId) {
+      this.getData(this.routeId)
     }
+  },
+  methods: {
+    getData:function(id){
+      let param = {
+        _id: id
+      }
+      this.$http.post('/api/find-one-project', this.qs.stringify(param)).then((result) => {
+        if (result.data.status === 0) {
+          let datas = result.data.data
+          this.ruleForm.projectName = datas.projectName
+          this.ruleForm.userName = datas.userName
+          this.ruleForm.second_college = datas.second_college
+          this.ruleForm.keywords = datas.keywords
+          this.ruleForm.abstract = datas.abstract
+          this.ruleForm.field = datas.field
+          this.ruleForm.approval = datas.approval
+          this.ruleForm.fund = datas.fund
+          this.ruleForm.endTime = datas.endTime
+          this.ruleForm.phone = datas.phone       
+          this.ruleForm.remarks = datas.remarks
+        } else {
+          this.$message.error("编辑数据获取失败", result.data);
+        }
+      })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+    },
+    cancel(){
+      console.log('点击取消成功')
+    },
+    onSubmit: function() {
+      if (this.ruleForm.projectName === "") {
+        this.$message.error("请填写项目名称");
+        return;
+      }
+      if (this.ruleForm.userName === "") {
+        this.$message.error("请填写申请人");
+        return;
+      }
+      if (this.ruleForm.second_college === "") {
+        this.$message.error("请选择院系");
+        return;
+      }
+      if (this.ruleForm.keywords === "") {
+        this.$message.error("请填写科研项目关键字");
+        return;
+      }
+      if (this.ruleForm.abstract === "") {
+        this.$message.error("请填写内容摘要");
+        return;
+      }
+      if (this.ruleForm.field === "") {
+        this.$message.error("请填写研究领域");
+        return;
+      }
+      if (this.ruleForm.approval === "") {
+        this.$message.error("请填写项目批准单位");
+        return;
+      }
+      if (this.ruleForm.fund === "") {
+        this.$message.error("请填写项目所需经费");
+        return;
+      }
+      if (this.ruleForm.endTime === "") {
+        this.$message.error("请填写项目的起止日期");
+        return;
+      }
+      if (this.ruleForm.phone === "") {
+        this.$message.error("请填写申请人联系方式");
+        return;
+      }
+      if (this.ruleForm.remarks === "") {
+        this.$message.error("请填写备注");
+        return;
+      }
+      let params = {
+        // 验证是否填写必填项
+        projectName: this.ruleForm.projectName,
+        userName: this.ruleForm.userName,
+        second_college: this.ruleForm.second_college,
+        keywords: this.ruleForm.keywords,
+        abstract: this.ruleForm.abstract,
+        field: this.ruleForm.field,
+        approval: this.ruleForm.approval,
+        fund: this.ruleForm.fund,
+        endTime: this.ruleForm.endTime,
+        phone: this.ruleForm.phone,
+        remarks: this.ruleForm.remarks,
+        status: "待审核"
+      };
+      if(this.routeId){
+        params._id = this.routeId
+        this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
+          if (result.data.status === 0) {
+            this.$message.success("科研项目修改成功!");
+            this.$router.push({
+              path: "/query"
+            })
+          } else {
+            this.$message.error("科研项目修改失败", result.data);
+          }
+        })
+        }else{
+        this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
+          if (result.data.status === 0) {
+            this.$message.success("科研项目申报成功!");
+            this.$router.push({
+              path: "/query"
+            })
+          } else {
+            this.$message.error("科研项目申报失败，请检查输入是否有误!", result.data);
+          }
+        })
+      }
+    },
   }
 };
 </script>
@@ -146,5 +275,8 @@ export default {
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
+}
+.add_project .el-date-editor.el-input, .el-date-editor.el-input__inner{
+  width: 320px;
 }
 </style>

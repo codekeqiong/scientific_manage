@@ -15,6 +15,9 @@
         <el-form-item label="姓名" prop="account_name">
           <el-input v-model="rulesForm.account_name"></el-input>
         </el-form-item>
+        <el-form-item label="角色" prop="role">
+          <el-input v-model="rulesForm.role"></el-input>
+        </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="rulesForm.sex">
             <el-radio label="男"></el-radio>
@@ -44,9 +47,9 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="出生年月" prop="birth_date">
+        <!-- <el-form-item label="出生年月" prop="birth_date">
           <el-date-picker v-model="rulesForm.birth_date" type="date" placeholder="选择出生日期"></el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="联系电话" prop="phone">
           <el-input v-model="rulesForm.phone"></el-input>
         </el-form-item>
@@ -61,15 +64,24 @@
 <script>
 export default {
   data() {
+    //全局定义电话验证规则
+    const validatePhone = (rule, value, callback) => {
+      let reg = /^1[345789]\d{9}$/;
+      if (value != '' && reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确的手机号'))
+      }
+    }
     return {
       rulesForm: {
-        account: "",
-        account_name: "",
-        sex: "",
+        account: "13198487982",
+        account_name: "June",
+        role: '院级管理员',
+        sex: '男',
         second_college: "",
         native_place: "",
         education: "",
-        birth_date: "",
         phone: ""
       },
       collegeArr: [
@@ -105,18 +117,41 @@ export default {
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
         account_name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        role: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
         second_college: [{ required: true, message: "请输选择二级学院", trigger: "blur" }],
         native_place: [{ required: true, message: "请输入籍贯", trigger: "blur" }],
         education: [{ required: true, message: "请选择学历", trigger: "blur" }],
-        birth_date: [{ required: true, message: "请输入出生年月", trigger: "blur" }],
-        phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }]
+        // birth_date: [{ required: true, message: "请输入出生年月", trigger: "blur" }],
+        phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话", trigger: "blur" }]
       }
     };
   },
+  created(){
+    
+  },
   methods:{
     onSubmit(){
-      console.log("数据更新成功")
+      // let t = this.rulesForm.birth_date
+      // this.rulesForm.birth_date = t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate()
+      let param = {
+        account: this.rulesForm.account,
+        account_name: this.rulesForm.account_name,
+        role: this.rulesForm.role ,
+        sex: this.rulesForm.sex,
+        second_college: this.rulesForm.second_college,
+        native_place: this.rulesForm.native_place,
+        education: this.rulesForm.education,
+        // birth_date: this.rulesForm.birth_date,
+        phone: this.rulesForm.phone
+      }
+      this.$http.post('/api/perfect-info',this.qs.stringify(param)).then((result => {
+        if(result.data.status === 0){
+          this.$message.success('个人中心信息更新成功')
+        }else{
+          this.$message.error('信息更新失败',result.data.data)
+        }
+      }))
     }
   }
 };

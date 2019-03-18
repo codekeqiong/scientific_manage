@@ -29,13 +29,13 @@
         <el-table-column label="留言标题" prop="title"></el-table-column>
         <el-table-column label="发布者" prop="autor"></el-table-column>
         <el-table-column label="发布时间" prop="add_time">
-          <!-- <el-date-picker v-model="current_time" type="date" @change="getTime" format="yyyy-MM-dd"></el-date-picker> -->
+        <!-- <el-date-picker v-model="current_time" type="date" ></el-date-picker> -->
         </el-table-column>
         <el-table-column label="操作" prop="operation">
           <template slot-scope="scope">
             {{scope.row.operation}}
-            <el-button type="text" size="small" @click="detail()">查看详情</el-button>
-            <el-button type="text" size="small" @click="remove()">删除</el-button>
+            <el-button type="text" size="small" @click="detail(scope.$index)">查看详情</el-button>
+            <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -47,10 +47,10 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="留言标题" prop="leave_title">
+          <el-form-item label="留言标题" prop="title">
             <el-input v-model="ruleForm.title"></el-input>
           </el-form-item>
-          <el-form-item label="留言内容" prop="leave_content">
+          <el-form-item label="留言内容" prop="content">
             <el-input type="textarea" v-model="ruleForm.content"></el-input>
           </el-form-item>
         </el-form>
@@ -63,10 +63,21 @@
         <span>确定删除该留言？</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogRemove = false" style="padding:8px 15px;">取 消</el-button>
-          <el-button type="primary" @click="dialogRemove = false" style="padding:8px 15px;">确 定</el-button>
+          <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
         </span>
       </el-dialog>
     </div>
+    <!-- tableData分页 -->
+    <el-pagination
+      background
+      @current-change="handleCurrentChange"
+      @size-change="handleSizeChange"
+      :page-size="pageSize"
+      :current-page="currentPage"
+      :total="total"
+      layout="total, prev, pager, next, jumper"
+      style="text-align:right; padding: 49px 29px 50px 0;"
+    ></el-pagination>
   </div>
 </template>
 <script>
@@ -78,40 +89,55 @@ export default {
       search_input: "",
       dialogVisible: false,
       dialogRemove: false,
+      total: 0,
+      pageSize: 10,
+      currentPage: 1,
+      pageNum: 1,
       ruleForm: {
         title: "",
         content: ""
       },
       rules: {
-        leave_title: [
+        title: [
           { required: true, message: "请输入留言标题", trigger: "blur" },
-          {
-            min: 3,
-            max: 20,
-            message: "长度在 3 到 20 个字符范围内",
-            trigger: "blur"
-          }
+          { min: 3, max: 20, message: "长度在 3 到 20 个字符范围内",}
         ],
-        leave_content: [
+        content: [
           { required: true, message: "请输入留言内容", trigger: "blur" },
-          { max: 200, message: "长度在 200 个字符以内", trigger: "blur" }
+          { max: 200, message: "长度在 200 个字符以内"}
         ]
       },
-      tableData: [
-        {
-          title: "春节放假通知",
-          autor: "June",
-          add_time: "2019-1-28 18:00:00"
-        },
-        {
-          title: "2019上半年放假安排",
-          autor: "June",
-          add_time: "2019-1-28 18:01:00"
-        }
-      ]
+      tableData: []
     };
   },
+  created() {
+    this.getLeaveInfo()
+  },
   methods: {
+    // 获取留言列表
+    getLeaveInfo:function(){
+      this.$http.post('/api/leave?id=1',this.qs.stringify({})).then((result) => {
+      if (result.status === 200) {
+        result.data.forEach(v => {
+        //UTC日期转换为正常日期显示 
+          if(v.add_time){
+            v.add_time = new Date(+new Date(v.add_time) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+          }
+        });
+        this.tableData = result.data
+        this.total = this.tableData.length
+      } else {
+        this.$message.error("列表数据获取失败", result.data);
+      }
+    })
+    },
+    // 分页
+    handleSizeChange(val) {
+      this.pageSize = val
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val
+    },
     handleSelectionChange() {
       this.multipleSelection = val;
     },
@@ -119,25 +145,48 @@ export default {
       console.log("点击搜索成功");
     },
     add_leave() {
-      console.log("点击添加留言成功");
       this.dialogVisible = true;
     },
-    detail() {
+    detail(index) {
+      let currentData = this.tableData[index]
       this.$router.push({
-        path: "/leave_detail"
+        path: "/leave_detail",
+        query: { title: currentData.title, content: currentData.content, autor: currentData.autor }
       });
-      console.log("查看详情");
     },
-    remove() {
+    remove(index) {
+      this.removeTitle = this.tableData[index].title
       this.dialogRemove = true;
-      console.log("删除留言");
     },
-    getTime(date) {
-      this.current_time = new Date();
-      console.log(this.current_time);
+    sureRemove(){
+      this.dialogRemove = false
+      let param = {
+        title: this.removeTitle
+      }
+      this.$http.post('/api/delete-leave', this.qs.stringify(param)).then((result) => {
+        if(result.data.status === 0){
+          this.$message.success('删除留言成功')
+          this.getLeaveInfo()
+        } else {
+          this.$message.error('删除留言失败', result.data.data)
+        }
+      })
     },
     sure() {
-      this.dialogVisible = false;
+      let param = {
+        title: this.ruleForm.title,
+        autor: 'june',
+        content: this.ruleForm.content
+      }
+      this.$http.post('/api/add-leave',this.qs.stringify(param)).then((result) => {
+        if(result.data.status === 0){
+          this.$message.success('添加留言成功!')
+          this.getLeaveInfo()
+          this.dialogVisible = false;
+        }else{
+          this.$message.error('添加留言失败', result.data.data)
+        }
+      })
     }
   }
 };

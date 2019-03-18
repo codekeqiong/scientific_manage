@@ -39,7 +39,7 @@ export const MENULIST = [
       menuIndex: '3',
       menuSubLink: [
         {
-          menuName: '留言详情',
+          menuName: '最新留言',
           menuUrl: '/leave_detail',
           menuIndex: '3-1'
         },
