@@ -176,7 +176,11 @@ export default {
     },
     // 获取用户列表
     getUsersInfo: function() {
-      this.$http.post("/api/users", this.qs.stringify({})).then(result => {
+      let params = {
+        page: this.pageNum,
+        page_size: this.pageSize
+      }
+      this.$http.post("/api/users", this.qs.stringify(params)).then(result => {
         if (result.status === 200) {
           this.tableData = result.data;
           this.total = this.tableData.length
@@ -209,33 +213,37 @@ export default {
         password: this.rulesForm.pass,
         role: this.rulesForm.role
       };
-      if(this.isAdd){
-        for (const i in this.tableData) {
-          if (this.tableData[i].account === key){
-            this.$message.error("账号重复，请重新输入!");
-            return;
-          }
-        }
-        this.$http.post("/api/add-users", this.qs.stringify(params)).then(result => {
-          if (result.data.status === 0) {
-            this.getUsersInfo();
-            this.$message.success("新增用户信息成功!");
-            this.addUserDialog = false;
-          } else {
-            this.$message.error("新增用户信息失败", result.data);
-          }
-        });
+      if(this.rulesForm.pass !== this.rulesForm.checkPass){
+        return
       } else {
-        params._id = this._id
-        this.$http.post("/api/update-users", this.qs.stringify(params)).then(result => {
-          if (result.data.status === 0) {
-            this.$message.success("修改用户信息成功");
-            this.getUsersInfo();
-            this.addUserDialog = false;
-          } else {
-            this.$message.error("修改用户信息失败");
+        if(this.isAdd){
+          for (const i in this.tableData) {
+            if (this.tableData[i].account === key){
+              this.$message.error("账号重复，请重新输入!");
+              return;
+            }
           }
-        }) 
+          this.$http.post("/api/add-users", this.qs.stringify(params)).then(result => {
+            if (result.data.status === 0) {
+              this.getUsersInfo();
+              this.$message.success("新增用户信息成功!");
+              this.addUserDialog = false;
+            } else {
+              this.$message.error("新增用户信息失败", result.data);
+            }
+          });
+        } else {
+          params._id = this._id
+          this.$http.post("/api/update-users", this.qs.stringify(params)).then(result => {
+            if (result.data.status === 0) {
+              this.$message.success("修改用户信息成功");
+              this.getUsersInfo();
+              this.addUserDialog = false;
+            } else {
+              this.$message.error("修改用户信息失败");
+            }
+          }) 
+        }
       }
     },
     // 删除用户

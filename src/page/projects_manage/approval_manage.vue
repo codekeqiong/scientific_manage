@@ -145,6 +145,7 @@ export default {
         if(result.data.status === 0){
           this.$message.success('该项目已通过审核')
           this.dialogVisible = false
+          this.queryProject()
         } else {
           this.$message.error('操作失败',result.data.data)
         }
@@ -163,6 +164,7 @@ export default {
         if(result.data.status === 0){
           this.$message.success('该项目经审核未通过已退回')
           this.backDialog = false
+          this.queryProject()
         } else {
           this.$message.error('操作失败',result.data.data)
         }

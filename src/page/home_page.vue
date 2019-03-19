@@ -1,10 +1,10 @@
 <template>
   <div class="home_page">
     <div class="tips" @click="skip">
-      <el-badge :value="100" :max="10" class="item">
+      <el-badge value="new" class="item">
         <i class="el-icon-bell"></i>
       </el-badge>[最新留言]：
-      <span>春节将至请大家安排好相关工作</span>
+      <span>您有新消息点击查看</span>
     </div>
     <!-- 轮播图 -->
     <div class="box">
@@ -83,7 +83,7 @@ export default {
   methods: {
     skip() {
       this.$router.push({
-        path: "/leave_detail"
+        path: "/manage_leave"
       });
     },
     go() {
