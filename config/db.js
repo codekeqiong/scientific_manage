@@ -1,9 +1,7 @@
 var mongoose = require("mongoose"); //引入mongoose
 //该地址格式：mongodb://[username:password@]host:port/database[?options]
 //默认port为27017 
-mongoose.connect('mongodb://localhost/university', { useNewUrlParser: true }, (err) => {
-  console.log(err)
-});
+mongoose.connect('mongodb://localhost/university', { useNewUrlParser: true });
 var db = mongoose.connection;
 // 连接成功回调监听
 db.on("connected", function () {

@@ -116,8 +116,13 @@ export default {
   methods: {
     // 获取留言列表
     getLeaveInfo:function(){
-      this.$http.post('/api/leave?id=1',this.qs.stringify({})).then((result) => {
-      if (result.status === 200) {
+      let param = {
+        page: this.page,
+        pageSize: this.pageSize
+      }
+      this.$http.post('/api/leave',this.qs.stringify(param)).then((result) => {
+        result = result.data
+      if (result.status === 0) {
         result.data.forEach(v => {
         //UTC日期转换为正常日期显示 
           if(v.add_time){
@@ -125,7 +130,7 @@ export default {
           }
         });
         this.tableData = result.data
-        this.total = this.tableData.length
+        this.total = result.count
       } else {
         this.$message.error("列表数据获取失败", result.data);
       }
@@ -134,9 +139,11 @@ export default {
     // 分页
     handleSizeChange(val) {
       this.pageSize = val
+      this.getLeaveInfo()
     },
     handleCurrentChange(val) {
       this.pageNum = val
+      this.getLeaveInfo()
     },
     handleSelectionChange() {
       this.multipleSelection = val;

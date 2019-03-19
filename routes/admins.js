@@ -6,7 +6,6 @@ const UsersModel = require('../models/users')
 const leavesModel = require('../models/leaves')
 const ProjectModel = require('../models/project')
 const PersonInfoModel = require('../models/personInfo')
-const dbHelper = require('../config/dbHelper');
 
 // mongoose.connect('mongodb://localhost/university', { useNewUrlParser: true }, (err) => {
 //   console.log(err)
@@ -30,19 +29,33 @@ const app = express()
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // 查询所有用户数据
-app.use('/api/users', (req, res) => {         // 定义简单路由
-  UsersModel.find(function (err, result) {     // 查询一条数据使用findOne()  {id: req.query.id}
-    let data = {
-      data: '',
-      status: ''
-    };
-    if (result[0]) {
-      data.status = 0
-      data.data = result[0]
+app.use('/api/users', (req, res, next) => {
+  let page = parseInt(req.body.page)
+  let pageSize = parseInt(req.body.pageSize) 
+  var query = UsersModel.find(function (err, data) {
+  if (err) {
+    res.json({
+      status: 1,
+      data: err.message
+    });
     } else {
-      data.status = 1
+      query.sort({'_id': -1});
+      query.skip((page - 1)*pageSize);
+      query.limit(pageSize);
+      query.exec(function(err, result){
+      if(err){
+        res.json(err)
+      } else {
+        UsersModel.find(function(err, results){
+          res.json({
+            status: 0,
+            data: result,
+            count: results.length
+          });
+        });
+      }
+      });
     }
-    res.json(result);   // res.json()传送JSON响应   res.send()传送http响应
   })
 })
 // 用户管理 新增用户
@@ -170,18 +183,32 @@ app.use('/api/add-project', (req, res) => {
 })
 // 科研项目查询 获取数据
 app.use('/api/query-project', (req, res) => {
-  ProjectModel.find(function (err, result) {     // 查询一条数据使用findOne()  {id: req.query.id}
-    let data = {
-      data: '',
-      status: ''
-    };
-    if (result[0]) {
-      data.status = 0
-      data.data = result[0]
+  let page = parseInt(req.body.page)
+  let pageSize = parseInt(req.body.pageSize) 
+  var query = ProjectModel.find(function (err, data) {
+  if (err) {
+    res.json({
+      status: 1,
+      data: err.message
+    });
     } else {
-      data.status = 1
+      query.sort({'_id': -1});
+      query.skip((page - 1)*pageSize);
+      query.limit(pageSize);
+      query.exec(function(err, result){
+      if(err){
+        res.json(err)
+      } else {
+        ProjectModel.find(function(err, results){
+          res.json({
+            status: 0,
+            data: result,
+            count: results.length
+          });
+        });
+      }
+      });
     }
-    res.json(result);   // res.json()传送JSON响应   res.send()传送http响应
   })
 })
 // 科研项目查询 根据id查询某条数据(_id)
@@ -327,18 +354,32 @@ app.use('/api/back-one',function(req, res) {
 })
 // 获取留言列表
 app.use('/api/leave', (req, res) => {         // 定义简单路由
-  leavesModel.find(function (err, result) {     // 查询一条数据使用findOne()  {id: req.query.id}
-    let data = {
-      data: '',
-      status: ''
-    };
-    if (result[0]) {
-      data.status = 0
-      data.data = result[0]
+  let page = parseInt(req.body.page)
+  let pageSize = parseInt(req.body.pageSize) 
+  var query = leavesModel.find(function (err, data) {
+  if (err) {
+    res.json({
+      status: 1,
+      data: err.message
+    });
     } else {
-      data.status = 1
+      query.sort({'_id': -1});
+      query.skip((page - 1)*pageSize);
+      query.limit(pageSize);
+      query.exec(function(err, result){
+      if(err){
+        res.json(err)
+      } else {
+        leavesModel.find(function(err, results){
+          res.json({
+            status: 0,
+            data: result,
+            count: results.length
+          });
+        });
+      }
+      });
     }
-    res.json(result);   // res.json()传送JSON响应   res.send()传送http响应
   })
 })
 // 留言管理 添加留言
