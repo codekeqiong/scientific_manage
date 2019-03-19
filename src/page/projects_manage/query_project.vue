@@ -109,28 +109,31 @@ export default {
         pageSize: this.pageSize
       };
       this.$http.post("/api/query-project", this.qs.stringify(param)).then(result => {
-          if (result.status === 200) {
-            result.data.forEach(v => {
-              if(v.createDate){
-                v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
-              } 
-              if(v.endTime){
-                v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
-              }
-            });
-            this.tableData = result.data;
-            this.total = this.tableData.length;
-          } else {
-            this.$message.error("项目列表数据获取失败", result.data);
-          }
-        });
+        result = result.data
+        if (result.status === 0) {
+          result.data.forEach(v => {
+            if(v.createDate){
+              v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+            } 
+            if(v.endTime){
+              v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+            }
+          });
+          this.tableData = result.data;
+          this.total = result.count;
+        } else {
+          this.$message.error("项目列表数据获取失败", result.data);
+        }
+      });
     },
     // 分页
     handleSizeChange(val) {
       this.pageSize = val;
+      this.queryProject()
     },
     handleCurrentChange(val) {
       this.pageNum = val;
+      this.queryProject()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

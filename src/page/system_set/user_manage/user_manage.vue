@@ -176,18 +176,22 @@ export default {
     },
     // 获取用户列表
     getUsersInfo: function() {
-      this.$http.post("/api/users", this.qs.stringify({})).then(result => {
-        if (result.status === 200) {
-          this.tableData = result.data;
-          this.total = this.tableData.length
+      let param = {
+        page: this.pageNum,
+        pageSize: this.pageSize
+      }
+      this.$http.post("/api/users", this.qs.stringify(param)).then(result => {
+        if (result.data.status === 0) {
+          this.tableData = result.data.data;
+          this.total = result.data.count
         } else {
-          this.$message.error("列表数据获取失败", result.data);
+          this.$message.error("列表数据获取失败", result.data.data);
         }
       });
     },
     // 新增用户
     add_user() {
-      this. dialogTitle = "添加用户";
+      this.dialogTitle = "添加用户";
       this.addUserDialog = true;
       this.isAdd = true
     },
