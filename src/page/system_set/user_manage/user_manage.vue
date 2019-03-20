@@ -13,7 +13,7 @@
           clearable
           style="width:200px; height:40px;"
         ></el-input>
-        <el-button class="search" type="primary" style="padding: 11px 15px;margin-left:-7px;">查询</el-button>
+        <el-button class="search" @click="search()" type="primary" style="padding: 11px 15px;margin-left:-7px;">查询</el-button>
         <el-button class="add_user" @click="add_user()" type="primary" style="padding: 11px 15px;">
           <i class="el-icon-plus"></i> 新增用户
         </el-button>
@@ -174,6 +174,26 @@ export default {
     cancel(){
       this.addUserDialog = false;
     },
+    search(){
+      if(this.input_search !== ''){
+        let param = {
+          page: this.pageNum,
+          pageSize: this.pageSize,
+          searchText: this.input_search
+        }
+        this.$http.post('/api/users', this.qs.stringify(param)).then(result => {
+          result = result.data
+          if(result.status === 0){
+            this.tableData = result.data;
+            this.total = this.tableData.length
+          } else {
+            this.$message.error('查询列表数据失败')
+          }
+        })
+      }else{
+        this.getUsersInfo()
+      }
+    },
     // 获取用户列表
     getUsersInfo: function() {
       let param = {
@@ -252,10 +272,14 @@ export default {
       this.user_id = { _id: this.tableData[index]._id };
     },
     removeUser: function() {
+      let _this = this
       this.$http.post("/api/delete-users", this.qs.stringify(this.user_id)).then(result => {
         if (result.data.status === 0) {
           this.$message.success("删除用户成功");
           this.dialogRemove = false;
+          if((_this.total - 1)% this.pageSize === 0){
+            this.pageNum = Math.ceil((_this.total - 1)/this.pageSize)
+          }
           this.getUsersInfo();
         } else {
           this.$message.error("数据删除失败");

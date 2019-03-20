@@ -32,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/api/users', (req, res, next) => {
   let page = parseInt(req.body.page)
   let pageSize = parseInt(req.body.pageSize) 
+  let searchText = new RegExp(req.body.searchText)
   var query = UsersModel.find(function (err, data) {
   if (err) {
     res.json({
@@ -42,6 +43,9 @@ app.use('/api/users', (req, res, next) => {
       query.sort({'_id': -1});
       query.skip((page - 1)*pageSize);
       query.limit(pageSize);
+      if(searchText){
+        query.where('account', searchText)
+      }
       query.exec(function(err, result){
       if(err){
         res.json(err)
@@ -185,6 +189,7 @@ app.use('/api/add-project', (req, res) => {
 app.use('/api/query-project', (req, res) => {
   let page = parseInt(req.body.page)
   let pageSize = parseInt(req.body.pageSize) 
+  let searchText = new RegExp(req.body.searchText)
   var query = ProjectModel.find(function (err, data) {
   if (err) {
     res.json({
@@ -195,6 +200,9 @@ app.use('/api/query-project', (req, res) => {
       query.sort({'_id': -1});
       query.skip((page - 1)*pageSize);
       query.limit(pageSize);
+      if(searchText){
+        query.where('projectName', searchText)
+      };
       query.exec(function(err, result){
       if(err){
         res.json(err)
@@ -356,6 +364,7 @@ app.use('/api/back-one',function(req, res) {
 app.use('/api/leave', (req, res) => {         // 定义简单路由
   let page = parseInt(req.body.page)
   let pageSize = parseInt(req.body.pageSize) 
+  let searchText = new RegExp(req.body.searchText)
   var query = leavesModel.find(function (err, data) {
   if (err) {
     res.json({
@@ -366,6 +375,9 @@ app.use('/api/leave', (req, res) => {         // 定义简单路由
       query.sort({'_id': -1});
       query.skip((page - 1)*pageSize);
       query.limit(pageSize);
+      if(searchText){
+        query.where('title', searchText)
+      };
       query.exec(function(err, result){
       if(err){
         res.json(err)
@@ -413,10 +425,10 @@ app.use('/api/add-leave',function(req,res){
 // 留言管理 删除留言
 app.use('/api/delete-leave',function(req, res){
   if(req.body){
-    var title = {
-      title: req.body.title
+    var id = {
+      _id: req.body._id
     }
-    leavesModel.remove(title, function(err, data){
+    leavesModel.remove(id, function(err, data){
       if(err){
         res.json({
           status: 1,

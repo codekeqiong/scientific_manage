@@ -3,7 +3,7 @@
     <div class="title">项目查询</div>
     <div class="table-content">
       <div class="search_line">
-        <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info"></el-input>
+        <el-input placeholder="请输入项目名称查询" prefix-icon="el-icon-search" v-model="search_info"></el-input>
         <el-button type="primary" @click="search()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
         <!-- <el-button type="primary" icon="el-icon-plus" @click="apply()" style="padding:12px 8px;">项目申报</el-button> -->
       </div>
@@ -87,21 +87,33 @@ export default {
     this.queryProject();
   },
   methods: {
-    // 仅前端的模糊查询
-    // search(){
-    //   const searchText = this.search_info
-    //    if(searchText){
-    //      return this.tableData.filter(function(data) {
-    //        return Object.keys(data).some(function(key) {
-    //          // filter()对大小写敏感，使用toLowerCase就是将它们都转为小写
-    //          return String(data[key]).toLowerCase().indexOf(searchText) > -1
-    //        })
-    //      })
-    //    }
-    //    return this.tableData
-    // },
     search(){
-      console.log('点击搜索成功')
+      if(this.search_info !== ''){
+        let param = {
+          page: this.pageNum,
+          pageSize: this.pageSize,
+          searchText: this.search_info 
+        }
+        this.$http.post('/api/query-project', this.qs.stringify(param)).then(result => {
+          result = result.data
+          if (result.status === 0) {
+            result.data.forEach(v => {
+              if(v.createDate){
+                v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              } 
+              if(v.endTime){
+                v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              }
+            });
+            this.tableData = result.data;
+            this.total = this.tableData.length;
+          } else {
+            this.$message.error("查询列表数据失败", result.data);
+          }
+        })
+      } else {
+        this.queryProject()
+      }
     },
     queryProject: function() {
       let param = {
@@ -158,10 +170,14 @@ export default {
       }
     },
     sureRemove(){
+      let _this = this
       this.$http.post("/api/delete-project", this.qs.stringify(this.removeId)).then(result => {
         if (result.data.status === 0) {
           this.$message.success("删除用户成功");
           this.dialogVisible = false;
+          if((_this.total - 1)% this.pageSize === 0){
+            this.pageNum = Math.ceil((_this.total - 1)/this.pageSize)
+          }
           this.queryProject();
         } else {
           this.$message.error("数据删除失败");

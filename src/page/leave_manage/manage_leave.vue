@@ -4,7 +4,7 @@
     <div class="leave_list">
       <div class="search_line">
         <el-input
-          placeholder="请输入搜索内容"
+          placeholder="请输入留言标题查询"
           v-model="search_input"
           prefix-icon="el-icon-search"
           clearable
@@ -117,7 +117,7 @@ export default {
     // 获取留言列表
     getLeaveInfo:function(){
       let param = {
-        page: this.page,
+        page: this.pageNum,
         pageSize: this.pageSize
       }
       this.$http.post('/api/leave',this.qs.stringify(param)).then((result) => {
@@ -149,7 +149,30 @@ export default {
       this.multipleSelection = val;
     },
     search() {
-      console.log("点击搜索成功");
+      if(this.search_input !== ''){
+        let param = {
+          page: this.pageNum,
+          pageSize: this.pageSize,
+          searchText: this.search_input
+        }
+        this.$http.post('/api/leave',this.qs.stringify(param)).then((result) => {
+          result = result.data
+          if (result.status === 0) {
+            result.data.forEach(v => {
+            //UTC日期转换为正常日期显示 
+              if(v.add_time){
+                v.add_time = new Date(+new Date(v.add_time) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              }
+            });
+            this.tableData = result.data
+            this.total = this.tableData.length
+        } else {
+          this.$message.error("查询列表数据失败", result.data);
+        }
+        })
+      } else {
+        this.getLeaveInfo()
+      }
     },
     add_leave() {
       this.dialogVisible = true;
@@ -162,17 +185,21 @@ export default {
       });
     },
     remove(index) {
-      this.removeTitle = this.tableData[index].title
+      this.removeId = this.tableData[index]._id
       this.dialogRemove = true;
     },
     sureRemove(){
       this.dialogRemove = false
       let param = {
-        title: this.removeTitle
+        _id: this.removeId
       }
+      let _this = this
       this.$http.post('/api/delete-leave', this.qs.stringify(param)).then((result) => {
         if(result.data.status === 0){
           this.$message.success('删除留言成功')
+          if((_this.total - 1)% this.pageSize === 0){
+            this.pageNum = Math.ceil((_this.total - 1)/this.pageSize)
+          }
           this.getLeaveInfo()
         } else {
           this.$message.error('删除留言失败', result.data.data)
@@ -190,6 +217,7 @@ export default {
           this.$message.success('添加留言成功!')
           this.getLeaveInfo()
           this.dialogVisible = false;
+          this.ruleForm = {}
         }else{
           this.$message.error('添加留言失败', result.data.data)
         }
