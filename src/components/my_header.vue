@@ -2,7 +2,7 @@
   <div class="header">
     <div class="title">
       <div>
-        <img src="../assets/logo.png" alt>
+        <img src="../assets/logo.png">
       </div>
       <div class="system-title">高校科研管理系统</div>
       <div class="hello">
@@ -26,10 +26,10 @@ export default {
   methods: {
     handleCommand(command) {
       this.$router.push({
-        path: "/login"
+        path: "/"
       });
       this.$message("已退出登录");
-    }
+    },
   }
 };
 </script>
@@ -94,7 +94,6 @@ ul {
 }
 li {
   display: inline-block;
-  margin: 0 10px;
 }
 a {
   color: #42b983;

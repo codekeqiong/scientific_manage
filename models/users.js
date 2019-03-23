@@ -7,7 +7,11 @@ const UsersSchema = new Schema({
   userName: String,
   password: String,
   role: String,
-
+  sex: String,
+  second_College: String,
+  native_Place: String,
+  education: String,
+  phone: Number
 },{versionKey: false})
 const UsersModel = db.model('Users', UsersSchema)
 module.exports = UsersModel

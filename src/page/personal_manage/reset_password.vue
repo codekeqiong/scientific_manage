@@ -6,10 +6,22 @@
           <el-input type="password" v-model="ruleForm.oldPass"></el-input>
         </el-form-item>
         <el-form-item label="新密码:" prop="newPass">
-          <el-input type="password" v-model="ruleForm.newPass" autocomplete="off"></el-input>
+          <el-input 
+          type="password" 
+          v-model="ruleForm.newPass" 
+          @focus.capture.native='changePasswordTip(true)'
+          @blur.capture.native='changePasswordTip(false)'
+          autocomplete="off">
+          </el-input>
+          <div style="position: absolute">
+            <verify-pass-word-tip :password="ruleForm.newPass" :isShowTip = 'isShowTip'></verify-pass-word-tip>
+          </div>
         </el-form-item>
         <el-form-item label="确认密码:" prop="checkPass" autocomplete="off">
-          <el-input type="password" v-model.number="ruleForm.checkPass"></el-input>
+          <el-input 
+          type="password" 
+          v-model.number="ruleForm.checkPass"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -20,7 +32,10 @@
   </div>
 </template>
 <script>
+import verifyPassWordTip from '../../components/checkpassStrong'
 export default {
+  name: "VerifyPassWord",
+  components: { verifyPassWordTip },
     data(){
       var validateOldPass = (rule, value, callback) => {
         if (value === '') {
@@ -51,6 +66,7 @@ export default {
         }
       };
       return {
+        isShowTip: false,
         ruleForm: {
           oldPass: '',
           newPass: '',
@@ -71,7 +87,7 @@ export default {
       }
     },
     methods: {
-       submitForm(formName) {
+      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             alert('submit!');
@@ -83,7 +99,14 @@ export default {
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-      }
+      },
+      changePasswordTip(isShow) {
+        if (isShow) {
+          this.isShowTip = true;
+        } else {
+          this.isShowTip = false;
+        }
+      },
     }
 }
 </script>

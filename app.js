@@ -52,7 +52,8 @@
 const express = require('express');
 var bodyParser = require('body-parser');
 const flash = require('connect-flash');
-
+const session = require('express-session');
+var cookieParser = require('cookie-parser');
 // 引入模块
 const users = require('./routes/admin/users');
 var admins = require('./routes/admins');
@@ -67,6 +68,19 @@ app.use(function (req, res, next) {
   res.locals.error = req.flash('error').toString();
   next()
 });
+// session 中间件
+app.use(session({
+  name: config.session.key, // 设置 cookie 中保存 session id 的字段名称
+  secret: config.session.secret, // 通过设置 secret 来计算 hash 值并放在 cookie 中，使产生的 signedCookie 防篡改
+  resave: false, // 强制更新 session
+  saveUninitialized: false, // 设置为 false，强制创建一个 session，即使用户未登录
+  cookie: {
+      maxAge: config.session.maxAge// 过期时间，过期后 cookie 中的 session id 自动删除
+  },
+  store: new MongoStore({// 将 session 存储到 mongodb
+      url: config.mongodb// mongodb 地址
+  })
+}));
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;

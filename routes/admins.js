@@ -1,6 +1,6 @@
-const express = require('express')
+const express = require('express')  //快速的搭建一个 Web 开发框架
 const router = express.Router()
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser')   // 解析浏览器发送来的 body 数据
 const mongoose = require('mongoose')
 const UsersModel = require('../models/users')
 const leavesModel = require('../models/leaves')
@@ -28,6 +28,38 @@ const PersonInfoModel = require('../models/personInfo')
 const app = express()
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// 登录
+app.use('/api/login', (req, res) => {
+  let account = req.body.account,
+      userName = req.body.userName,
+      password = req.body.password
+  console.log(account, userName, password)
+  UsersModel.findOne(function(err, data){
+    if(err){
+      console.log(err)
+    }
+    if(!account){
+      console.log('该用户不存在')
+    }
+    account.comparePassword(password, function(err, isMatch){
+      if(err){
+        console.log(err);
+      }
+      if(isMatch){
+        req.session.account = account;   //将账户名存入session中
+        console.log('登录成功'+ account);
+        return res.redirect('/');
+      } else {
+        return res.redirect('/login');
+      }
+    })
+  })
+})
+// 退出登录
+app.use('/api/loginout', function(req, res){
+  delete req.session.account   //删除session中保存的账号
+  res.redirect('/');
+})
 // 查询所有用户数据
 app.use('/api/users', (req, res, next) => {
   let page = parseInt(req.body.page)
@@ -70,7 +102,11 @@ app.use('/api/add-users', (req, res) => {
       userName: req.body.userName,
       password: req.body.password,
       role: req.body.role,
-      // adminDate: Date.now()
+      sex: req.body.sex,
+      second_College: req.body.second_College,
+      native_Place: req.body.native_Place,
+      education: req.body.education,
+      phone: req.body.phone
     };
     UsersModel.create(params, function (err, data) {
       if (err) {

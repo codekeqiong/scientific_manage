@@ -1,9 +1,7 @@
 export const MENULIST = [
     {
       menuName: '首页',
-      menuUrl: '/',
-
-      
+      menuUrl: '/home',
       menuIndex: '0'
     },
     {
@@ -38,11 +36,11 @@ export const MENULIST = [
       menuUrl: '/leave',
       menuIndex: '3',
       menuSubLink: [
-        {
-          menuName: '最新留言',
-          menuUrl: '/leave_detail',
-          menuIndex: '3-1'
-        },
+        // {
+        //   menuName: '最新留言',
+        //   menuUrl: '/leave_detail',
+        //   menuIndex: '3-1'
+        // },
         {
           menuName: '留言列表',
           menuUrl: '/manage_leave',
