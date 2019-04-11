@@ -42,10 +42,10 @@
       <!-- tableData分页 -->
       <el-pagination
         background
-        @current-change="handleCurrentChange"
-        @size-change="handleSizeChange"
+        @current-change="getUsersInfo"
+        @size-change="getUsersInfo"
         :page-size="pageSize"
-        :current-page="currentPage"
+        :current-page.sync="pageNum"
         :total="total"
         layout="total, prev, pager, next, jumper"
         style="text-align:right; padding: 49px 29px 50px 0;"
@@ -140,7 +140,6 @@ export default {
       isAdd: true,
       total: 0,
       pageSize: 10,
-      currentPage: 1,
       pageNum: 1,
       rulesForm: {
         account: "",
@@ -285,15 +284,6 @@ export default {
           this.$message.error("数据删除失败");
         }
       });
-    },
-    // 分页
-    handleSizeChange(val) {
-      this.pageSize = val
-      this.getUsersInfo()
-    },
-    handleCurrentChange(val) {
-      this.pageNum = val
-      this.getUsersInfo()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

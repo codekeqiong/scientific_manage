@@ -1,6 +1,6 @@
 <template>
   <div class="perfect_info">
-    <div class="info-title">个人中心</div>
+    <div class="info-title">个人信息</div>
     <div class="info-content">
       <el-form
         :model="rulesForm"
@@ -9,51 +9,58 @@
         label-width="100px"
         class="rulesForm"
       >
-        <el-form-item label="账号" prop="account">
-          <el-input v-model="rulesForm.account"></el-input>
-        </el-form-item>
-        <el-form-item label="姓名" prop="account_name">
-          <el-input v-model="rulesForm.account_name"></el-input>
-        </el-form-item>
-        <el-form-item label="角色" prop="role">
-          <el-input v-model="rulesForm.role"></el-input>
-        </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-radio-group v-model="rulesForm.sex">
-            <el-radio label="男"></el-radio>
-            <el-radio label="女"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="院系" prop="second_college">
-          <el-select v-model="rulesForm.second_college" placeholder="请选择院系">
-            <el-option
-              v-for="(item,index) in collegeArr"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="籍贯" prop="native_place">
-          <el-input v-model="rulesForm.native_place"></el-input>
-        </el-form-item>
-        <el-form-item label="学历" prop="education">
-          <el-select v-model="rulesForm.education" placeholder="请选择学历">
-            <el-option
-              v-for="(item,index) in educationArr"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <!-- <el-form-item label="出生年月" prop="birth_date">
           <el-date-picker v-model="rulesForm.birth_date" type="date" placeholder="选择出生日期"></el-date-picker>
-        </el-form-item> -->
-        <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="rulesForm.phone"></el-input>
-        </el-form-item>
-        <el-form-item>
+        </el-form-item>-->
+        <div class="base-info">
+          <div class="info">
+            <i class="el-icon-info"></i><div>基本信息</div> 
+          </div>
+          <div class="info-detail">
+            <el-form-item label="账号" prop="account">
+              <el-input v-model="rulesForm.account"></el-input>
+            </el-form-item>
+            <el-form-item label="姓名" prop="account_name">
+              <el-input v-model="rulesForm.account_name"></el-input>
+            </el-form-item>
+            <el-form-item label="角色" prop="role">
+              <el-input v-model="rulesForm.role"></el-input>
+            </el-form-item>
+            <el-form-item label="性别" prop="sex">
+              <el-radio-group v-model="rulesForm.sex">
+                <el-radio label="男"></el-radio>
+                <el-radio label="女"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="籍贯" prop="native_place">
+              <el-input v-model="rulesForm.native_place"></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话" prop="phone">
+              <el-input v-model="rulesForm.phone"></el-input>
+            </el-form-item>
+            <el-form-item label="院系" prop="second_college">
+              <el-select v-model="rulesForm.second_college" placeholder="请选择院系">
+                <el-option
+                  v-for="(item,index) in collegeArr"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="学历" prop="education">
+              <el-select v-model="rulesForm.education" placeholder="请选择学历">
+                <el-option
+                  v-for="(item,index) in educationArr"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+        </div>
+        <el-form-item style="text-align: left; margin-top: 30px; margin-left: 280px;">
           <el-button style="margin-right:30px;">取消</el-button>
           <el-button type="primary" @click="onSubmit('rulesForm')">更新</el-button>
         </el-form-item>
@@ -67,18 +74,18 @@ export default {
     //全局定义电话验证规则
     const validatePhone = (rule, value, callback) => {
       let reg = /^1[345789]\d{9}$/;
-      if (value != '' && reg.test(value)) {
-        callback()
+      if (value != "" && reg.test(value)) {
+        callback();
       } else {
-        callback(new Error('请输入正确的手机号'))
+        callback(new Error("请输入正确的手机号"));
       }
-    }
+    };
     return {
       rulesForm: {
         account: "13198487982",
         account_name: "June",
-        role: '院级管理员',
-        sex: '男',
+        role: "院级管理员",
+        sex: "男",
         second_college: "",
         native_place: "",
         education: "",
@@ -116,42 +123,55 @@ export default {
       ],
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        account_name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        account_name: [
+          { required: true, message: "请输入姓名", trigger: "blur" }
+        ],
         role: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
-        second_college: [{ required: true, message: "请输选择二级学院", trigger: "blur" }],
-        native_place: [{ required: true, message: "请输入籍贯", trigger: "blur" }],
+        second_college: [
+          { required: true, message: "请输选择二级学院", trigger: "blur" }
+        ],
+        native_place: [
+          { required: true, message: "请输入籍贯", trigger: "blur" }
+        ],
         education: [{ required: true, message: "请选择学历", trigger: "blur" }],
         // birth_date: [{ required: true, message: "请输入出生年月", trigger: "blur" }],
-        phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话", trigger: "blur" }]
+        phone: [
+          {
+            required: true,
+            validator: validatePhone,
+            message: "请输入正确的11位联系电话",
+            trigger: "blur"
+          }
+        ]
       }
     };
   },
-  created(){
-    
-  },
-  methods:{
-    onSubmit(){
+  created() {},
+  methods: {
+    onSubmit() {
       // let t = this.rulesForm.birth_date
       // this.rulesForm.birth_date = t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate()
       let param = {
         account: this.rulesForm.account,
         account_name: this.rulesForm.account_name,
-        role: this.rulesForm.role ,
+        role: this.rulesForm.role,
         sex: this.rulesForm.sex,
         second_college: this.rulesForm.second_college,
         native_place: this.rulesForm.native_place,
         education: this.rulesForm.education,
         // birth_date: this.rulesForm.birth_date,
         phone: this.rulesForm.phone
-      }
-      this.$http.post('/api/perfect-info',this.qs.stringify(param)).then((result => {
-        if(result.data.status === 0){
-          this.$message.success('个人中心信息更新成功')
-        }else{
-          this.$message.error('信息更新失败',result.data.data)
-        }
-      }))
+      };
+      this.$http
+        .post("/api/perfect-info", this.qs.stringify(param))
+        .then(result => {
+          if (result.data.status === 0) {
+            this.$message.success("个人中心信息更新成功");
+          } else {
+            this.$message.error("信息更新失败", result.data.data);
+          }
+        });
     }
   }
 };
@@ -165,6 +185,7 @@ export default {
 .info-title {
   width: 100%;
   height: 60px;
+  font-weight: 500;
   line-height: 60px;
   margin-left: 20px;
   font-size: 22px;
@@ -173,16 +194,28 @@ export default {
   position: relative;
 }
 .perfect_info .info-content {
-  /* border: 1px solid #dcdfe6; */
   margin-top: 30px;
-  margin-left: 40px;
-  width: 800px;
-  padding-right: 50px;
-  padding-top: 30px;
-  box-sizing: border-box;
 }
-.perfect_info .el-input .el-input__inner {
-  padding-right: 30px;
-  width: 649px;
+.info-content .info-detail {
+  display: inline-block;
+  vertical-align: top;
+  width: 460px;
+}
+.base-info{
+  margin-top: 60px;
+  text-align: left;
+}
+.base-info .info{
+  display: inline-block;
+  vertical-align: top;
+  width: 8%;
+  height: 350px;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 80px;
+}
+.base-info .info .el-icon-info{
+  font-size: 80px;
+  margin-bottom: 30px;
 }
 </style>

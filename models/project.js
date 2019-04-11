@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 const db = require('../config/db')
 const ProjectSchema = new Schema({
   projectName: String,
+  account: String,
   userName: String,
   second_college: String,
-  keywords: String,
-  abstract: String,
+  position: String,
+  depart: String,
   field: String,
   approval: String,
-  fund: Number,
   createDate: {
     type: Date,
     default: Date.now()
@@ -18,7 +18,8 @@ const ProjectSchema = new Schema({
   phone: Number,
   remarks: String,
   status: String,
-
+  isConclusion: String,
+  category: String,
 },{versionKey: false})
 const ProjectModel = db.model('Projects', ProjectSchema)
 module.exports = ProjectModel

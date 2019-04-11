@@ -70,10 +70,10 @@
     <!-- tableData分页 -->
     <el-pagination
       background
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
+      @current-change="getLeaveInfo"
+      @size-change="getLeaveInfo"
+      :current-page.sync="pageNum"
       :page-size="pageSize"
-      :current-page="currentPage"
       :total="total"
       layout="total, prev, pager, next, jumper"
       style="text-align:right; padding: 49px 29px 50px 0;"
@@ -91,7 +91,6 @@ export default {
       dialogRemove: false,
       total: 0,
       pageSize: 10,
-      currentPage: 1,
       pageNum: 1,
       ruleForm: {
         title: "",
@@ -135,15 +134,6 @@ export default {
         this.$message.error("列表数据获取失败", result.data);
       }
     })
-    },
-    // 分页
-    handleSizeChange(val) {
-      this.pageSize = val
-      this.getLeaveInfo()
-    },
-    handleCurrentChange(val) {
-      this.pageNum = val
-      this.getLeaveInfo()
     },
     handleSelectionChange() {
       this.multipleSelection = val;

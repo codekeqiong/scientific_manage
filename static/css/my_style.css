@@ -10,19 +10,23 @@
 .perfect_info .el-date-editor.el-input__inner{
   width: 649px;
 }
-.perfect_info .el-select>.el-input{
-  width: 649px;
-}
 .add_project .el-checkbox{
   text-align: left;
   width: 200px;
 }
-.add_project .el-select>.el-input{
+.add_project .el-select>.el-input,
+.add_academic .el-select>.el-input,
+.add_work .el-select>.el-input,
+.add_patent .el-select>.el-input,
+.add_art .el-select>.el-input,
+.add_literary .el-select>.el-input,
+.add_activity .el-select>.el-input{
   width: 630px;
 }
 .query_project .el-input,
-.approval_project .el-input{
-  width: 260px;
+.approval_project .el-input,
+.fractional .el-input{
+  width: 180px;
 }
 .query_project .search,
 .approval_project .search{
@@ -46,4 +50,10 @@
 .query_project .el-dialog__header,
 .approval_project .el-dialog__header{
   text-align: left;
+}
+/* .perfect_info .info-detail .el-input__inner{
+  border: 0;
+} */
+.perfect_info .el-select>.el-input{
+  width: 360px;
 }

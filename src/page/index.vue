@@ -30,6 +30,12 @@
             <el-radio label="系统管理员"></el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="验证码" prop="verify">
+          <el-input v-model="rulesForm.verify" placeholder="请输入验证码" style="width: 188px; text-align:left;"></el-input>
+          <div class="vertify-box" @click="refreshCode()">
+            <Sidentify :identifyCode="identifyCode"></Sidentify>
+          </div>
+        </el-form-item>
         <div style="text-align: center;">
           <el-button type="primary" plain  @click="resetForm('rulesForm')" style="margin-left: 40px;margin-right: 30px;">重置</el-button>
           <el-button type="primary" @click="loginIn('rulesForm')">登录</el-button>
@@ -41,14 +47,19 @@
 </div>
 </template>
 <script>
+import Sidentify from '../components/identify'
 export default {
   name: 'login',
+  components: { Sidentify },
   data(){
     return{
+      identifyCodes: "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      identifyCode: '',
       rulesForm:{
         account: '',
         password: '',
         identity: '教师',
+        verify: ''
       },
       rules:{
         account: [
@@ -60,18 +71,42 @@ export default {
         identity: [       
           { required: true, message: '请选择身份', trigger: 'blur' }
         ],
+        verify:[
+          { required: true, message: '请正确填写验证码', trigger: 'blur' }
+        ]
       }
     }
+  },
+  mounted() {
+    this.identifyCode = "";
+    this.makeCode(this.identifyCodes, 4);
   },
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     loginIn(){
-      console.log(this.rulesForm.account, this.rulesForm.password, this.rulesForm.identity)
-      this.$router.push({
-        path:'/home'
-      })
+      // console.log(this.rulesForm.account, this.rulesForm.password, this.rulesForm.identity)
+      if(this.rulesForm.verify === this.identifyCode){
+        this.$router.push({
+          path:'/home'
+        })
+      }
+    },
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+    refreshCode() {
+      this.identifyCode = "";
+      this.makeCode(this.identifyCodes, 4);
+      return this.identifyCode
+    },
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[
+          this.randomNum(0, this.identifyCodes.length)
+        ];
+      }
     }
   }
 }
@@ -96,7 +131,7 @@ export default {
     padding: 0 40px;
     padding-left: 0;
     width: 450px;
-    height: 380px;
+    height: 440px;
     box-sizing: border-box;
     border: 1px solid #409EFF;
     /* margin: 0 auto; */
@@ -154,6 +189,10 @@ export default {
     width: 45px;
     vertical-align: middle;
     margin-right: 10px;
+  }
+  .vertify-box{
+    display: inline-block;
+    vertical-align: top;
   }
 </style>
 

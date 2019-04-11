@@ -5,31 +5,63 @@ export const MENULIST = [
       menuIndex: '0'
     },
     {
-      menuName: '科研项目管理',
-      menuUrl: '/project',
+      menuName: '申报入口',
+      menuUrl: '/fractional',
       menuIndex: '1',
       menuSubLink: [
         {
-          menuName: '科研项目申报',
+          menuName: '科研项目类',
           menuUrl: '/apply',
           menuIndex: '1-1'
         },
         {
-          menuName: '科研项目查询',
-          menuUrl: '/query',
+          menuName: '学术论文类',
+          menuUrl: '/academic',
           menuIndex: '1-2'
         },
         {
-          menuName: '科研项目审批',
-          menuUrl: '/approval',
+          menuName: '著作类',
+          menuUrl: '/work',
           menuIndex: '1-3'
+        },
+        {
+          menuName: '文学作品类',
+          menuUrl: '/literary',
+          menuIndex: '1-4'
+        },
+        {
+          menuName: '艺体类',
+          menuUrl: '/art',
+          menuIndex: '1-5'
+        },
+        {
+          menuName: '专利注册类',
+          menuUrl: '/patent',
+          menuIndex: '1-6'
+        },
+        {
+          menuName: '科研活动类',
+          menuUrl: '/activity',
+          menuIndex: '1-7'
         },
       ]
     },
     {
-      menuName: '科研分数统计',
-      menuUrl: '/fractional',
-      menuIndex: '2'
+      menuName: '科研管理',
+      menuUrl: '/project',
+      menuIndex: '2',
+      menuSubLink: [
+        {
+          menuName: '科研项目查询',
+          menuUrl: '/query',
+          menuIndex: '2-1'
+        },
+        {
+          menuName: '科研项目审批',
+          menuUrl: '/approval',
+          menuIndex: '2-2'
+        },
+      ]
     },
     {
       menuName: '留言管理',
@@ -49,12 +81,12 @@ export const MENULIST = [
       ]
     },
     {
-      menuName: '个人信息管理',
+      menuName: '个人中心',
       menuUrl: '/info_manage',
       menuIndex: '4',
       menuSubLink: [
         {
-          menuName: '完善个人信息',
+          menuName: '个人信息',
           menuUrl: '/perfect',
           menuIndex: '4-1'
         },

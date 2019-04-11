@@ -3,7 +3,16 @@
     <div class="title">项目审批</div>
     <div class="table-content">
       <div class="search_line">
-        <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info"></el-input>
+        <span>类别：</span>
+        <el-select v-model="kinds">
+          <el-option
+            v-for="item in kind_options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info" style="margin-left:10px;"></el-input>
         <el-button type="primary" @click="search()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
       </div>
       <el-table
@@ -33,8 +42,9 @@
         <el-table-column prop="operation" label="审核操作">
           <template slot-scope="scope">
             {{scope.row.operation}}
-            <el-button type="text" size="small" @click="look(scope.$index)">查看详情</el-button>
-            <el-button type="text" size="small" @click="pass(scope.$index)">通过</el-button>
+            <el-button type="text" size="small" @click="look(scope.$index)">详情</el-button>
+            <el-button type="text" size="small" @click="pass(scope.$index)">立项</el-button>
+            <el-button type="text" size="small" @click="end(scope.$index)">结题</el-button>
             <el-button type="text" size="small" @click="back(scope.$index)">退回</el-button>
           </template>
         </el-table-column>
@@ -57,10 +67,10 @@
     <!-- tableData分页 -->
     <el-pagination
       background
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
+      @current-change="queryProject"
+      @size-change="queryProject"
       :page-size="pageSize"
-      :current-page="currentPage"
+      :current-page.sync="pageNum"
       :total="total"
       layout="total, prev, pager, next, jumper"
       style="text-align:right; padding: 49px 29px 50px 0;"
@@ -74,6 +84,7 @@ export default {
     return {
       dialogVisible: false,
       backDialog: false,
+      kinds: "1",
       search_info: "",
       userName: "",
       second_college: "",
@@ -81,11 +92,34 @@ export default {
       projectName: "",
       createDate: "",
       endTime: "",
-      total: 10,
+      total: 0,
       pageSize: 10,
-      currentPage: 1,
       pageNum: 1,
-      tableData: []
+      tableData: [],
+      kind_options: [
+        {
+          value: '1',
+          label: '科研项目'
+        },{
+          value: '2',
+          label: '学术论文'
+        },{
+          value: '3',
+          label: '专利注册'
+        },{
+          value: '4',
+          label: '艺体类'
+        },{
+          value: '5',
+          label: '文学作品'
+        },{
+          value: '6',
+          label: '著作'
+        },{
+          value: '7',
+          label: '科研活动'
+        }
+      ]
     };
   },
   created(){
@@ -145,15 +179,6 @@ export default {
           }
         });
     },
-    // 分页
-    handleSizeChange(val) {
-      this.pageSize = val
-      this.queryProject()
-    },
-    handleCurrentChange(val) {
-      this.pageNum = val
-      this.queryProject()
-    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
@@ -181,6 +206,9 @@ export default {
           this.$message.error('操作失败',result.data.data)
         }
       })
+    },
+    end(index){
+      console.log('该项目结题成功')
     },
     back(index) {
       if(this.tableData[index].status=='已通过'){

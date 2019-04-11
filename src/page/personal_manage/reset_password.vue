@@ -1,5 +1,6 @@
 <template>
   <div class="password">
+    <div class="title">修改密码</div>
     <div class="password-content">
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="旧密码:" prop="oldPass">
@@ -111,17 +112,27 @@ export default {
 }
 </script>
 <style scoped>
-  .password{
-    width: 100%;
-    height: 850px;
-    background-color: #fff;
-  }
-  .password-content{
-    width: 400px;
-    height: 300px;
-    padding-top: 280px;
-    box-sizing: border-box;
-    margin: 0 auto;
-  }
+.password{
+  width: 100%;
+  height: 850px;
+  background-color: #fff;
+}
+.password .title{
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  font-weight: 500;
+  margin-left: 20px;
+  font-size: 22px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.password-content{
+  width: 400px;
+  height: 300px;
+  padding-top: 280px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
 </style>
 

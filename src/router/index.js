@@ -5,10 +5,16 @@ import HomePage from '../page/home_page'
 import ResetPassword from '../page/personal_manage/reset_password'
 import UserManage from '../page/system_set/user_manage/user_manage'
 import PerfectInfo from '../page/personal_manage/perfect_info'
-import ApplyProject from '../page/projects_manage/add_project'
+import AddProject from '../page/kinds_apply/add_project'
+import AddAcademic from '../page/kinds_apply/add_academic'
+import AddPatent from '../page/kinds_apply/add_patent'
+import AddArt from '../page/kinds_apply/add_art'
+import AddLiterary from '../page/kinds_apply/add_literary'
+import AddActivity from '../page/kinds_apply/add_activity'
+import AddWork from '../page/kinds_apply/add_work'
 import QueryProject from '../page/projects_manage/query_project'
 import ApprovalProject from '../page/projects_manage/approval_manage'
-import Fractional from '../page/fraction_statistics/fractional'
+// import Fractional from '../page/fraction_statistics/fractional'
 import LeaveDetail from '../page/leave_manage/leave_detail'
 import ManageLeave from '../page/leave_manage/manage_leave'
 Vue.use(Router)
@@ -44,12 +50,6 @@ export default new Router({
       meta: {
         keepAlive: true
       }
-      // children: [
-      //   {
-      //     path: '/add_user',
-      //     component: AddUser,
-      //   }
-      // ]
     },
     {
       path: '/perfect',
@@ -60,7 +60,49 @@ export default new Router({
     },
     {
       path: '/apply',
-      component: ApplyProject,
+      component: AddProject,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/academic',
+      component: AddAcademic,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/patent',
+      component: AddPatent,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/art',
+      component: AddArt,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/work',
+      component: AddWork,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/literary',
+      component: AddLiterary,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/activity',
+      component: AddActivity,
       meta: {
         keepAlive: true
       }
@@ -79,13 +121,13 @@ export default new Router({
         keepAlive: true
       }
     },
-    {    
-      path: '/fractional',
-      component: Fractional,
-      meta: {
-        keepAlive: true
-      }
-    },
+    // {    
+    //   path: '/fractional',
+    //   component: Fractional,
+    //   meta: {
+    //     keepAlive: true
+    //   }
+    // },
     {
       path: '/leave_detail',
       component: LeaveDetail,

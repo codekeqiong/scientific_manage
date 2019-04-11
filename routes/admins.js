@@ -188,18 +188,20 @@ app.use('/api/add-project', (req, res) => {
   if (req.body) {
     var params = {
       projectName: req.body.projectName,
+      account: req.body.account,
       userName: req.body.userName,
       second_college: req.body.second_college,
-      keywords: req.body.keywords,
-      abstract: req.body.abstract,
+      position: req.body.position,
+      depart: req.body.depart,
       field: req.body.field,
       approval: req.body.approval,
-      fund: req.body.fund,
       createDate: req.body.createDate,
       endTime:req.body.endTime,
       phone: req.body.phone,
       remarks: req.body.remarks,
-      status: req.body.status
+      status: req.body.status,
+      isConclusion: req.body.isConclusion,
+      category: req.body.category
     };
     ProjectModel.create(params, function (err, data) {
       if (err) {
@@ -221,6 +223,8 @@ app.use('/api/add-project', (req, res) => {
     });
   }
 })
+// 学术论文申请
+
 // 科研项目查询 获取数据
 app.use('/api/query-project', (req, res) => {
   let page = parseInt(req.body.page)
@@ -395,6 +399,38 @@ app.use('/api/back-one',function(req, res) {
       data: '遭遇未知错误'
     });
   }
+})
+// 科研分数统计
+app.use('/api/scores', (req, res) => {
+  let searchText = new RegExp(req.body.searchText)
+  var query = ScoresModel.find(function (err, data) {
+    if (err) {
+      res.json({
+        status: 1,
+        data: err.message
+      });
+      } else {
+        query.sort({'_id': -1});
+        query.skip((page - 1)*pageSize);
+        query.limit(pageSize);
+        if(searchText){
+          query.where('title', searchText)
+        };
+        query.exec(function(err, result){
+        if(err){
+          res.json(err)
+        } else {
+          ScoresModel.find(function(err, results){
+            res.json({
+              status: 0,
+              data: result,
+              count: results.length
+            });
+          });
+        }
+        });
+      }
+    })
 })
 // 获取留言列表
 app.use('/api/leave', (req, res) => {         // 定义简单路由
