@@ -5,8 +5,9 @@ const mongoose = require('mongoose')
 const UsersModel = require('../models/users')
 const leavesModel = require('../models/leaves')
 const ProjectModel = require('../models/project')
+const AcademicModel = require('../models/academic')
 const PersonInfoModel = require('../models/personInfo')
-
+let kindType
 // mongoose.connect('mongodb://localhost/university', { useNewUrlParser: true }, (err) => {
 //   console.log(err)
 // });
@@ -191,8 +192,6 @@ app.use('/api/add-project', (req, res) => {
       account: req.body.account,
       userName: req.body.userName,
       second_college: req.body.second_college,
-      position: req.body.position,
-      depart: req.body.depart,
       field: req.body.field,
       approval: req.body.approval,
       createDate: req.body.createDate,
@@ -201,9 +200,20 @@ app.use('/api/add-project', (req, res) => {
       remarks: req.body.remarks,
       status: req.body.status,
       isConclusion: req.body.isConclusion,
-      category: req.body.category
+      category: req.body.category,
+      scores: req.body.scores
     };
-    ProjectModel.create(params, function (err, data) {
+    if(req.body.category == '科研项目'){
+      params.position = req.body.position
+      params.depart = req.body.depart
+      kindType = ProjectModel
+    } else if(req.body.category == '学术论文'){
+      params.tutor = req.body.tutor
+      params.keywords = req.body.keywords
+      kindType = AcademicModel
+    }
+    console.log(kindType)
+    kindType.create(params, function (err, data) {
       if (err) {
         res.json({
           status: 1,

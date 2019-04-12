@@ -1,5 +1,5 @@
 <template>
-  <div class="add_project">
+  <div class="project">
     <div class="title">科研项目申报</div>
     <div class="from-content">
       <el-form
@@ -76,6 +76,7 @@ export default {
         account: "",
         userName: "",
         field: [],
+        scores: '',
         position: '',
         depart: "",
         approval: "",
@@ -220,8 +221,7 @@ export default {
       };
       this.$http.post("/api/find-one-project", this.qs.stringify(param)).then(result => {
           if (result.data.status === 0) {
-            let datas = result.data.data;
-            this.ruleForm = datas;
+            this.ruleForm = result.data.data;
             this.ruleForm.field = datas.field.split("-");
           } else {
             this.$message.error("编辑数据获取失败", result.data);
@@ -288,6 +288,7 @@ export default {
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
         remarks: this.ruleForm.remarks,
+        scores: this.ruleForm.scores,
         status: "待审核",
         isConclusion: '否',
         category: '科研项目'
@@ -323,18 +324,18 @@ export default {
       }
     },
     handleChange(value) {
-
+      this.ruleForm.scores = value[value.length - 1]
     }
   }
 };
 </script>
 <style scoped>
-.add_project {
+.project {
   width: 100%;
   height: 850px;
   background-color: #fff;
 }
-.add_project .title {
+.project .title {
   width: 100%;
   height: 60px;
   line-height: 60px;
@@ -344,18 +345,18 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.add_project .from-content {
+.project .from-content {
   margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.add_project .el-date-editor.el-input,
+.project .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 320px;
 }
-.add_project .el-cascader {
+.project .el-cascader {
   width: 100%;
 }
 </style>

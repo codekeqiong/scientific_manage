@@ -14,13 +14,13 @@
   text-align: left;
   width: 200px;
 }
-.add_project .el-select>.el-input,
-.add_academic .el-select>.el-input,
-.add_work .el-select>.el-input,
-.add_patent .el-select>.el-input,
-.add_art .el-select>.el-input,
-.add_literary .el-select>.el-input,
-.add_activity .el-select>.el-input{
+.project .el-select>.el-input,
+.academic .el-select>.el-input,
+.work .el-select>.el-input,
+.patent .el-select>.el-input,
+.art .el-select>.el-input,
+.literary .el-select>.el-input,
+.activity .el-select>.el-input{
   width: 630px;
 }
 .query_project .el-input,

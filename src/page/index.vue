@@ -53,7 +53,7 @@ export default {
   components: { Sidentify },
   data(){
     return{
-      identifyCodes: "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      identifyCodes: "1234567890abcdefghijklmnopqrstuvwxyz",
       identifyCode: '',
       rulesForm:{
         account: '',
@@ -86,7 +86,6 @@ export default {
       this.$refs[formName].resetFields();
     },
     loginIn(){
-      // console.log(this.rulesForm.account, this.rulesForm.password, this.rulesForm.identity)
       if(this.rulesForm.verify === this.identifyCode){
         this.$router.push({
           path:'/home'
@@ -114,15 +113,15 @@ export default {
 <style scoped>
   .whole{
     width: 100%;
-    height: 936px;
+    height: 631px;
     background: url('../assets/background.jpg');
     background-repeat: no-repeat;
     background-size: cover;
   }
   .login{
     position: absolute;
-    bottom: 30%;
-    right: 14%;
+    bottom: 16%;
+    right: 8%;
     width: 450px;
     box-sizing: border-box;
     background-color: #fff;
@@ -131,47 +130,47 @@ export default {
     padding: 0 40px;
     padding-left: 0;
     width: 450px;
-    height: 440px;
+    height: 410px;
     box-sizing: border-box;
     border: 1px solid #409EFF;
     /* margin: 0 auto; */
   }
   .login-content .login-title{
     font-size: 22px;
-    margin: 40px auto;
+    margin: 25px auto;
     margin-left: 40px;
    }
   .whole .foot-line{
     position: absolute;
-    bottom: 110px;
+    bottom: 60px;
     width: 100%;
     height: 1px;
     background-color: #959595;
    }
-   .text-area{
+  .text-area{
     position: absolute;
     top: 10%;
     left: 14%;
     width: 420px;
     height: 300px;
    }
-   .text-area .icon-img{
-     display: inline-block;
-     width: 90px;
-     height: 90px;
-     vertical-align: middle;
+  .text-area .icon-img{
+    display: inline-block;
+    width: 90px;
+    height: 90px;
+    vertical-align: middle;
    }
-   .text-area .icon-img img{
-     width: 100%;
-     height: 100%;
-     border-radius: 50%;
-   }
-   .text-area .main-title{
-     display: inline-block;
-     margin-left: 20px;
-     vertical-align: middle;
-     font-size: 36px;
-     color: #fff;
+  .text-area .icon-img img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+  .text-area .main-title{
+    display: inline-block;
+    margin-left: 20px;
+    vertical-align: middle;
+    font-size: 36px;
+    color: #fff;
    }
   .text-area .title-line{
     margin: 30px 0;

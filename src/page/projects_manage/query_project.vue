@@ -29,13 +29,13 @@
           style="width: 100%;"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="index" label="编号" width="120"></el-table-column>
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column type="index" label="编号"></el-table-column>
           <el-table-column prop="projectName" label="项目名称"></el-table-column>
           <el-table-column prop="account" label="账号"></el-table-column>
           <el-table-column prop="userName" label="申报人"></el-table-column>
           <el-table-column prop="category" label="类别"></el-table-column>
-          <el-table-column prop="score" label="分数统计"></el-table-column>
+          <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
           <el-table-column prop="setUpDate" label="立项日期"></el-table-column>

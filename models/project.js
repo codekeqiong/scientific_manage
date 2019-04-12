@@ -20,6 +20,7 @@ const ProjectSchema = new Schema({
   status: String,
   isConclusion: String,
   category: String,
+  scores: String
 },{versionKey: false})
 const ProjectModel = db.model('Projects', ProjectSchema)
 module.exports = ProjectModel

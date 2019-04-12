@@ -1,5 +1,5 @@
 <template>
-  <div class="add_academic">
+  <div class="academic">
     <div class="title">学术论文申报</div>
     <div class="from-content">
       <el-form
@@ -41,7 +41,7 @@
           <el-input v-model="ruleForm.approval"></el-input>
         </el-form-item>
         <el-form-item label="结项日期" prop="endTime">
-          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="请选择结项日期"></el-date-picker>
+          <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="请选择结项日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input type="text" autocomplete="off" v-model="ruleForm.phone"></el-input>
@@ -79,6 +79,7 @@ export default {
         tutor: '',
         keywords: "",
         field: [],
+        scores: '',
         approval: "",
         endTime: "",
         phone: "",
@@ -288,11 +289,15 @@ export default {
         return;
       }
       if (this.ruleForm.userName === "") {
-        this.$message.error("请填写申报人");
+        this.$message.error("请填写论文作者");
         return;
       }
       if (this.ruleForm.second_college === "") {
         this.$message.error("请选择院系");
+        return;
+      }
+      if (this.ruleForm.tutor === "") {
+        this.$message.error("请填写学术论文指导老师");
         return;
       }
       if (this.ruleForm.keywords === "") {
@@ -305,10 +310,6 @@ export default {
       }
       if (this.ruleForm.approval === "") {
         this.$message.error("请填写课题批准单位");
-        return;
-      }
-      if (this.ruleForm.tutor === "") {
-        this.$message.error("请填写课题指导老师");
         return;
       }
       if (this.ruleForm.endTime === "") {
@@ -325,13 +326,14 @@ export default {
         account: this.ruleForm.account,
         userName: this.ruleForm.userName,
         second_college: this.ruleForm.second_college,
+        tutor: this.ruleForm.tutor,
         keywords: this.ruleForm.keywords,
         field: this.ruleForm.field.join("-"),
         approval: this.ruleForm.approval,
-        tutor: this.ruleForm.tutor,
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
         remarks: this.ruleForm.remarks,
+        scores: this.ruleForm.scores,
         status: "待审核",
         isConclusion: '否',
         category: '学术论文'
@@ -366,20 +368,18 @@ export default {
       }
     },
     handleChange(value) {
-      console.log(value.length); // 输出所选的研究领域
-      let grade = value[value.length]
-      console.log(grade)
+      this.ruleForm.scores = value[value.length - 1]
     }
   }
 };
 </script>
 <style scoped>
-.add_academic {
+.academic {
   width: 100%;
   height: 850px;
   background-color: #fff;
 }
-.add_academic .title {
+.academic .title {
   width: 100%;
   height: 60px;
   line-height: 60px;
@@ -389,18 +389,18 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.add_academic .from-content {
+.academic .from-content {
   margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.add_academic .el-date-editor.el-input,
+.academic .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 320px;
 }
-.add_academic .el-cascader {
+.academic .el-cascader {
   width: 100%;
 }
 </style>
