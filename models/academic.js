@@ -16,11 +16,11 @@ const AcademicSchema = new Schema({
   },
   endTime: Date,
   phone: Number,
-  remarks: String,
   status: String,
   isConclusion: String,
   category: String,
-  scores: String
+  scores: String,
+  remarks: String
 },{versionKey: false})
 const AcademicModel = db.model('Academics', AcademicSchema)
 module.exports = AcademicModel

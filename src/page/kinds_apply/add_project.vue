@@ -217,16 +217,17 @@ export default {
   methods: {
     getData: function(id) {
       let param = {
-        _id: id
+        _id: id,
+        category: '1'
       };
       this.$http.post("/api/find-one-project", this.qs.stringify(param)).then(result => {
-          if (result.data.status === 0) {
-            this.ruleForm = result.data.data;
-            this.ruleForm.field = datas.field.split("-");
-          } else {
-            this.$message.error("编辑数据获取失败", result.data);
-          }
-        });
+        if (result.data.status === 0) {
+          this.ruleForm = result.data.data;
+          this.ruleForm.field = this.ruleForm.field.split("-");
+        } else {
+          this.$message.error("编辑数据获取失败", result.data);
+        }
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -276,7 +277,6 @@ export default {
         return;
       }
       let params = {
-        // 验证是否填写必填项
         projectName: this.ruleForm.projectName,
         account: this.ruleForm.account,
         userName: this.ruleForm.userName,
@@ -295,32 +295,27 @@ export default {
       };
       if (this.routeId) {
         params._id = this.routeId;
-        this.$http
-          .post("/api/update-project", this.qs.stringify(params))
-          .then(result => {
-            if (result.data.status === 0) {
-              this.$message.success("科研项目修改成功!");
-              this.$router.push({
-                path: "/query"
-              });
-            } else {
-              this.$message.error("科研项目修改失败", result.data);
-            }
-          });
+        this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
+          if (result.data.status === 0) {
+            this.$message.success("科研项目修改成功!");
+            this.$router.push({
+              path: "/query"
+            });
+          } else {
+            this.$message.error("科研项目修改失败", result.data);
+          }
+        });
       } else {
         this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
-            if (result.data.status === 0) {
-              this.$message.success("科研项目申报成功!");
-              this.$router.push({
-                path: "/query"
-              });
-            } else {
-              this.$message.error(
-                "科研项目申报失败，请检查输入是否有误!",
-                result.datas
-              );
-            }
-          });
+          if (result.data.status === 0) {
+            this.$message.success("申报成功,可在项目管理分类中查看!");
+            // this.$router.push({
+            //   path: "/query"
+            // });
+          } else {
+            this.$message.error("科研项目申报失败，请检查输入是否有误!",result.datas);
+          }
+        });
       }
     },
     handleChange(value) {

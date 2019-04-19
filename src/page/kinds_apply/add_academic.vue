@@ -34,7 +34,7 @@
         <el-form-item label="关键词" prop="keywords">
           <el-input v-model="ruleForm.keywords"></el-input>
         </el-form-item>
-        <el-form-item label="项目类别" prop="field">
+        <el-form-item label="论文类别" prop="field">
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
         </el-form-item>
         <el-form-item label="课题批准单位" prop="approval">
@@ -261,13 +261,13 @@ export default {
   methods: {
     getData: function(id) {
       let param = {
-        _id: id
+        _id: id,
+        category: '2'
       };
       this.$http.post("/api/find-one-project", this.qs.stringify(param)).then(result => {
           if (result.data.status === 0) {
-            let datas = result.data.data;
-            this.ruleForm = datas;        
-            this.ruleForm.field = datas.field.split("-");
+            this.ruleForm = result.data.data;       
+            this.ruleForm.field = this.ruleForm.field.split("-");
           } else {
             this.$message.error("编辑数据获取失败", result.data);
           }
@@ -305,7 +305,7 @@ export default {
         return;
       }
       if (this.ruleForm.field === "") {
-        this.$message.error("请选择项目类别");
+        this.$message.error("请选择论文类别");
         return;
       }
       if (this.ruleForm.approval === "") {

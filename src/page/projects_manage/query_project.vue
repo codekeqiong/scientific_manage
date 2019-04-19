@@ -18,10 +18,10 @@
           v-model="search_info"
           style="margin-left:10px;"
         ></el-input>
-        <el-button type="primary" @click="search()" style="padding:12px 8px;margin-left: -7px;">查询</el-button>
+        <el-button type="primary" @click="queryProject()" style="padding:12px 8px;margin-left: -7px;">查询</el-button>
       </div>
       <!-- 科研项目 -->
-      <div class="kinds1">
+      <div class="kinds" v-if="isShow=='1'">
         <el-table
           ref="multipleTable"
           :data="tableData"
@@ -39,6 +39,7 @@
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
           <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="status" label="审核状态">
             <template slot-scope="scope1">
@@ -76,6 +77,124 @@
           </span>
         </el-dialog>
       </div>
+      <!-- 学术论文 -->
+      <div class="kinds" v-if="isShow=='2'">
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column type="index" label="编号"></el-table-column>
+          <el-table-column prop="projectName" label="论文名称"></el-table-column>
+          <el-table-column prop="account" label="账号"></el-table-column>
+          <el-table-column prop="userName" label="作者"></el-table-column>
+          <el-table-column prop="category" label="类别"></el-table-column>
+          <el-table-column prop="scores" label="分数统计"></el-table-column>
+          <el-table-column prop="phone" label="联系电话"></el-table-column>
+          <el-table-column prop="createDate" label="申报日期"></el-table-column>
+          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
+          <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="status" label="审核状态">
+            <template slot-scope="scope1">
+              <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+              <span
+                v-else-if="scope1.row.status =='已通过'"
+                style="color:#00ff00"
+              >{{scope1.row.status}}</span>
+              <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="operation" label="操作">
+            <template slot-scope="scope">
+              {{scope.row.operation}}
+              <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          background
+          @current-change="queryProject"
+          @size-change="queryProject"
+          :page-size="pageSize"
+          :current-page.sync="pageNum"
+          :total="total"
+          layout="total, prev, pager, next, jumper"
+          style="text-align:right; padding: 49px 29px 50px 0;"
+        ></el-pagination>
+        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+          <span>确定删除？</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
+            <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+      <!-- 著作 -->
+      <div class="kinds" v-if="isShow=='3'">
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column type="index" label="编号"></el-table-column>
+          <el-table-column prop="projectName" label="著作名称"></el-table-column>
+          <el-table-column prop="account" label="账号"></el-table-column>
+          <el-table-column prop="userName" label="作者"></el-table-column>
+          <el-table-column prop="category" label="类别"></el-table-column>
+          <el-table-column prop="scores" label="分数统计"></el-table-column>
+          <el-table-column prop="phone" label="联系电话"></el-table-column>
+          <el-table-column prop="createDate" label="申报日期"></el-table-column>
+          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
+          <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="status" label="审核状态">
+            <template slot-scope="scope1">
+              <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+              <span
+                v-else-if="scope1.row.status =='已通过'"
+                style="color:#00ff00"
+              >{{scope1.row.status}}</span>
+              <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="operation" label="操作">
+            <template slot-scope="scope">
+              {{scope.row.operation}}
+              <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          background
+          @current-change="queryProject"
+          @size-change="queryProject"
+          :page-size="pageSize"
+          :current-page.sync="pageNum"
+          :total="total"
+          layout="total, prev, pager, next, jumper"
+          style="text-align:right; padding: 49px 29px 50px 0;"
+        ></el-pagination>
+        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+          <span>确定删除？</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
+            <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+      <!-- 文学作品 -->
+      <!-- 艺体类 -->
+      <!-- 专利注册 -->
+      <!-- 科研活动 -->
     </div>
   </div>
 </template>
@@ -112,20 +231,20 @@ export default {
         },
         {
           value: "3",
-          label: "专利注册"
+          label: "著作"
         },
         {
           value: "4",
-          label: "艺体类"
-        },
-        {
-          value: "5",
           label: "文学作品"
         },
         {
-          value: "6",
-          label: "著作"
+          value: "5",
+          label: "艺体类"
         },
+        {
+          value: "6",
+          label: "专利注册"
+        }, 
         {
           value: "7",
           label: "科研活动"
@@ -141,54 +260,17 @@ export default {
   methods: {
     option_select(e) {
       this.isShow = e;
-      console.log(this.isShow);
-    },
-    search() {
-      if (this.search_info !== "") {
-        let param = {
-          page: this.pageNum,
-          pageSize: this.pageSize,
-          searchText: this.search_info
-        };
-        this.$http
-          .post("/api/query-project", this.qs.stringify(param))
-          .then(result => {
-            result = result.data;
-            if (result.status === 0) {
-              result.data.forEach(v => {
-                if (v.createDate) {
-                  v.createDate = new Date(
-                    +new Date(v.createDate) + 8 * 3600 * 1000
-                  )
-                    .toISOString()
-                    .replace(/T/g, " ")
-                    .replace(/\.[\d]{3}Z/, "");
-                }
-                if (v.endTime) {
-                  v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000)
-                    .toISOString()
-                    .replace(/T/g, " ")
-                    .replace(/\.[\d]{3}Z/, "");
-                }
-              });
-              this.tableData = result.data;
-              this.total = this.tableData.length;
-            } else {
-              this.$message.error("查询列表数据失败", result.data);
-            }
-          });
-      } else {
-        this.queryProject();
-      }
+      this.category = e;
+      this.queryProject();
     },
     queryProject: function() {
       let param = {
         page: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        searchText: this.search_info,
+        category: this.isShow
       };
-      this.$http
-        .post("/api/query-project", this.qs.stringify(param))
-        .then(result => {
+      this.$http.post("/api/query-project", this.qs.stringify(param)).then(result => {
           result = result.data;
           if (result.status === 0) {
             result.data.forEach(v => {
@@ -222,8 +304,25 @@ export default {
       if (param.status == "已通过") {
         this.$message.error("该项目已通过审核不能修改!");
       } else {
+        let jump;
+        switch(this.isShow){
+          case '1': jump = '/apply';
+          break;
+          case '2': jump = '/academic';
+          break;
+          case '3': jump = '/work';
+          break;
+          case '4': jump = '/literary';
+          break;
+          case '5': jump = '/art';
+          break;
+          case '6': jump = '/patent';
+          break;
+          case '7': jump = '/activity';
+          break;
+        }
         this.$router.push({
-          path: "/apply",
+          path: jump,
           query: { _id: param._id }
         });
       }
@@ -238,20 +337,18 @@ export default {
     },
     sureRemove() {
       let _this = this;
-      this.$http
-        .post("/api/delete-project", this.qs.stringify(this.removeId))
-        .then(result => {
-          if (result.data.status === 0) {
-            this.$message.success("删除用户成功");
-            this.dialogVisible = false;
-            if ((_this.total - 1) % this.pageSize === 0) {
-              this.pageNum = Math.ceil((_this.total - 1) / this.pageSize);
-            }
-            this.queryProject();
-          } else {
-            this.$message.error("数据删除失败");
+      this.$http.post("/api/delete-project", this.qs.stringify(this.removeId)).then(result => {
+        if (result.data.status === 0) {
+          this.$message.success("该项目删除成功");
+          this.dialogVisible = false;
+          if ((_this.total - 1) % this.pageSize === 0) {
+            this.pageNum = Math.ceil((_this.total - 1) / this.pageSize);
           }
-        });
+          this.queryProject();
+        } else {
+          this.$message.error("该项目删除失败", result);
+        }
+      });
     }
   }
 };

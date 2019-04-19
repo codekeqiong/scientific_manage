@@ -1,6 +1,6 @@
 <template>
   <div class="add_literary">
-    <div class="title">文学作品申报</div>
+    <div class="title">文学作品类申报</div>
     <div class="from-content">
       <el-form
         :model="ruleForm"
@@ -15,7 +15,7 @@
         <el-form-item label="账号" prop="account">
           <el-input v-model="ruleForm.account"></el-input>
         </el-form-item>
-        <el-form-item label="作者人" prop="userName">
+        <el-form-item label="作者" prop="userName">
           <el-input v-model="ruleForm.userName"></el-input>
         </el-form-item>
         <el-form-item label="院系" prop="second_college">
@@ -28,10 +28,10 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
+        <el-form-item label="内容摘要" prop="keywords">
           <el-input v-model="ruleForm.keywords"></el-input>
         </el-form-item>
-        <el-form-item label="研究领域" prop="field">
+        <el-form-item label="文学作品类别" prop="field">
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
         </el-form-item>
         <el-form-item label="课题批准单位" prop="approval">
@@ -73,6 +73,7 @@ export default {
         account: "",
         userName: "",
         field: [],
+        scores: '',
         keywords: "",
         approval: "",
         date: "",
@@ -143,37 +144,15 @@ export default {
         { label: "智能制造学院", value: "智能" }
       ],
       rules: {
-        projectName: [
-          { required: true, message: "请输入项目名称", trigger: "blur" }
-        ],
-        account: [
-          { required: true, message: "请输入申请账号", trigger: "blur" }
-        ],
-        userName: [
-          { required: true, message: "请输入申请人姓名", trigger: "blur" }
-        ],
-        field: [{ required: true, message: "请输入研究领域", trigger: "blur" }],
-        keywords: [
-          { required: true, message: "请输入关键词", trigger: "blur" }
-        ],
-        approval: [
-          { required: true, message: "请输入课题批准单位", trigger: "blur" }
-        ],
-        second_college: [
-          { required: true, message: "请选择二级学院", trigger: "blur" }
-        ],
-        phone: [
-          {
-            required: true,
-            validator: validatePhone,
-            message: "请输入正确的11位联系电话",
-            trigger: "blur"
-          }
-        ],
-        endTime: [
-          { required: true, message: "请选择结项日期", trigger: "blur" }
-        ]
-        // remarks: [{ required: true, message: "请输入备注", trigger: "blur" }]
+        projectName: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
+        account: [{ required: true, message: "请输入申请账号", trigger: "blur" }],
+        userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
+        field: [{ required: true, message: "请选择文学作品分类", trigger: "blur" }],
+        keywords: [{ required: true, message: "请输入作品的内容摘要", trigger: "blur" }],
+        approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
+        second_college: [{ required: true, message: "请选择二级学院", trigger: "blur" }],
+        phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话",trigger: "blur"}],
+        endTime: [{ required: true, message: "请选择结项日期", trigger: "blur" }]
       }
     };
   },
@@ -186,27 +165,26 @@ export default {
   methods: {
     getData: function(id) {
       let param = {
-        _id: id
+        _id: id,
+        category: '4'
       };
-      this.$http
-        .post("/api/find-one-project", this.qs.stringify(param))
-        .then(result => {
-          if (result.data.status === 0) {
-            let datas = result.data.data;
-            this.ruleForm.projectName = datas.projectName;
-            this.ruleForm.account = datas.account;
-            this.ruleForm.userName = datas.userName;
-            this.ruleForm.second_college = datas.second_college;
-            this.ruleForm.keywords = datas.keywords;
-            this.ruleForm.field = datas.field.split("-");
-            this.ruleForm.approval = datas.approval;
-            this.ruleForm.endTime = datas.endTime;
-            this.ruleForm.phone = datas.phone;
-            this.ruleForm.remarks = datas.remarks;
-          } else {
-            this.$message.error("编辑数据获取失败", result.data);
-          }
-        });
+      this.$http.post("/api/find-one-project", this.qs.stringify(param)).then(result => {
+        if (result.data.status === 0) {
+          let datas = result.data.data;
+          this.ruleForm.projectName = datas.projectName;
+          this.ruleForm.account = datas.account;
+          this.ruleForm.userName = datas.userName;
+          this.ruleForm.second_college = datas.second_college;
+          this.ruleForm.keywords = datas.keywords;
+          this.ruleForm.field = datas.field.split("-");
+          this.ruleForm.approval = datas.approval;
+          this.ruleForm.endTime = datas.endTime;
+          this.ruleForm.phone = datas.phone;
+          this.ruleForm.remarks = datas.remarks;
+        } else {
+          this.$message.error("编辑数据获取失败", result.data);
+        }
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -232,11 +210,11 @@ export default {
         return;
       }
       if (this.ruleForm.keywords === "") {
-        this.$message.error("请填写项目关键字");
+        this.$message.error("请填写文学作品的内容摘要");
         return;
       }
       if (this.ruleForm.field === "") {
-        this.$message.error("请填写研究领域");
+        this.$message.error("请选择文学作品类别");
         return;
       }
       if (this.ruleForm.approval === "") {
@@ -251,10 +229,6 @@ export default {
         this.$message.error("请填写申请人联系方式");
         return;
       }
-      // if (this.ruleForm.remarks === "") {
-      //   this.$message.error("请填写备注");
-      //   return;
-      // }
       let params = {
         // 验证是否填写必填项
         projectName: this.ruleForm.projectName,
@@ -267,53 +241,37 @@ export default {
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
         remarks: this.ruleForm.remarks,
-        status: "待审核"
+        status: "待审核",
+        isConclusion: '否',
+        category: '文学作品'
       };
       if (this.routeId) {
         params._id = this.routeId;
-        this.$http
-          .post("/api/update-project", this.qs.stringify(params))
-          .then(result => {
+        this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
             if (result.data.status === 0) {
-              this.$message.success("科研项目修改成功!");
-              this.$router.push({
-                path: "/query"
-              });
+              this.$message.success("该文学作品修改成功!");
+              // this.$router.push({
+              //   path: "/query"
+              // });
             } else {
-              this.$message.error("科研项目修改失败", result.data);
+              this.$message.error("该文学作品修改失败", result.data);
             }
           });
       } else {
-        this.$http
-          .post("/api/add-project", this.qs.stringify(params))
-          .then(result => {
+        this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
             if (result.data.status === 0) {
-              this.$message.success("科研项目申报成功!");
-              this.$router.push({
-                path: "/query"
-              });
+              this.$message.success("该文学作品申报成功!");
+              // this.$router.push({
+              //   path: "/query"
+              // });
             } else {
-              this.$message.error(
-                "科研项目申报失败，请检查输入是否有误!",
-                result.datas
-              );
+              this.$message.error("该文学作品申报失败，请检查输入是否有误!",result.datas);
             }
           });
       }
     },
     handleChange(value) {
-      console.log(value); // 输出所选的研究领域
-      if (value[0] == "scientific") {
-        if (value[1] == "nation") {
-          console.log("申报分为2分");
-        } else if (value[1] == "province" || value[1] == "city") {
-          console.log("申报分为1分");
-        } else if (value[1] == "20" || value[1] == "12" || value[1] == "8") {
-          console.log("申报分为0.5分");
-        } else {
-          console.log("申报分为0");
-        }
-      }
+      this.ruleForm.scores = value[value.length -1]
     }
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="add_work">
-    <div class="title">专利注册申报</div>
+    <div class="title">著作类申报</div>
     <div class="from-content">
       <el-form
         :model="ruleForm"
@@ -28,11 +28,14 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="ruleForm.keywords"></el-input>
-        </el-form-item>
-        <el-form-item label="研究领域" prop="field">
+        <el-form-item label="著作类别" prop="field">
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
+        </el-form-item>
+        <el-form-item label="编著方式" prop="editMethod">
+          <el-cascader :options="editOptions" v-model="ruleForm.editMethod"></el-cascader>
+        </el-form-item>
+        <el-form-item label="内容提要" prop="keywords">
+          <el-input v-model="ruleForm.keywords"></el-input>
         </el-form-item>
         <el-form-item label="课题批准单位" prop="approval">
           <el-input v-model="ruleForm.approval"></el-input>
@@ -73,6 +76,8 @@ export default {
         account: "",
         userName: "",
         field: [],
+        scores: '',
+        editMethod: '',
         keywords: "",
         approval: "",
         date: "",
@@ -212,6 +217,13 @@ export default {
           ]
         }
       ],
+      editOptions:[
+        {label: "著", value: "1"},
+        {label: "编著", value: "2"},
+        {label: "译著", value: "3"},
+        {label: "主编", value: "4"},
+        {label: "编", value: "5"}
+      ],
       collegeArr: [
         { label: "数学与计算机学院", value: "数计" },
         { label: "土木与建筑工程学院", value: "土建" },
@@ -229,37 +241,16 @@ export default {
         { label: "智能制造学院", value: "智能" }
       ],
       rules: {
-        projectName: [
-          { required: true, message: "请输入论文名称", trigger: "blur" }
-        ],
-        account: [
-          { required: true, message: "请输入申请账号", trigger: "blur" }
-        ],
-        userName: [
-          { required: true, message: "请输入申请人姓名", trigger: "blur" }
-        ],
-        field: [{ required: true, message: "请输入研究领域", trigger: "blur" }],
-        keywords: [
-          { required: true, message: "请输入关键词", trigger: "blur" }
-        ],
-        approval: [
-          { required: true, message: "请输入课题批准单位", trigger: "blur" }
-        ],
-        second_college: [
-          { required: true, message: "请选择二级学院", trigger: "blur" }
-        ],
-        phone: [
-          {
-            required: true,
-            validator: validatePhone,
-            message: "请输入正确的11位联系电话",
-            trigger: "blur"
-          }
-        ],
-        endTime: [
-          { required: true, message: "请选择结项日期", trigger: "blur" }
-        ]
-        // remarks: [{ required: true, message: "请输入备注", trigger: "blur" }]
+        projectName: [{ required: true, message: "请输入论文名称", trigger: "blur" }],
+        account: [{ required: true, message: "请输入申请账号", trigger: "blur" }],
+        userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
+        field: [{ required: true, message: "请选择著作类别", trigger: "blur" }],
+        editMethod: [{ required: true, message: "请选择编著方式", trigger: "blur" }],
+        keywords: [{ required: true, message: "请输入关键词", trigger: "blur" }],
+        approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
+        second_college: [{ required: true, message: "请选择二级学院", trigger: "blur" }],
+        phone: [{ required: true,validator: validatePhone, message: "请输入正确的11位联系电话",trigger: "blur"}],
+        endTime: [{ required: true, message: "请选择结项日期", trigger: "blur" }]
       }
     };
   },
@@ -272,27 +263,27 @@ export default {
   methods: {
     getData: function(id) {
       let param = {
-        _id: id
+        _id: id,
+        category: '3'
       };
-      this.$http
-        .post("/api/find-one-project", this.qs.stringify(param))
-        .then(result => {
-          if (result.data.status === 0) {
-            let datas = result.data.data;
-            this.ruleForm.projectName = datas.projectName;
-            this.ruleForm.account = datas.account;
-            this.ruleForm.userName = datas.userName;
-            this.ruleForm.second_college = datas.second_college;
-            this.ruleForm.keywords = datas.keywords;
-            this.ruleForm.field = datas.field.split("-");
-            this.ruleForm.approval = datas.approval;
-            this.ruleForm.endTime = datas.endTime;
-            this.ruleForm.phone = datas.phone;
-            this.ruleForm.remarks = datas.remarks;
-          } else {
-            this.$message.error("编辑数据获取失败", result.data);
-          }
-        });
+      this.$http.post("/api/find-one-project", this.qs.stringify(param)).then(result => {
+        if (result.data.status === 0) {
+          let datas = result.data.data;
+          this.ruleForm.projectName = datas.projectName;
+          this.ruleForm.account = datas.account;
+          this.ruleForm.userName = datas.userName;
+          this.ruleForm.second_college = datas.second_college;
+          this.ruleForm.keywords = datas.keywords;
+          this.ruleForm.field = datas.field.split("-");
+          this.ruleForm.editMethod = datas.editMethod;
+          this.ruleForm.approval = datas.approval;
+          this.ruleForm.endTime = datas.endTime;
+          this.ruleForm.phone = datas.phone;
+          this.ruleForm.remarks = datas.remarks;
+        } else {
+          this.$message.error("编辑数据获取失败", result.data);
+        }
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -302,7 +293,7 @@ export default {
     },
     onSubmit: function() {
       if (this.ruleForm.projectName === "") {
-        this.$message.error("请填写论文名称");
+        this.$message.error("请填写著作名称");
         return;
       }
       if (this.ruleForm.account === "") {
@@ -310,7 +301,7 @@ export default {
         return;
       }
       if (this.ruleForm.userName === "") {
-        this.$message.error("请填写申请人");
+        this.$message.error("请填写作者");
         return;
       }
       if (this.ruleForm.second_college === "") {
@@ -322,84 +313,68 @@ export default {
         return;
       }
       if (this.ruleForm.field === "") {
-        this.$message.error("请填写研究领域");
+        this.$message.error("请选择著作类别");
+        return;
+      }
+      if (this.ruleForm.editMethod === "") {
+        this.$message.error("请选择编著方式");
         return;
       }
       if (this.ruleForm.approval === "") {
-        this.$message.error("请填写论文批准单位");
+        this.$message.error("请填写著作批准单位");
         return;
       }
       if (this.ruleForm.endTime === "") {
-        this.$message.error("请填写论文的结项日期");
+        this.$message.error("请填写著作的结项日期");
         return;
       }
       if (this.ruleForm.phone === "") {
         this.$message.error("请填写申请人联系方式");
         return;
       }
-      // if (this.ruleForm.remarks === "") {
-      //   this.$message.error("请填写备注");
-      //   return;
-      // }
       let params = {
-        // 验证是否填写必填项
         projectName: this.ruleForm.projectName,
         account: this.ruleForm.account,
         userName: this.ruleForm.userName,
         second_college: this.ruleForm.second_college,
         keywords: this.ruleForm.keywords,
         field: this.ruleForm.field.join("-"),
+        editMethod: this.ruleForm.editMethod,
         approval: this.ruleForm.approval,
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
         remarks: this.ruleForm.remarks,
-        status: "待审核"
+        status: "待审核",
+        isConclusion: '否',
+        category: '著作类'
       };
       if (this.routeId) {
         params._id = this.routeId;
-        this.$http
-          .post("/api/update-project", this.qs.stringify(params))
-          .then(result => {
-            if (result.data.status === 0) {
-              this.$message.success("科研论文修改成功!");
-              this.$router.push({
-                path: "/query"
-              });
-            } else {
-              this.$message.error("科研论文修改失败", result.data);
-            }
-          });
+        this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
+          if (result.data.status === 0) {
+            this.$message.success("著作类申请资料修改成功!");
+            // this.$router.push({
+            //   path: "/query"
+            // });
+          } else {
+            this.$message.error("著作类申请资料修改失败", result.data);
+          }
+        });
       } else {
-        this.$http
-          .post("/api/add-project", this.qs.stringify(params))
-          .then(result => {
-            if (result.data.status === 0) {
-              this.$message.success("科研论文申报成功!");
-              this.$router.push({
-                path: "/query"
-              });
-            } else {
-              this.$message.error(
-                "科研论文申报失败，请检查输入是否有误!",
-                result.datas
-              );
-            }
-          });
+        this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
+          if (result.data.status === 0) {
+            this.$message.success("著作类申报成功!");
+            // this.$router.push({
+            //   path: "/query"
+            // });
+          } else {
+            this.$message.error("著作类申报失败，请检查输入是否有误!", result.data);
+          }
+        });
       }
     },
     handleChange(value) {
-      console.log(value); // 输出所选的研究领域
-      if (value[0] == "scientific") {
-        if (value[1] == "nation") {
-          console.log("申报分为2分");
-        } else if (value[1] == "province" || value[1] == "city") {
-          console.log("申报分为1分");
-        } else if (value[1] == "20" || value[1] == "12" || value[1] == "8") {
-          console.log("申报分为0.5分");
-        } else {
-          console.log("申报分为0");
-        }
-      }
+      this.ruleForm.scores = value[value.length - 1]
     }
   }
 };

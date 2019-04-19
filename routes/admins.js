@@ -32,9 +32,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // 登录
 app.use('/api/login', (req, res) => {
   let account = req.body.account,
-      userName = req.body.userName,
-      password = req.body.password
-  console.log(account, userName, password)
+    userName = req.body.userName,
+    password = req.body.password
   UsersModel.findOne(function(err, data){
     if(err){
       console.log(err)
@@ -211,8 +210,17 @@ app.use('/api/add-project', (req, res) => {
       params.tutor = req.body.tutor
       params.keywords = req.body.keywords
       kindType = AcademicModel
+    } else if(req.body.category == '著作'){
+      kindType = workModel
+    }else if(req.body.category == '文学作品'){
+      kindType = literaryModel
+    } else if(req.body.category == '艺体类'){
+      kindType = artModel
+    } else if(req.body.category == '注册专利'){
+      kindType = activityModel
+    } else {
+      kindType = AcademicModel
     }
-    console.log(kindType)
     kindType.create(params, function (err, data) {
       if (err) {
         res.json({
@@ -233,14 +241,30 @@ app.use('/api/add-project', (req, res) => {
     });
   }
 })
-// 学术论文申请
-
 // 科研项目查询 获取数据
 app.use('/api/query-project', (req, res) => {
   let page = parseInt(req.body.page)
   let pageSize = parseInt(req.body.pageSize) 
   let searchText = new RegExp(req.body.searchText)
-  var query = ProjectModel.find(function (err, data) {
+  let category = req.body.category
+  let modelType = ProjectModel
+  switch(category){
+    case '1': modelType = ProjectModel;
+    break;
+    case '2': modelType = AcademicModel;
+    break;
+    case '3': modelType = workModel;
+    break;
+    case '4': modelType = literaryModel;
+    break;
+    case '5': modelType = artModel;
+    break;
+    case '6': modelType = patentModel;
+    break;
+    case '7': modelType = activityModel;
+    break;
+  }
+  var query = modelType.find(function (err, data) {
   if (err) {
     res.json({
       status: 1,
@@ -257,7 +281,7 @@ app.use('/api/query-project', (req, res) => {
       if(err){
         res.json(err)
       } else {
-        ProjectModel.find(function(err, results){
+        modelType.find(function(err, results){
           res.json({
             status: 0,
             data: result,
@@ -272,12 +296,30 @@ app.use('/api/query-project', (req, res) => {
 // 科研项目查询 根据id查询某条数据(_id)
 app.use('/api/find-one-project', function (req,res){
   if(req.body) {
-      var id = req.body._id
-      ProjectModel.findById(id, function (err, data){
+      let id = req.body._id;
+      let category = req.body.category;
+      let modelType = ProjectModel;
+      switch(category){
+        case '1': modelType = ProjectModel;
+        break;
+        case '2': modelType = AcademicModel;
+        break;
+        case '3': modelType = workModel;
+        break;
+        case '4': modelType = literaryModel;
+        break;
+        case '5': modelType = artModel;
+        break;
+        case '6': modelType = patentModel;
+        break;
+        case '7': modelType = activityModel;
+        break;
+      }
+      modelType.findById(id, function (err, data){
           if (err) {
               res.json({
-                  status: 1,
-                  data: err.message
+                status: 1,
+                data: err.message
               });
           } else {
               res.json({

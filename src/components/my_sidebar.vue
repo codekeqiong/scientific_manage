@@ -67,6 +67,6 @@ export default {
   width: 200px;
   height: 870px;
   background-color: #fff;
-  position: fixed;
+  /* position: fixed; */
 }
 </style>
