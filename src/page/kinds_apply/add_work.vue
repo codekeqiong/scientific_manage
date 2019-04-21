@@ -41,7 +41,7 @@
           <el-input v-model="ruleForm.approval"></el-input>
         </el-form-item>
         <el-form-item label="结项日期" prop="endTime">
-          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择结项日期"></el-date-picker>
+          <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择结项日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input type="text" autocomplete="off" v-model="ruleForm.phone"></el-input>
@@ -61,7 +61,6 @@
 export default {
   name: "apply",
   data() {
-    //全局定义电话验证规则
     const validatePhone = (rule, value, callback) => {
       let reg = /^1[345789]\d{9}$/;
       if (value != "" && reg.test(value)) {
@@ -339,6 +338,7 @@ export default {
         second_college: this.ruleForm.second_college,
         keywords: this.ruleForm.keywords,
         field: this.ruleForm.field.join("-"),
+        scores: this.ruleForm.scores,
         editMethod: this.ruleForm.editMethod,
         approval: this.ruleForm.approval,
         endTime: this.ruleForm.endTime,
@@ -346,7 +346,7 @@ export default {
         remarks: this.ruleForm.remarks,
         status: "待审核",
         isConclusion: '否',
-        category: '著作类'
+        category: '著作'
       };
       if (this.routeId) {
         params._id = this.routeId;

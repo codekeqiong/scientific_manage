@@ -211,15 +211,17 @@ app.use('/api/add-project', (req, res) => {
       params.keywords = req.body.keywords
       kindType = AcademicModel
     } else if(req.body.category == '著作'){
-      kindType = workModel
+      params.keywords = req.body.keywords
+      params.editMethod = req.body.editMethod
+      kindType = WorkModel
     }else if(req.body.category == '文学作品'){
-      kindType = literaryModel
+      kindType = LiteraryModel
     } else if(req.body.category == '艺体类'){
-      kindType = artModel
+      kindType = ArtModel
     } else if(req.body.category == '注册专利'){
-      kindType = activityModel
+      kindType = PatentModel
     } else {
-      kindType = AcademicModel
+      kindType = ActivityModel
     }
     kindType.create(params, function (err, data) {
       if (err) {
@@ -253,15 +255,15 @@ app.use('/api/query-project', (req, res) => {
     break;
     case '2': modelType = AcademicModel;
     break;
-    case '3': modelType = workModel;
+    case '3': modelType = WorkModel;
     break;
-    case '4': modelType = literaryModel;
+    case '4': modelType =LiteraryModel;
     break;
-    case '5': modelType = artModel;
+    case '5': modelType = ArtModel;
     break;
-    case '6': modelType = patentModel;
+    case '6': modelType = PatentModel;
     break;
-    case '7': modelType = activityModel;
+    case '7': modelType = ActivityModel;
     break;
   }
   var query = modelType.find(function (err, data) {
@@ -304,15 +306,15 @@ app.use('/api/find-one-project', function (req,res){
         break;
         case '2': modelType = AcademicModel;
         break;
-        case '3': modelType = workModel;
+        case '3': modelType = WorkModel;
         break;
-        case '4': modelType = literaryModel;
+        case '4': modelType = LiteraryModel;
         break;
-        case '5': modelType = artModel;
+        case '5': modelType = ArtModel;
         break;
-        case '6': modelType = patentModel;
+        case '6': modelType = PatentModel;
         break;
-        case '7': modelType = activityModel;
+        case '7': modelType = ActivityModel;
         break;
       }
       modelType.findById(id, function (err, data){
