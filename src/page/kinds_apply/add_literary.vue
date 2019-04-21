@@ -1,5 +1,5 @@
 <template>
-  <div class="add_literary">
+  <div class="literary">
     <div class="title">文学作品类申报</div>
     <div class="from-content">
       <el-form
@@ -9,7 +9,7 @@
         label-width="120px"
         class="demo-ruleForm"
       >
-        <el-form-item label="作品名称" prop="projectName">
+        <el-form-item label="文学作品名称" prop="projectName">
           <el-input v-model="ruleForm.projectName"></el-input>
         </el-form-item>
         <el-form-item label="账号" prop="account">
@@ -34,11 +34,14 @@
         <el-form-item label="文学作品类别" prop="field">
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
         </el-form-item>
+        <el-form-item label="导师" prop="tutor">
+          <el-input v-model="ruleForm.tutor"></el-input>
+        </el-form-item>
         <el-form-item label="课题批准单位" prop="approval">
           <el-input v-model="ruleForm.approval"></el-input>
         </el-form-item>
         <el-form-item label="结项日期" prop="endTime">
-          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择结项日期"></el-date-picker>
+          <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择结项日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input type="text" autocomplete="off" v-model="ruleForm.phone"></el-input>
@@ -75,6 +78,7 @@ export default {
         field: [],
         scores: '',
         keywords: "",
+        tutor: '',
         approval: "",
         date: "",
         second_college: "",
@@ -149,6 +153,7 @@ export default {
         userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
         field: [{ required: true, message: "请选择文学作品分类", trigger: "blur" }],
         keywords: [{ required: true, message: "请输入作品的内容摘要", trigger: "blur" }],
+        tutor: [{ required: true, message: "请输入导师姓名", trigger: "blur" }],
         approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
         second_college: [{ required: true, message: "请选择二级学院", trigger: "blur" }],
         phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话",trigger: "blur"}],
@@ -177,6 +182,7 @@ export default {
           this.ruleForm.second_college = datas.second_college;
           this.ruleForm.keywords = datas.keywords;
           this.ruleForm.field = datas.field.split("-");
+          this.ruleForm.tutor = datas.tutor;
           this.ruleForm.approval = datas.approval;
           this.ruleForm.endTime = datas.endTime;
           this.ruleForm.phone = datas.phone;
@@ -189,20 +195,20 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    cancel() {
-      console.log("点击取消成功");
-    },
+    // cancel() {
+    //   console.log("点击取消成功");
+    // },
     onSubmit: function() {
       if (this.ruleForm.projectName === "") {
-        this.$message.error("请填写项目名称");
+        this.$message.error("请填写文学作品名称");
         return;
       }
       if (this.ruleForm.account === "") {
-        this.$message.error("请填写申请人账号");
+        this.$message.error("请填写账号");
         return;
       }
       if (this.ruleForm.userName === "") {
-        this.$message.error("请填写申请人");
+        this.$message.error("请填写作者");
         return;
       }
       if (this.ruleForm.second_college === "") {
@@ -215,6 +221,10 @@ export default {
       }
       if (this.ruleForm.field === "") {
         this.$message.error("请选择文学作品类别");
+        return;
+      }
+      if (this.ruleForm.tutor === "") {
+        this.$message.error("请填写此文学作品的导师姓名");
         return;
       }
       if (this.ruleForm.approval === "") {
@@ -230,13 +240,14 @@ export default {
         return;
       }
       let params = {
-        // 验证是否填写必填项
         projectName: this.ruleForm.projectName,
         account: this.ruleForm.account,
         userName: this.ruleForm.userName,
         second_college: this.ruleForm.second_college,
         keywords: this.ruleForm.keywords,
         field: this.ruleForm.field.join("-"),
+        scores: this.ruleForm.scores,
+        tutor: this.ruleForm.tutor,
         approval: this.ruleForm.approval,
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
@@ -246,28 +257,29 @@ export default {
         category: '文学作品'
       };
       if (this.routeId) {
-        params._id = this.routeId;
+        params._id = this.routeId
+        params.category = '4'
         this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
-            if (result.data.status === 0) {
-              this.$message.success("该文学作品修改成功!");
-              // this.$router.push({
-              //   path: "/query"
-              // });
-            } else {
-              this.$message.error("该文学作品修改失败", result.data);
-            }
-          });
+          if (result.data.status === 0) {
+            this.$message.success("该文学作品修改成功!");
+            this.$router.push({
+              path: "/query"
+            });
+          } else {
+            this.$message.error("该文学作品修改失败", result.data);
+          }
+        });
       } else {
         this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
-            if (result.data.status === 0) {
-              this.$message.success("该文学作品申报成功!");
-              // this.$router.push({
-              //   path: "/query"
-              // });
-            } else {
-              this.$message.error("该文学作品申报失败，请检查输入是否有误!",result.datas);
-            }
-          });
+          if (result.data.status === 0) {
+            this.$message.success("该文学作品申报成功!");
+            this.$router.push({
+              path: "/query"
+            });
+          } else {
+            this.$message.error("该文学作品申报失败，请检查输入是否有误!",result.datas);
+          }
+        });
       }
     },
     handleChange(value) {
@@ -277,12 +289,12 @@ export default {
 };
 </script>
 <style scoped>
-.add_literary {
+.literary {
   width: 100%;
   height: 850px;
   background-color: #fff;
 }
-.add_literary .title {
+.literary .title {
   width: 100%;
   height: 60px;
   line-height: 60px;
@@ -292,18 +304,18 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.add_literary .from-content {
+.literary .from-content {
   margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.add_literary .el-date-editor.el-input,
+.literary .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 320px;
 }
-.add_literary .el-cascader {
+.literary .el-cascader {
   width: 100%;
 }
 </style>

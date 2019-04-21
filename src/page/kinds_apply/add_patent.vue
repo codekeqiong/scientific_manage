@@ -1,5 +1,5 @@
 <template>
-  <div class="add_patent">
+  <div class="patent">
     <div class="title">专利注册申报</div>
     <div class="from-content">
       <el-form
@@ -15,7 +15,7 @@
         <el-form-item label="账号" prop="account">
           <el-input v-model="ruleForm.account"></el-input>
         </el-form-item>
-        <el-form-item label="作者" prop="userName">
+        <el-form-item label="申请人" prop="userName">
           <el-input v-model="ruleForm.userName"></el-input>
         </el-form-item>
         <el-form-item label="院系" prop="second_college">
@@ -28,8 +28,21 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="ruleForm.keywords"></el-input>
+        <el-form-item label="申请类型" prop="patentType">
+          <el-select v-model="ruleForm.patentType">
+            <el-option
+            v-for="(item,index) in typeOptions"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="与第三方合作" prop="cooperation">
+          <el-radio-group v-model="ruleForm.cooperation">
+            <el-radio label="是"></el-radio>
+            <el-radio label="否"></el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="注册专利类别" prop="field">
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
@@ -38,7 +51,7 @@
           <el-input v-model="ruleForm.approval"></el-input>
         </el-form-item>
         <el-form-item label="结项日期" prop="endTime">
-          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择结项日期"></el-date-picker>
+          <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择结项日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input type="text" autocomplete="off" v-model="ruleForm.phone"></el-input>
@@ -74,7 +87,8 @@ export default {
         userName: "",
         field: [],
         scores: '',
-        keywords: "",
+        patentType: '', 
+        cooperation: '否',
         approval: "",
         date: "",
         second_college: "",
@@ -137,6 +151,12 @@ export default {
           ]
         }
       ],
+      typeOptions: [
+        {label:'发明', value: '1'},
+        {label:'实用新型', value: '2'},
+        {label:'外观设计', value: '3'},
+        {label:'PCT发明专利申请', value: '9'}
+      ],
       collegeArr: [
         { label: "数学与计算机学院", value: "数计" },
         { label: "土木与建筑工程学院", value: "土建" },
@@ -158,7 +178,8 @@ export default {
         account: [{ required: true, message: "请输入申请账号", trigger: "blur" }],
         userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
         field: [{ required: true, message: "请选择注册专利类别", trigger: "blur" }],
-        keywords: [{ required: true, message: "请输入关键词", trigger: "blur" }],
+        patentType: [{ required: true, message: "请选择申报类型", trigger: "blur" }],
+        cooperation: [{ required: true, message: "请选择是否与第三方合作", trigger: "blur" }],
         approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
         second_college: [{ required: true, message: "请选择二级学院", trigger: "blur" }],
         phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话",trigger: "blur"}],
@@ -185,7 +206,8 @@ export default {
           this.ruleForm.account = datas.account;
           this.ruleForm.userName = datas.userName;
           this.ruleForm.second_college = datas.second_college;
-          this.ruleForm.keywords = datas.keywords;
+          this.ruleForm.patentType = datas.patentType;
+          this.ruleForm.cooperation = datas.cooperation;
           this.ruleForm.field = datas.field.split("-");
           this.ruleForm.approval = datas.approval;
           this.ruleForm.endTime = datas.endTime;
@@ -199,9 +221,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    cancel() {
-      console.log("点击取消成功");
-    },
+    // cancel() {
+    //   console.log("点击取消成功");
+    // },
     onSubmit: function() {
       if (this.ruleForm.projectName === "") {
         this.$message.error("请填写专利名称");
@@ -219,8 +241,12 @@ export default {
         this.$message.error("请选择院系");
         return;
       }
-      if (this.ruleForm.keywords === "") {
-        this.$message.error("请填写论文关键字");
+      if (this.ruleForm.patentType === "") {
+        this.$message.error("请选择申报类型");
+        return;
+      }
+      if (this.ruleForm.cooperation === "") {
+        this.$message.error("请选择是否与第三方合作");
         return;
       }
       if (this.ruleForm.field === "") {
@@ -245,8 +271,10 @@ export default {
         account: this.ruleForm.account,
         userName: this.ruleForm.userName,
         second_college: this.ruleForm.second_college,
-        keywords: this.ruleForm.keywords,
+        patentType: this.ruleForm.patentType,
+        cooperation: this.ruleForm.cooperation,
         field: this.ruleForm.field.join("-"),
+        scores: this.ruleForm.scores,
         approval: this.ruleForm.approval,
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
@@ -256,13 +284,14 @@ export default {
         category: '注册专利'
       };
       if (this.routeId) {
-        params._id = this.routeId;
+        params._id = this.routeId
+        params.category = '6'
         this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("注册专利修改成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("注册专利修改失败", result.data);
           }
@@ -271,11 +300,11 @@ export default {
         this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("注册专利申报成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
-            this.$message.error("注册专利申报失败，请检查输入是否有误!",result.datas);
+            this.$message.error("注册专利申报失败，请检查输入是否有误!");
           }
         });
       }
@@ -287,12 +316,12 @@ export default {
 };
 </script>
 <style scoped>
-.add_patent {
+.patent {
   width: 100%;
   height: 850px;
   background-color: #fff;
 }
-.add_patent .title {
+.patent .title {
   width: 100%;
   height: 60px;
   line-height: 60px;
@@ -302,18 +331,18 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.add_patent .from-content {
+.patent .from-content {
   margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.add_patent .el-date-editor.el-input,
+.patent .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 320px;
 }
-.add_patent .el-cascader {
+.patent .el-cascader {
   width: 100%;
 }
 </style>

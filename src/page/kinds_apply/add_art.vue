@@ -1,5 +1,5 @@
 <template>
-  <div class="add_art">
+  <div class="art">
     <div class="title">艺体类申报</div>
     <div class="from-content">
       <el-form
@@ -12,7 +12,7 @@
         <el-form-item label="艺体类名称" prop="projectName">
           <el-input v-model="ruleForm.projectName"></el-input>
         </el-form-item>
-        <el-form-item label="账号" prop="account">
+        <el-form-item label="申报账号" prop="account">
           <el-input v-model="ruleForm.account"></el-input>
         </el-form-item>
         <el-form-item label="申报人" prop="userName">
@@ -28,17 +28,27 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="ruleForm.keywords"></el-input>
+        <el-form-item label="艺体领域" prop="artArea">
+          <el-select v-model="ruleForm.artArea" placeholder="请选择艺体领域">
+            <el-option
+              v-for="(item,index) in areaOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="艺体类别" prop="field">
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
+        </el-form-item>
+        <el-form-item label="内容描述" prop="keywords">
+          <el-input v-model="ruleForm.keywords"></el-input>
         </el-form-item>
         <el-form-item label="课题批准单位" prop="approval">
           <el-input v-model="ruleForm.approval"></el-input>
         </el-form-item>
         <el-form-item label="结项日期" prop="endTime">
-          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择结项日期"></el-date-picker>
+          <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择结项日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input type="text" autocomplete="off" v-model="ruleForm.phone"></el-input>
@@ -74,7 +84,8 @@ export default {
         userName: "",
         field: [],
         scores: '',
-        keywords: "",
+        keywords: '',
+        artArea: "",
         approval: "",
         date: "",
         second_college: "",
@@ -495,6 +506,16 @@ export default {
           ]
         }
       ],
+      areaOptions: [
+        {label: '体育', value: '1'},
+        {label: '美术', value: '2'},
+        {label: '艺术设计', value: '3'},
+        {label: '音乐', value: '4'},
+        {label: '舞蹈', value: '5'},
+        {label: '影视', value: '6'},
+        {label: '编导', value: '7'},
+        {label: '数字媒体', value: '8'}
+      ],
       collegeArr: [
         { label: "数学与计算机学院", value: "数计" },
         { label: "土木与建筑工程学院", value: "土建" },
@@ -516,7 +537,8 @@ export default {
         account: [{ required: true, message: "请输入申请账号", trigger: "blur" }],
         userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
         field: [{ required: true, message: "请输入研究领域", trigger: "blur" }],
-        keywords: [{ required: true, message: "请输入关键词", trigger: "blur" }],
+        keywords: [{ required: true, message: "请填写关键词", trigger: "blur" }],
+        artArea: [{ required: true, message: "请选择艺体领域", trigger: "blur" }],
         approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
         second_college: [{ required: true, message: "请选择二级学院", trigger: "blur" }],
         phone: [{required: true, validator: validatePhone, message: "请输入正确的11位联系电话",trigger: "blur" }],
@@ -544,6 +566,7 @@ export default {
           this.ruleForm.userName = datas.userName;
           this.ruleForm.second_college = datas.second_college;
           this.ruleForm.keywords = datas.keywords;
+          this.ruleForm.artArea = datas.artArea;
           this.ruleForm.field = datas.field.split("-");
           this.ruleForm.approval = datas.approval;
           this.ruleForm.endTime = datas.endTime;
@@ -557,9 +580,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    cancel() {
-      console.log("点击取消成功");
-    },
+    // cancel() {
+    //   console.log("点击取消成功");
+    // },
     onSubmit: function() {
       if (this.ruleForm.projectName === "") {
         this.$message.error("请填写名称");
@@ -577,12 +600,16 @@ export default {
         this.$message.error("请选择院系");
         return;
       }
-      if (this.ruleForm.keywords === "") {
-        this.$message.error("请填写关键字");
+      if (this.ruleForm.artArea === "") {
+        this.$message.error("请选择艺体领域");
         return;
       }
       if (this.ruleForm.field === "") {
-        this.$message.error("请填写艺体类别");
+        this.$message.error("请选择艺体类别");
+        return;
+      }
+       if (this.ruleForm.keywords === "") {
+        this.$message.error("请填写内容描述");
         return;
       }
       if (this.ruleForm.approval === "") {
@@ -603,23 +630,26 @@ export default {
         userName: this.ruleForm.userName,
         second_college: this.ruleForm.second_college,
         keywords: this.ruleForm.keywords,
+        artArea: this.ruleForm.artArea,
         field: this.ruleForm.field.join("-"),
+        scores: this.ruleForm.scores,
         approval: this.ruleForm.approval,
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
         remarks: this.ruleForm.remarks,
         status: "待审核",
         isConclusion: '否',
-        category: '艺体类'
+        category: '艺体'
       };
       if (this.routeId) {
-        params._id = this.routeId;
+        params._id = this.routeId
+        params.category = '5'
         this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("科研论文修改成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("科研论文修改失败", result.data);
           }
@@ -628,9 +658,9 @@ export default {
         this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("科研论文申报成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("科研论文申报失败，请检查输入是否有误!");
           }
@@ -644,12 +674,12 @@ export default {
 };
 </script>
 <style scoped>
-.add_art {
+.art {
   width: 100%;
   height: 850px;
   background-color: #fff;
 }
-.add_art .title {
+.art .title {
   width: 100%;
   height: 60px;
   line-height: 60px;
@@ -659,18 +689,18 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.add_art .from-content {
+.art .from-content {
   margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.add_art .el-date-editor.el-input,
+.art .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 320px;
 }
-.add_art .el-cascader {
+.art .el-cascader {
   width: 100%;
 }
 </style>

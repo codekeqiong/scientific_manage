@@ -1,5 +1,5 @@
 <template>
-  <div class="add_activity">
+  <div class="activity">
     <div class="title">科研活动申报</div>
     <div class="from-content">
       <el-form
@@ -9,13 +9,13 @@
         label-width="120px"
         class="demo-ruleForm"
       >
-        <el-form-item label="著作名称" prop="projectName">
+        <el-form-item label="科研活动名称" prop="projectName">
           <el-input v-model="ruleForm.projectName"></el-input>
         </el-form-item>
-        <el-form-item label="账号" prop="account">
+        <el-form-item label="申报账号" prop="account">
           <el-input v-model="ruleForm.account"></el-input>
         </el-form-item>
-        <el-form-item label="作者" prop="userName">
+        <el-form-item label="申报人" prop="userName">
           <el-input v-model="ruleForm.userName"></el-input>
         </el-form-item>
         <el-form-item label="院系" prop="second_college">
@@ -28,8 +28,18 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
+        <el-form-item label="内容概要" prop="keywords">
           <el-input v-model="ruleForm.keywords"></el-input>
+        </el-form-item>
+         <el-form-item label="研究类型" prop="type">
+          <el-select v-model="ruleForm.type" placeholder="请选择科研活动形式">
+            <el-option
+              v-for="(item,index) in typeOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="科研活动类别" prop="field">
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
@@ -38,7 +48,7 @@
           <el-input v-model="ruleForm.approval"></el-input>
         </el-form-item>
         <el-form-item label="结项日期" prop="endTime">
-          <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择结项日期"></el-date-picker>
+          <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择结项日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input type="text" autocomplete="off" v-model="ruleForm.phone"></el-input>
@@ -75,6 +85,7 @@ export default {
         field: [],
         scores: '',
         keywords: "",
+        type: '',
         approval: "",
         date: "",
         second_college: "",
@@ -149,6 +160,11 @@ export default {
           ]
         }
       ],
+      typeOptions: [
+        {label: '基础研究', value: '1'},
+        {label: '应用研究', value: '2'},
+        {label: '开发研究', value: '3'}
+      ],
       collegeArr: [
         { label: "数学与计算机学院", value: "数计" },
         { label: "土木与建筑工程学院", value: "土建" },
@@ -170,7 +186,8 @@ export default {
         account: [{ required: true, message: "请输入申请账号", trigger: "blur" }],
         userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
         field: [{ required: true, message: "请输入科研活动类别", trigger: "blur" }],
-        keywords: [{ required: true, message: "请输入关键词", trigger: "blur" }],
+        keywords: [{ required: true, message: "请填写内容概要", trigger: "blur" }],
+        type: [{ required: true, message: "请选择科研类型", trigger: "blur" }],
         approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
         second_college: [{ required: true, message: "请选择二级学院", trigger: "blur" }],
         phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话", trigger: "blur"}],
@@ -198,6 +215,7 @@ export default {
           this.ruleForm.userName = datas.userName;
           this.ruleForm.second_college = datas.second_college;
           this.ruleForm.keywords = datas.keywords;
+          this.ruleForm.type = datas.type;
           this.ruleForm.field = datas.field.split("-");
           this.ruleForm.approval = datas.approval;
           this.ruleForm.endTime = datas.endTime;
@@ -211,9 +229,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    cancel() {
-      console.log("点击取消成功");
-    },
+    // cancel() {
+    //   console.log("点击取消成功");
+    // },
     onSubmit: function() {
       if (this.ruleForm.projectName === "") {
         this.$message.error("请填写科研活动名称");
@@ -232,7 +250,11 @@ export default {
         return;
       }
       if (this.ruleForm.keywords === "") {
-        this.$message.error("请填写关键字");
+        this.$message.error("请填写内容概要");
+        return;
+      }
+      if (this.ruleForm.type === "") {
+        this.$message.error("请选择科研类型");
         return;
       }
       if (this.ruleForm.field === "") {
@@ -257,7 +279,9 @@ export default {
         userName: this.ruleForm.userName,
         second_college: this.ruleForm.second_college,
         keywords: this.ruleForm.keywords,
+        type: this.ruleForm.type,
         field: this.ruleForm.field.join("-"),
+        scores: this.ruleForm.scores,
         approval: this.ruleForm.approval,
         endTime: this.ruleForm.endTime,
         phone: this.ruleForm.phone,
@@ -267,13 +291,14 @@ export default {
         category: '科研活动'
       };
       if (this.routeId) {
-        params._id = this.routeId;
+        params._id = this.routeId
+        params.category = '7'
         this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("科研活动修改成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("科研活动修改失败", result.data);
           }
@@ -282,9 +307,9 @@ export default {
         this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("科研活动申报成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("科研活动申报失败，请检查输入是否有误!");
           }
@@ -298,12 +323,12 @@ export default {
 };
 </script>
 <style scoped>
-.add_activity {
+.activity {
   width: 100%;
   height: 850px;
   background-color: #fff;
 }
-.add_activity .title {
+.activity .title {
   width: 100%;
   height: 60px;
   line-height: 60px;
@@ -313,18 +338,18 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.add_activity .from-content {
+.activity .from-content {
   margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.add_activity .el-date-editor.el-input,
+.activity .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 320px;
 }
-.add_activity .el-cascader {
+.activity .el-cascader {
   width: 100%;
 }
 </style>

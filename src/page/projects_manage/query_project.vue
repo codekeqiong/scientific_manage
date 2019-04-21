@@ -39,8 +39,8 @@
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
           <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
-          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
             <template slot-scope="scope1">
               <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
@@ -55,7 +55,7 @@
             <template slot-scope="scope">
               {{scope.row.operation}}
               <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
-              <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index,1)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -69,13 +69,6 @@
           layout="total, prev, pager, next, jumper"
           style="text-align:right; padding: 49px 29px 50px 0;"
         ></el-pagination>
-        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
-          <span>确定删除？</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
-            <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
-          </span>
-        </el-dialog>
       </div>
       <!-- 学术论文 -->
       <div class="kinds" v-if="isShow=='2'">
@@ -96,8 +89,8 @@
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
           <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
-          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
             <template slot-scope="scope1">
               <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
@@ -112,7 +105,7 @@
             <template slot-scope="scope">
               {{scope.row.operation}}
               <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
-              <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index,2)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -126,13 +119,6 @@
           layout="total, prev, pager, next, jumper"
           style="text-align:right; padding: 49px 29px 50px 0;"
         ></el-pagination>
-        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
-          <span>确定删除？</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
-            <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
-          </span>
-        </el-dialog>
       </div>
       <!-- 著作 -->
       <div class="kinds" v-if="isShow=='3'">
@@ -153,8 +139,8 @@
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
           <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
-          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
             <template slot-scope="scope1">
               <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
@@ -169,7 +155,7 @@
             <template slot-scope="scope">
               {{scope.row.operation}}
               <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
-              <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index,3)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -183,18 +169,215 @@
           layout="total, prev, pager, next, jumper"
           style="text-align:right; padding: 49px 29px 50px 0;"
         ></el-pagination>
-        <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
-          <span>确定删除？</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
-            <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
-          </span>
-        </el-dialog>
       </div>
       <!-- 文学作品 -->
+      <div class="kinds" v-if="isShow=='4'">
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column type="index" label="编号"></el-table-column>
+          <el-table-column prop="projectName" label="文学作品名称"></el-table-column>
+          <el-table-column prop="account" label="账号"></el-table-column>
+          <el-table-column prop="userName" label="作者"></el-table-column>
+          <el-table-column prop="category" label="类别"></el-table-column>
+          <el-table-column prop="scores" label="分数统计"></el-table-column>
+          <el-table-column prop="phone" label="联系电话"></el-table-column>
+          <el-table-column prop="createDate" label="申报日期"></el-table-column>
+          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
+          <el-table-column prop="status" label="审核状态">
+            <template slot-scope="scope1">
+              <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+              <span
+                v-else-if="scope1.row.status =='已通过'"
+                style="color:#00ff00"
+              >{{scope1.row.status}}</span>
+              <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="operation" label="操作">
+            <template slot-scope="scope">
+              {{scope.row.operation}}
+              <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index,4)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          background
+          @current-change="queryProject"
+          @size-change="queryProject"
+          :page-size="pageSize"
+          :current-page.sync="pageNum"
+          :total="total"
+          layout="total, prev, pager, next, jumper"
+          style="text-align:right; padding: 49px 29px 50px 0;"
+        ></el-pagination>
+      </div>
       <!-- 艺体类 -->
+      <div class="kinds" v-if="isShow=='5'">
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column type="index" label="编号"></el-table-column>
+          <el-table-column prop="projectName" label="艺体类名称"></el-table-column>
+          <el-table-column prop="account" label="账号"></el-table-column>
+          <el-table-column prop="userName" label="申报人"></el-table-column>
+          <el-table-column prop="category" label="类别"></el-table-column>
+          <el-table-column prop="scores" label="分数统计"></el-table-column>
+          <el-table-column prop="phone" label="联系电话"></el-table-column>
+          <el-table-column prop="createDate" label="申报日期"></el-table-column>
+          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
+          <el-table-column prop="status" label="审核状态">
+            <template slot-scope="scope1">
+              <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+              <span
+                v-else-if="scope1.row.status =='已通过'"
+                style="color:#00ff00"
+              >{{scope1.row.status}}</span>
+              <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="operation" label="操作">
+            <template slot-scope="scope">
+              {{scope.row.operation}}
+              <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index, 5)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          background
+          @current-change="queryProject"
+          @size-change="queryProject"
+          :page-size="pageSize"
+          :current-page.sync="pageNum"
+          :total="total"
+          layout="total, prev, pager, next, jumper"
+          style="text-align:right; padding: 49px 29px 50px 0;"
+        ></el-pagination>
+      </div>
       <!-- 专利注册 -->
+      <div class="kinds" v-if="isShow=='6'">
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column type="index" label="编号"></el-table-column>
+          <el-table-column prop="projectName" label="文学作品名称"></el-table-column>
+          <el-table-column prop="account" label="账号"></el-table-column>
+          <el-table-column prop="userName" label="作者"></el-table-column>
+          <el-table-column prop="category" label="类别"></el-table-column>
+          <el-table-column prop="scores" label="分数统计"></el-table-column>
+          <el-table-column prop="phone" label="联系电话"></el-table-column>
+          <el-table-column prop="createDate" label="申报日期"></el-table-column>
+          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
+          <el-table-column prop="status" label="审核状态">
+            <template slot-scope="scope1">
+              <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+              <span
+                v-else-if="scope1.row.status =='已通过'"
+                style="color:#00ff00"
+              >{{scope1.row.status}}</span>
+              <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="operation" label="操作">
+            <template slot-scope="scope">
+              {{scope.row.operation}}
+              <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index,6)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          background
+          @current-change="queryProject"
+          @size-change="queryProject"
+          :page-size="pageSize"
+          :current-page.sync="pageNum"
+          :total="total"
+          layout="total, prev, pager, next, jumper"
+          style="text-align:right; padding: 49px 29px 50px 0;"
+        ></el-pagination>
+      </div>
       <!-- 科研活动 -->
+      <div class="kinds" v-if="isShow=='7'">
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column type="index" label="编号"></el-table-column>
+          <el-table-column prop="projectName" label="科研活动名称"></el-table-column>
+          <el-table-column prop="account" label="账号"></el-table-column>
+          <el-table-column prop="userName" label="申报人"></el-table-column>
+          <el-table-column prop="category" label="类别"></el-table-column>
+          <el-table-column prop="scores" label="分数统计"></el-table-column>
+          <el-table-column prop="phone" label="联系电话"></el-table-column>
+          <el-table-column prop="createDate" label="申报日期"></el-table-column>
+          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <el-table-column prop="endTime" label="结项日期"></el-table-column>
+          <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
+          <el-table-column prop="status" label="审核状态">
+            <template slot-scope="scope1">
+              <span v-if="scope1.row.status =='已退回'" style="color:#ff0000">{{scope1.row.status}}</span>
+              <span
+                v-else-if="scope1.row.status =='已通过'"
+                style="color:#00ff00"
+              >{{scope1.row.status}}</span>
+              <span v-else style="color:#409EFF">{{scope1.row.status}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="operation" label="操作">
+            <template slot-scope="scope">
+              {{scope.row.operation}}
+              <el-button type="text" size="small" @click="modify(scope.$index)">修改</el-button>
+              <el-button type="text" size="small" @click="remove(scope.$index,7)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          background
+          @current-change="queryProject"
+          @size-change="queryProject"
+          :page-size="pageSize"
+          :current-page.sync="pageNum"
+          :total="total"
+          layout="total, prev, pager, next, jumper"
+          style="text-align:right; padding: 49px 29px 50px 0;"
+        ></el-pagination>
+      </div>
+      <!-- 删除弹框 -->
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" style="margin-top: 22vh;">
+        <span>确定删除？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false" style="padding:8px 15px;">取 消</el-button>
+          <el-button type="primary" @click="sureRemove()" style="padding:8px 15px;">确 定</el-button>
+        </span>
+      </el-dialog> 
     </div>
   </div>
 </template>
@@ -271,30 +454,27 @@ export default {
         category: this.isShow
       };
       this.$http.post("/api/query-project", this.qs.stringify(param)).then(result => {
-          result = result.data;
-          if (result.status === 0) {
-            result.data.forEach(v => {
-              if (v.createDate) {
-                v.createDate = new Date(
-                  +new Date(v.createDate) + 8 * 3600 * 1000
-                )
-                  .toISOString()
-                  .replace(/T/g, " ")
-                  .replace(/\.[\d]{3}Z/, "");
-              }
-              if (v.endTime) {
-                v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000)
-                  .toISOString()
-                  .replace(/T/g, " ")
-                  .replace(/\.[\d]{3}Z/, "");
-              }
-            });
-            this.tableData = result.data;
-            this.total = result.count;
-          } else {
-            this.$message.error("项目列表数据获取失败", result.data);
-          }
-        });
+        result = result.data;
+        if (result.status === 0) {
+          result.data.forEach(v => {
+            if (v.createDate) {
+              v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000)
+                .toISOString()
+                .replace(/T/g, " ")
+                .replace(/\.[\d]{3}Z/, "");
+            }
+            if (v.endTime) {v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000)
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+            }
+          });
+          this.tableData = result.data;
+          this.total = result.count;
+        } else {
+          this.$message.error("项目列表数据获取失败", result.data);
+        }
+      });
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -327,11 +507,11 @@ export default {
         });
       }
     },
-    remove(index) {
+    remove(index,type) {
       if (this.tableData[index].status == "已通过") {
         this.$message.error("该项目已通过审核不能删除!");
       } else {
-        this.removeId = { _id: this.tableData[index]._id };
+        this.removeId = { _id: this.tableData[index]._id,category: type};
         this.dialogVisible = true;
       }
     },
@@ -373,5 +553,8 @@ export default {
   margin: 10px;
   height: 40px;
   text-align: right;
+}
+.query_project .el-dialog{
+  margin-top: 30vh;
 }
 </style>

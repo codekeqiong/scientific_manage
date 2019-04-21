@@ -1,5 +1,5 @@
 <template>
-  <div class="add_work">
+  <div class="work">
     <div class="title">著作类申报</div>
     <div class="from-content">
       <el-form
@@ -32,7 +32,14 @@
           <el-cascader :options="options" v-model="ruleForm.field" @change="handleChange"></el-cascader>
         </el-form-item>
         <el-form-item label="编著方式" prop="editMethod">
-          <el-cascader :options="editOptions" v-model="ruleForm.editMethod"></el-cascader>
+          <el-select v-model="ruleForm.editMethod" placeholder="请选择编著方式">
+            <el-option 
+            v-for="(item,index) in editOptions"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="内容提要" prop="keywords">
           <el-input v-model="ruleForm.keywords"></el-input>
@@ -287,16 +294,16 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    cancel() {
-      console.log("点击取消成功");
-    },
+    // cancel() {
+    //   console.log("点击取消成功");
+    // },
     onSubmit: function() {
       if (this.ruleForm.projectName === "") {
         this.$message.error("请填写著作名称");
         return;
       }
       if (this.ruleForm.account === "") {
-        this.$message.error("请填写申请人账号");
+        this.$message.error("请填写作者账号");
         return;
       }
       if (this.ruleForm.userName === "") {
@@ -349,13 +356,14 @@ export default {
         category: '著作'
       };
       if (this.routeId) {
-        params._id = this.routeId;
+        params._id = this.routeId
+        params.category = '3'
         this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("著作类申请资料修改成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("著作类申请资料修改失败", result.data);
           }
@@ -364,9 +372,9 @@ export default {
         this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("著作类申报成功!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("著作类申报失败，请检查输入是否有误!", result.data);
           }
@@ -375,17 +383,18 @@ export default {
     },
     handleChange(value) {
       this.ruleForm.scores = value[value.length - 1]
+      console.log(this.ruleForm.scores)
     }
   }
 };
 </script>
 <style scoped>
-.add_work {
+.work {
   width: 100%;
   height: 850px;
   background-color: #fff;
 }
-.add_work .title {
+.work .title {
   width: 100%;
   height: 60px;
   line-height: 60px;
@@ -395,18 +404,18 @@ export default {
   border-bottom: 1px solid #eee;
   position: relative;
 }
-.add_work .from-content {
+.work .from-content {
   margin-left: 40px;
   width: 800px;
   padding-right: 50px;
   padding-top: 30px;
   box-sizing: border-box;
 }
-.add_work .el-date-editor.el-input,
+.work .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
   width: 320px;
 }
-.add_work .el-cascader {
+.work .el-cascader {
   width: 100%;
 }
 </style>

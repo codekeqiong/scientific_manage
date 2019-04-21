@@ -6,6 +6,11 @@ const UsersModel = require('../models/users')
 const leavesModel = require('../models/leaves')
 const ProjectModel = require('../models/project')
 const AcademicModel = require('../models/academic')
+const WorkModel = require('../models/work')
+const LiteraryModel = require('../models/literary')
+const ArtModel = require('../models/art')
+const PatentModel = require('../models/patent')
+const ActivityModel = require('../models/activity')
 const PersonInfoModel = require('../models/personInfo')
 let kindType
 // mongoose.connect('mongodb://localhost/university', { useNewUrlParser: true }, (err) => {
@@ -215,15 +220,89 @@ app.use('/api/add-project', (req, res) => {
       params.editMethod = req.body.editMethod
       kindType = WorkModel
     }else if(req.body.category == '文学作品'){
+      params.keywords = req.body.keywords
+      params.tutor = req.body.tutor
       kindType = LiteraryModel
-    } else if(req.body.category == '艺体类'){
+    } else if(req.body.category == '艺体'){
+      params.keywords = req.body.keywords
+      params.artArea = req.body.artArea
       kindType = ArtModel
     } else if(req.body.category == '注册专利'){
+      params.patentType = req.body.patentType
+      params.cooperation = req.body.cooperation
       kindType = PatentModel
     } else {
+      params.keywords = req.body.keywords
+      params.type = req.body.type
       kindType = ActivityModel
     }
     kindType.create(params, function (err, data) {
+      if (err) {
+        res.json({
+          status: 1,
+          data: err.message
+        });
+      } else {
+        res.json({
+          status: 0,
+          data: data
+        });
+      }
+    })
+  } else {
+    res.json({
+      status: 1,
+      data: '遭遇未知错误'
+    });
+  }
+})
+// 科研项目查询 修改操作(_id)
+app.use('/api/update-project', function (req, res) {
+  if (req.body) {
+    var params = {
+      projectName: req.body.projectName,
+      userName: req.body.userName,
+      second_college: req.body.second_college,
+      keywords: req.body.keywords,
+      abstract: req.body.abstract,
+      field: req.body.field,
+      approval: req.body.approval,
+      fund: req.body.fund,
+      endTime: req.body.endTime,
+      phone: req.body.phone,
+      remarks: req.body.remarks
+    };
+    var id = req.body._id;
+    if(req.body.category == '1'){
+      params.position = req.body.position
+      params.depart = req.body.depart
+      kindType = ProjectModel
+    } else if(req.body.category == '2'){
+      params.tutor = req.body.tutor
+      params.keywords = req.body.keywords
+      kindType = AcademicModel
+    } else if(req.body.category == '3'){
+      params.keywords = req.body.keywords
+      params.editMethod = req.body.editMethod
+      kindType = WorkModel
+    }else if(req.body.category == '4'){
+      params.keywords = req.body.keywords
+      params.tutor = req.body.tutor
+      kindType = LiteraryModel
+    } else if(req.body.category == '5'){
+      params.keywords = req.body.keywords
+      params.artArea = req.body.artArea
+      kindType = ArtModel
+    } else if(req.body.category == '6'){
+      params.patentType = req.body.patentType
+      params.cooperation = req.body.cooperation
+      kindType = PatentModel
+    } else {
+      params.keywords = req.body.keywords
+      params.type = req.body.type
+      kindType = ActivityModel
+    }
+    kindType.findByIdAndUpdate(id, params, { new: true }, function (err, data) {
       if (err) {
         res.json({
           status: 1,
@@ -343,44 +422,25 @@ app.use('/api/delete-project', function (req, res) {
     var id ={
       _id: mongoose.Types.ObjectId(req.body._id)
     } 
-    ProjectModel.remove(id, function (err, data) {
-      if (err) {
-        res.json({
-          status: 1,
-          data: err.message
-        });
-      } else {
-        res.json({
-          status: 0,
-          data: data
-        });
+    let category = req.body.category;
+    let modelType = ProjectModel;
+      switch(category){
+        case '1': modelType = ProjectModel;
+        break;
+        case '2': modelType = AcademicModel;
+        break;
+        case '3': modelType = WorkModel;
+        break;
+        case '4': modelType = LiteraryModel;
+        break;
+        case '5': modelType = ArtModel;
+        break;
+        case '6': modelType = PatentModel;
+        break;
+        case '7': modelType = ActivityModel;
+        break;
       }
-    })
-  } else {
-    res.json({
-      status: 1,
-      data: '遭遇未知错误'
-    });
-  }
-})
-// 科研项目查询 修改操作(_id)
-app.use('/api/update-project', function (req, res) {
-  if (req.body) {
-    var params = {
-      projectName: req.body.projectName,
-      userName: req.body.userName,
-      second_college: req.body.second_college,
-      keywords: req.body.keywords,
-      abstract: req.body.abstract,
-      field: req.body.field,
-      approval: req.body.approval,
-      fund: req.body.fund,
-      endTime: req.body.endTime,
-      phone: req.body.phone,
-      remarks: req.body.remarks
-    };
-    var id = req.body._id;
-    ProjectModel.findByIdAndUpdate(id, params, { new: true }, function (err, data) {
+      modelType.remove(id, function (err, data) {
       if (err) {
         res.json({
           status: 1,
@@ -404,10 +464,75 @@ app.use('/api/update-project', function (req, res) {
 app.use('/api/pass-one',function(req, res) {
   if(req.body){
     var newStatus = {
-      status: '已通过'
+      status: '已立项',
+      setUpDate: req.body.setUpDate
     }
     let id = req.body._id
-    ProjectModel.findByIdAndUpdate(id, newStatus, { new: true}, function (err, data) {
+    let category = req.body.category;
+    let modelType = ProjectModel;
+      switch(category){
+        case '1': modelType = ProjectModel;
+        break;
+        case '2': modelType = AcademicModel;
+        break;
+        case '3': modelType = WorkModel;
+        break;
+        case '4': modelType = LiteraryModel;
+        break;
+        case '5': modelType = ArtModel;
+        break;
+        case '6': modelType = PatentModel;
+        break;
+        case '7': modelType = ActivityModel;
+        break;
+      }
+      modelType.findByIdAndUpdate(id, newStatus, { new: true}, function (err, data) {
+      if (err) {
+        res.json({
+          status: 1,
+          data: err.message
+        });
+      } else {
+        res.json({
+          status: 0,
+          data: data
+        });
+      }
+    })
+  } else {
+    res.json({
+      status: 1,
+      data: '遭遇未知错误'
+    });
+  }
+})
+// 结题操作
+app.use('/api/end-one',function(req, res) {
+  if(req.body){
+    var newStatus = {
+      status: '已结题',
+      isConclusion: '是'
+    }
+    let id = req.body._id
+    let category = req.body.category;
+    let modelType = ProjectModel;
+      switch(category){
+        case '1': modelType = ProjectModel;
+        break;
+        case '2': modelType = AcademicModel;
+        break;
+        case '3': modelType = WorkModel;
+        break;
+        case '4': modelType = LiteraryModel;
+        break;
+        case '5': modelType = ArtModel;
+        break;
+        case '6': modelType = PatentModel;
+        break;
+        case '7': modelType = ActivityModel;
+        break;
+      }
+      modelType.findByIdAndUpdate(id, newStatus, { new: true}, function (err, data) {
       if (err) {
         res.json({
           status: 1,
@@ -433,8 +558,26 @@ app.use('/api/back-one',function(req, res) {
     var newStatus = {
       status: '已退回'
     }
+    let category = req.body.category;
+    let modelType = ProjectModel;
+      switch(category){
+        case '1': modelType = ProjectModel;
+        break;
+        case '2': modelType = AcademicModel;
+        break;
+        case '3': modelType = WorkModel;
+        break;
+        case '4': modelType = LiteraryModel;
+        break;
+        case '5': modelType = ArtModel;
+        break;
+        case '6': modelType = PatentModel;
+        break;
+        case '7': modelType = ActivityModel;
+        break;
+      }
     let id = req.body._id
-    ProjectModel.findByIdAndUpdate(id, newStatus, { new: true}, function (err, data) {
+    modelType.findByIdAndUpdate(id, newStatus, { new: true}, function (err, data) {
       if (err) {
         res.json({
           status: 1,
@@ -453,38 +596,6 @@ app.use('/api/back-one',function(req, res) {
       data: '遭遇未知错误'
     });
   }
-})
-// 科研分数统计
-app.use('/api/scores', (req, res) => {
-  let searchText = new RegExp(req.body.searchText)
-  var query = ScoresModel.find(function (err, data) {
-    if (err) {
-      res.json({
-        status: 1,
-        data: err.message
-      });
-      } else {
-        query.sort({'_id': -1});
-        query.skip((page - 1)*pageSize);
-        query.limit(pageSize);
-        if(searchText){
-          query.where('title', searchText)
-        };
-        query.exec(function(err, result){
-        if(err){
-          res.json(err)
-        } else {
-          ScoresModel.find(function(err, results){
-            res.json({
-              status: 0,
-              data: result,
-              count: results.length
-            });
-          });
-        }
-        });
-      }
-    })
 })
 // 获取留言列表
 app.use('/api/leave', (req, res) => {         // 定义简单路由

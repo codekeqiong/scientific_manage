@@ -170,41 +170,16 @@ export default {
         { label: "智能制造学院", value: "智能" }
       ],
       rules: {
-        projectName: [
-          { required: true, message: "请输入项目名称", trigger: "blur" }
-        ],
-        account: [
-          { required: true, message: "请输入申请账号", trigger: "blur" }
-        ],
-        userName: [
-          { required: true, message: "请输入申请人姓名", trigger: "blur" }
-        ],
-        field: [
-          { required: true, message: "请输入研究领域", trigger: "blur" }
-          ],
-        position: [
-          { required: true, message: "请输入职称", trigger: "blur" }
-          ],
-        depart: [
-          { required: true, message: "请输入关键词", trigger: "blur" }
-        ],
-        approval: [
-          { required: true, message: "请输入课题批准单位", trigger: "blur" }
-        ],
-        second_college: [
-          { required: true, message: "请选择二级学院", trigger: "blur" }
-        ],
-        phone: [
-          {
-            required: true,
-            validator: validatePhone,
-            message: "请输入正确的11位联系电话",
-            trigger: "blur"
-          }
-        ],
-        endTime: [
-          { required: true, message: "请选择结项日期", trigger: "blur" }
-        ]
+        projectName: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
+        account: [{ required: true, message: "请输入申请账号", trigger: "blur" }],
+        userName: [{ required: true, message: "请输入申请人姓名", trigger: "blur" }],
+        field: [{ required: true, message: "请输入研究领域", trigger: "blur" }],
+        position: [{ required: true, message: "请输入职称", trigger: "blur" }],
+        depart: [{ required: true, message: "请输入关键词", trigger: "blur" }],
+        approval: [{ required: true, message: "请输入课题批准单位", trigger: "blur" }],
+        second_college: [{ required: true, message: "请选择二级学院", trigger: "blur" }],
+        phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话",trigger: "blur"}],
+        endTime: [{ required: true, message: "请选择结项日期", trigger: "blur" }]
       }
     };
   },
@@ -232,9 +207,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    cancel() {
-      console.log("点击取消成功");
-    },
+    // cancel() {
+    //   console.log("点击取消成功");
+    // },
     onSubmit: function() {
       if (this.ruleForm.projectName === "") {
         this.$message.error("请填写项目名称");
@@ -294,7 +269,8 @@ export default {
         category: '科研项目'
       };
       if (this.routeId) {
-        params._id = this.routeId;
+        params._id = this.routeId
+        params.category = '1'
         this.$http.post("/api/update-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("科研项目修改成功!");
@@ -309,9 +285,9 @@ export default {
         this.$http.post("/api/add-project", this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             this.$message.success("申报成功,可在项目管理分类中查看!");
-            // this.$router.push({
-            //   path: "/query"
-            // });
+            this.$router.push({
+              path: "/query"
+            });
           } else {
             this.$message.error("科研项目申报失败，请检查输入是否有误!",result.datas);
           }

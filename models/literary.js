@@ -1,13 +1,13 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const db = require('../config/db')
-const PatentSchema = new Schema({
+const LiterarySchema = new Schema({
   projectName: String,
   account: String,
   userName: String,
   second_college: String,
-  patentType: String,
-  cooperation: String,
+  keywords: String,
+  tutor: String,
   field: String,
   approval: String,
   createDate: {
@@ -22,5 +22,5 @@ const PatentSchema = new Schema({
   category: String,
   scores: String
 },{versionKey: false})
-const PatentModel = db.model('Patent', PatentSchema)
-module.exports = PatentModel
+const LiteraryModel = db.model('Literary', LiterarySchema)
+module.exports = LiteraryModel
