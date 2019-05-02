@@ -72,7 +72,7 @@ export default {
           { required: true, message: '请选择身份', trigger: 'blur' }
         ],
         verify:[
-          { required: true, message: '请正确填写验证码', trigger: 'blur' }
+          { required: true, message: '请填写验证码', trigger: 'blur' }
         ]
       }
     }
@@ -85,11 +85,28 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    // 验证码校验
     loginIn(){
-      if(this.rulesForm.verify === this.identifyCode){
-        this.$router.push({
-          path:'/home'
-        })
+      if (this.rulesForm.verify !== this.identifyCode){
+        this.$message.error("验证码输入错误")
+      } else {
+        console.log("验证码输入正确")
+        let params = {
+          account: this.rulesForm.account,
+          password: this.rulesForm.password,
+          identify: this.rulesForm.identity
+        };
+        this.$http.post('/api/login', this.qs.stringify(params)).then(result => {
+          if (result.data.status === 0) {
+            sessionStorage.setItem('role', result.data.data)
+            this.$message.success("登陆成功");
+            this.$router.push({
+              path:'/home'
+            })
+          } else {
+            this.$message.error("登录失败");
+          }
+        });
       }
     },
     randomNum(min, max) {

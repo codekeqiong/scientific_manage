@@ -7,13 +7,13 @@
     <div class="manage-content">
       <div class="right-corner">
         <el-input
-          placeholder="请输入搜索内容"
+          placeholder="请输入账号查询"
           class="input-search"
           v-model="input_search"
           clearable
           style="width:200px; height:40px;"
         ></el-input>
-        <el-button class="search" @click="search()" type="primary" style="padding: 11px 15px;margin-left:-7px;">查询</el-button>
+        <el-button class="search" @click="getUsersInfo()" type="primary" style="padding: 12px 15px;margin-left:-7px;">查询</el-button>
         <el-button class="add_user" @click="add_user()" type="primary" style="padding: 11px 15px;">
           <i class="el-icon-plus"></i> 新增用户
         </el-button>
@@ -29,8 +29,9 @@
         <el-table-column type="index" label="编号" width="120"></el-table-column>
         <el-table-column prop="account" label="账号"></el-table-column>
         <el-table-column prop="userName" label="用户名"></el-table-column>
-        <el-table-column prop="password" label="密码"></el-table-column>
+        <!-- <el-table-column prop="password" label="密码"></el-table-column> -->
         <el-table-column prop="role" label="角色"></el-table-column>
+        <el-table-column prop="createDate" label="添加时间"></el-table-column>
         <el-table-column prop="operation" label="操作">
           <template slot-scope="scope">
             {{scope.row.operation}}
@@ -50,7 +51,7 @@
         layout="total, prev, pager, next, jumper"
         style="text-align:right; padding: 49px 29px 50px 0;"
       ></el-pagination>
-      <el-dialog :title="dialogTitle" :visible.sync="addUserDialog" width="500px" center>
+      <el-dialog :title="dialogTitle" :visible.sync="addUserDialog" width="500px" center style="margin-top: 5vh;">
         <div class="add-user">
           <div class="add-content">
             <el-form
@@ -60,9 +61,6 @@
               label-width="100px"
               class="rulesForm"
             >
-              <el-form-item label="添加姓名" prop="userName">
-                <el-input v-model="rulesForm.userName" style="width:90%"></el-input>
-              </el-form-item>
               <el-form-item label="添加账号" prop="account">
                 <el-input v-model="rulesForm.account" autocomplete="off" style="width:90%"></el-input>
               </el-form-item>
@@ -81,6 +79,9 @@
                   autocomplete="off"
                   style="width:90%"
                 ></el-input>
+              </el-form-item>
+              <el-form-item label="添加姓名" prop="userName">
+                <el-input v-model="rulesForm.userName" style="width:90%"></el-input>
               </el-form-item>
               <el-form-item label="身份" prop="role">
                 <el-radio-group v-model="rulesForm.role">
@@ -149,16 +150,9 @@ export default {
         role: "教师"
       },
       rules: {
-        account: [
-          { required: true, message: "请输入用户账号", trigger: "blur" }
-        ],
-        userName: [
-          { required: true, message: "请输入用户的姓名", trigger: "blur" }
-        ],
+        account: [{ required: true, message: "请输入用户账号", trigger: "blur" }],
         pass: [{ required: true, validator: validateNewPass, trigger: "blur" }],
-        checkPass: [
-          { required: true, validator: validateCheckPass, trigger: "blur" }
-        ],
+        checkPass: [{ required: true, validator: validateCheckPass, trigger: "blur" }],
         role: [{ required: true, message: "请选择身份", trigger: "blur" }]
       }
     };
@@ -173,38 +167,25 @@ export default {
     cancel(){
       this.addUserDialog = false;
     },
-    search(){
-      if(this.input_search !== ''){
-        let param = {
-          page: this.pageNum,
-          pageSize: this.pageSize,
-          searchText: this.input_search
-        }
-        this.$http.post('/api/users', this.qs.stringify(param)).then(result => {
-          result = result.data
-          if(result.status === 0){
-            this.tableData = result.data;
-            this.total = this.tableData.length
-          } else {
-            this.$message.error('查询列表数据失败')
-          }
-        })
-      }else{
-        this.getUsersInfo()
-      }
-    },
     // 获取用户列表
     getUsersInfo: function() {
       let param = {
         page: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        searchText: this.input_search
       }
       this.$http.post("/api/users", this.qs.stringify(param)).then(result => {
-        if (result.data.status === 0) {
-          this.tableData = result.data.data;
-          this.total = result.data.count
+        result = result.data
+        if (+result.status === 0) {
+          result.data.forEach(v => {
+            if (v.createDate) {
+              v.createDate = v.createDate.substr(0,10)
+            }
+          });
+          this.tableData = result.data;
+          this.total = param.searchText == "" ?  result.count : result.data.length;
         } else {
-          this.$message.error("列表数据获取失败", result.data.data);
+          this.$message.error("列表数据获取失败", result.data);
         }
       });
     },

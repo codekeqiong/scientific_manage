@@ -12,14 +12,15 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-input placeholder="请输入查询内容" prefix-icon="el-icon-search" v-model="search_info" style="margin-left:10px;"></el-input>
-        <el-button type="primary" @click="search()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
+        <el-input placeholder="请输入项目名称查询" prefix-icon="el-icon-search" v-model="search_info" style="margin-left:10px;"></el-input>
+        <el-button type="primary" @click="queryProject()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
       </div>
       <!-- 科研项目 -->
       <div class="kinds" v-if="isShow == '1'">
         <el-table
           ref="multipleTable"
           :data="tableData"
+          key="1"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -32,7 +33,7 @@
           <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
-          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <!-- <el-table-column prop="setUpDate" label="立项日期"></el-table-column> -->
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
@@ -69,6 +70,7 @@
         <el-table
           ref="multipleTable"
           :data="tableData"
+          key="2"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -81,7 +83,7 @@
           <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
-          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <!-- <el-table-column prop="setUpDate" label="立项日期"></el-table-column> -->
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
@@ -118,6 +120,7 @@
         <el-table
           ref="multipleTable"
           :data="tableData"
+          key="3"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -130,7 +133,7 @@
           <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
-          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <!-- <el-table-column prop="setUpDate" label="立项日期"></el-table-column> -->
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
@@ -167,6 +170,7 @@
         <el-table
           ref="multipleTable"
           :data="tableData"
+          key="4"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -179,7 +183,7 @@
           <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
-          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <!-- <el-table-column prop="setUpDate" label="立项日期"></el-table-column> -->
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
@@ -216,6 +220,7 @@
         <el-table
           ref="multipleTable"
           :data="tableData"
+          key="5"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -228,7 +233,7 @@
           <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
-          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <!-- <el-table-column prop="setUpDate" label="立项日期"></el-table-column> -->
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
@@ -265,6 +270,7 @@
         <el-table
           ref="multipleTable"
           :data="tableData"
+          key="6"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -277,7 +283,7 @@
           <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
-          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <!-- <el-table-column prop="setUpDate" label="立项日期"></el-table-column> -->
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
@@ -314,6 +320,7 @@
         <el-table
           ref="multipleTable"
           :data="tableData"
+          key="7"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -326,7 +333,7 @@
           <el-table-column prop="scores" label="分数统计"></el-table-column>
           <el-table-column prop="phone" label="联系电话"></el-table-column>
           <el-table-column prop="createDate" label="申报日期"></el-table-column>
-          <el-table-column prop="setUpDate" label="立项日期"></el-table-column>
+          <!-- <el-table-column prop="setUpDate" label="立项日期"></el-table-column> -->
           <el-table-column prop="endTime" label="结项日期"></el-table-column>
           <el-table-column prop="isConclusion" label="是否立项"></el-table-column>
           <el-table-column prop="status" label="审核状态">
@@ -450,38 +457,11 @@ export default {
       this.category = e;
       this.queryProject();
     },
-    search(){
-      if(this.search_info !== ''){
-        let param = {
-          page: this.pageNum,
-          pageSize: this.pageSize,
-          searchText: this.search_info 
-        }
-        this.$http.post('/api/query-project', this.qs.stringify(param)).then(result => {
-          result = result.data
-          if (result.status === 0) {
-            result.data.forEach(v => {
-              if(v.createDate){
-                v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
-              } 
-              if(v.endTime){
-                v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
-              }
-            });
-            this.tableData = result.data;
-            this.total = this.tableData.length;
-          } else {
-            this.$message.error("查询列表数据失败", result.data);
-          }
-        })
-      } else {
-        this.queryProject()
-      }
-    },
     queryProject: function() {
       let param = {
         page: this.pageNum,
         pageSize: this.pageSize,
+        searchText: this.search_info,
         category: this.isShow
       };
       this.$http.post("/api/query-project", this.qs.stringify(param)).then(result => {
@@ -489,14 +469,16 @@ export default {
         if (result.status === 0) {
           result.data.forEach(v => {
             if(v.createDate){
-              v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+              v.createDate = v.createDate.substr(0,10)
+              // v.createDate = new Date(+new Date(v.createDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
             } 
             if(v.endTime){
-              v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+               v.endTime = v.endTime.substr(0,10)
+              // v.endTime = new Date(+new Date(v.endTime) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
             }
           });
           this.tableData = result.data;
-          this.total = result.count;
+          this.total = param.searchText == "" ?  result.count : result.data.length;
         } else {
           this.$message.error("项目列表数据获取失败", result.data);
         }

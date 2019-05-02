@@ -18,13 +18,13 @@
           </div>
           <div class="info-detail">
             <el-form-item label="账号" prop="account">
-              <el-input v-model="rulesForm.account"></el-input>
+              <el-input v-model="rulesForm.account" :disabled="true"></el-input>
+            </el-form-item>
+            <el-form-item label="角色" prop="role">
+              <el-input v-model="rulesForm.role" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="姓名" prop="account_name">
               <el-input v-model="rulesForm.account_name"></el-input>
-            </el-form-item>
-            <el-form-item label="角色" prop="role">
-              <el-input v-model="rulesForm.role"></el-input>
             </el-form-item>
             <el-form-item label="性别" prop="sex">
               <el-radio-group v-model="rulesForm.sex">

@@ -11,7 +11,11 @@ const UsersSchema = new Schema({
   second_College: String,
   native_Place: String,
   education: String,
-  phone: Number
+  phone: Number,
+  createDate: {
+    type: Date,
+    default: Date.now()
+  }
 },{versionKey: false})
 const UsersModel = db.model('Users', UsersSchema)
 module.exports = UsersModel

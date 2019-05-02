@@ -111,7 +111,8 @@ app.use('/api/add-users', (req, res) => {
       second_College: req.body.second_College,
       native_Place: req.body.native_Place,
       education: req.body.education,
-      phone: req.body.phone
+      phone: req.body.phone,
+      createDate: req.body.createDate
     };
     UsersModel.create(params, function (err, data) {
       if (err) {

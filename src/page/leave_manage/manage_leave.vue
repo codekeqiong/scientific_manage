@@ -9,7 +9,7 @@
           prefix-icon="el-icon-search"
           clearable
         ></el-input>
-        <el-button type="primary" @click="search()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
+        <el-button type="primary" @click="getLeaveInfo()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
         <el-button
           type="primary"
           icon="el-icon-plus"
@@ -117,7 +117,8 @@ export default {
     getLeaveInfo:function(){
       let param = {
         page: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        searchText: this.search_input
       }
       this.$http.post('/api/leave',this.qs.stringify(param)).then((result) => {
         result = result.data
@@ -125,11 +126,12 @@ export default {
         result.data.forEach(v => {
         //UTC日期转换为正常日期显示 
           if(v.add_time){
-            v.add_time = new Date(+new Date(v.add_time) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+            v.add_time = v.add_time.substr(0,10)
+            // v.add_time = new Date(+new Date(v.add_time) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
           }
         });
         this.tableData = result.data
-        this.total = result.count
+        this.total = param.searchText == "" ? result.count : result.data.length
       } else {
         this.$message.error("列表数据获取失败", result.data);
       }
@@ -138,32 +140,32 @@ export default {
     handleSelectionChange() {
       this.multipleSelection = val;
     },
-    search() {
-      if(this.search_input !== ''){
-        let param = {
-          page: this.pageNum,
-          pageSize: this.pageSize,
-          searchText: this.search_input
-        }
-        this.$http.post('/api/leave',this.qs.stringify(param)).then((result) => {
-          result = result.data
-          if (result.status === 0) {
-            result.data.forEach(v => {
-            //UTC日期转换为正常日期显示 
-              if(v.add_time){
-                v.add_time = new Date(+new Date(v.add_time) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
-              }
-            });
-            this.tableData = result.data
-            this.total = this.tableData.length
-        } else {
-          this.$message.error("查询列表数据失败", result.data);
-        }
-        })
-      } else {
-        this.getLeaveInfo()
-      }
-    },
+    // search() {
+    //   if(this.search_input !== ''){
+    //     let param = {
+    //       page: this.pageNum,
+    //       pageSize: this.pageSize,
+    //       searchText: this.search_input
+    //     }
+    //     this.$http.post('/api/leave',this.qs.stringify(param)).then((result) => {
+    //       result = result.data
+    //       if (result.status === 0) {
+    //         result.data.forEach(v => {
+    //         //UTC日期转换为正常日期显示 
+    //           if(v.add_time){
+    //             v.add_time = new Date(+new Date(v.add_time) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') 
+    //           }
+    //         });
+    //         this.tableData = result.data
+    //         this.total = this.tableData.length
+    //     } else {
+    //       this.$message.error("查询列表数据失败", result.data);
+    //     }
+    //     })
+    //   } else {
+    //     this.getLeaveInfo()
+    //   }
+    // },
     add_leave() {
       this.dialogVisible = true;
     },

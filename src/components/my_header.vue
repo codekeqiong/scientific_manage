@@ -7,7 +7,7 @@
       <div class="system-title">高校科研管理系统</div>
       <div class="hello">
         <el-dropdown @command="handleCommand">
-          <span class="el-dropdown-link">June<i class="el-icon-arrow-down el-icon--right"></i></span>
+          <span class="el-dropdown-link">13198487982<i class="el-icon-arrow-down el-icon--right"></i></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -73,12 +73,13 @@ export default {
   left: 70px;
 }
 .title .hello {
-  width: 100px;
+  width: 160px;
   height: 68px;
   position: absolute;
-  top: 2px;
+  top: 2px;  
   right: 120px;
   display: inline-block;
+  text-align: right;
   font-size: 18px;
 }
 .title .hello .el-dropdown{
