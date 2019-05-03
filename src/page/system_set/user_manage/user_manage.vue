@@ -64,6 +64,9 @@
               <el-form-item label="添加账号" prop="account">
                 <el-input v-model="rulesForm.account" autocomplete="off" style="width:90%"></el-input>
               </el-form-item>
+              <el-form-item label="添加姓名" prop="userName">
+                <el-input v-model="rulesForm.userName" style="width:90%"></el-input>
+              </el-form-item>
               <el-form-item label="设置密码" prop="pass">
                 <el-input
                   type="password"
@@ -79,9 +82,6 @@
                   autocomplete="off"
                   style="width:90%"
                 ></el-input>
-              </el-form-item>
-              <el-form-item label="添加姓名" prop="userName">
-                <el-input v-model="rulesForm.userName" style="width:90%"></el-input>
               </el-form-item>
               <el-form-item label="身份" prop="role">
                 <el-radio-group v-model="rulesForm.role">
@@ -107,7 +107,6 @@
         </span>
       </el-dialog>
     </div>
-   
   </div>
 </template>
 <script>

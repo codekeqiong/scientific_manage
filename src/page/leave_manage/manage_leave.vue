@@ -11,6 +11,7 @@
         ></el-input>
         <el-button type="primary" @click="getLeaveInfo()" style="padding:12px 8px;margin-left: -7px;">搜索</el-button>
         <el-button
+          v-if="role != 0"
           type="primary"
           icon="el-icon-plus"
           @click="add_leave()"
@@ -35,7 +36,7 @@
           <template slot-scope="scope">
             {{scope.row.operation}}
             <el-button type="text" size="small" @click="detail(scope.$index)">查看详情</el-button>
-            <el-button type="text" size="small" @click="remove(scope.$index)">删除</el-button>
+            <el-button type="text" size="small" v-if="role !== 0" @click="remove(scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,6 +86,7 @@ export default {
   name: "manage_leave",
   data() {
     return {
+      role: '',
       current_time: "",
       search_input: "",
       dialogVisible: false,
@@ -110,6 +112,7 @@ export default {
     };
   },
   created() {
+    this.role = sessionStorage.getItem('role')
     this.getLeaveInfo()
   },
   methods: {

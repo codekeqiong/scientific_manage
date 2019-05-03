@@ -60,13 +60,14 @@ export default {
       var validateCheckPass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.newPass) {
+        } else if (value != this.ruleForm.newPass) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
         }
       };
       return {
+        account: '',
         isShowTip: false,
         ruleForm: {
           oldPass: '',
@@ -87,26 +88,47 @@ export default {
         }
       }
     },
+    created(){
+      this.account = sessionStorage.getItem('account')
+    },
     methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
+      // 密码强度提示
       changePasswordTip(isShow) {
         if (isShow) {
           this.isShowTip = true;
         } else {
           this.isShowTip = false;
         }
+      },
+      // 重置
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      submitForm(formName) {
+        // this.$refs[formName].validate((valid) => {
+        //   if (valid) {
+        //     alert('submit!');
+        //   } else {
+        //     console.log('error submit!!');
+        //     return false;
+        //   }
+        // });
+        let param = {
+          account: this.account,
+          oldPass: this.ruleForm.oldPass,
+          newPass: this.ruleForm.newPass
+        }
+        this.$http.post("/api/set-pwd", this.qs.stringify(param)).then(result => {
+          console.log(result.data)
+          if (result.data.status === 0) {
+            this.$message.success("密码重置成功,请重新登录")
+             this.$router.push({
+              path:'/'
+            })
+          } else {
+            this.$message.error(result.data.data)
+          }
+        });
       },
     }
 }

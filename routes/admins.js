@@ -1,7 +1,9 @@
-const express = require('express')  //快速的搭建一个 Web 开发框架
+const express = require('express')  //快速的搭建一个Web开发框架
 const router = express.Router()
 var bodyParser = require('body-parser')   // 解析浏览器发送来的 body 数据
 const mongoose = require('mongoose')
+const crypto = require('crypto');  // crypto 提供通用的加密和哈希算法
+const hash = crypto.createHash('md5');  // md5 哈希算法
 const UsersModel = require('../models/users')
 const leavesModel = require('../models/leaves')
 const ProjectModel = require('../models/project')
@@ -35,34 +37,57 @@ const app = express()
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // 登录
-app.use('/api/login', (req, res) => {
+app.use('/api/login', function(req, res, next) {
   let account = req.body.account,
-    userName = req.body.userName,
-    password = req.body.password
-  UsersModel.findOne(function(err, data){
-    if(err){
-      console.log(err)
+      password = req.body.password,
+      role = (req.body.role == "0" ? '教师' : (req.body.role == "1" ? '院级管理员' : '系统管理员'));
+  // password = hash.update(req.body.password).digest('base64');
+  UsersModel.findOne({account: req.body.account}, function(err, data){
+    // if(!account){
+    //   console.log('该用户不存在')
+    // }
+    // account.comparePassword(password, function(err, isMatch){
+    //   if(err){
+    //     console.log(err);
+    //   }
+    //   if(isMatch){
+    //     req.session.account = account;   //将账户名存入session中
+    //     console.log('登录成功'+ account);
+    //     return res.redirect('/');
+    //   } else {
+    //     return res.redirect('/login');
+    //   }
+    // })
+    if(+data.length === 0){
+      res.json({
+        status: 1,
+        data: '该用户不存在'
+      });
+    } else if(data.password !== password){
+      console.log(data.password, password)
+      res.json({
+        status: 1,
+        data: '账号与密码不匹配'
+      });
+    } else if(data.role !== role){
+      res.json({
+        status: 1,
+        data: '选择的角色不匹配'
+      });
+    }else if (data.length !== 0 && data.password === password && data.role === role){
+      // req.session.account = account; //存session
+      // req.session.role = role;
+      res.json({
+        status: 0,
+        data: 'success'
+      });
     }
-    if(!account){
-      console.log('该用户不存在')
-    }
-    account.comparePassword(password, function(err, isMatch){
-      if(err){
-        console.log(err);
-      }
-      if(isMatch){
-        req.session.account = account;   //将账户名存入session中
-        console.log('登录成功'+ account);
-        return res.redirect('/');
-      } else {
-        return res.redirect('/login');
-      }
-    })
   })
 })
 // 退出登录
 app.use('/api/loginout', function(req, res){
   delete req.session.account   //删除session中保存的账号
+  sessionStorage.clear();
   res.redirect('/');
 })
 // 查询所有用户数据
@@ -112,6 +137,7 @@ app.use('/api/add-users', (req, res) => {
       native_Place: req.body.native_Place,
       education: req.body.education,
       phone: req.body.phone,
+      email: req.body.email,
       createDate: req.body.createDate
     };
     UsersModel.create(params, function (err, data) {
@@ -376,7 +402,7 @@ app.use('/api/query-project', (req, res) => {
   })
 })
 // 科研项目查询 根据id查询某条数据(_id)
-app.use('/api/find-one-project', function (req,res){
+app.use('/api/find-one-project', function (req, res){
   if(req.body) {
       let id = req.body._id;
       let category = req.body.category;
@@ -599,7 +625,7 @@ app.use('/api/back-one',function(req, res) {
   }
 })
 // 获取留言列表
-app.use('/api/leave', (req, res) => {         // 定义简单路由
+app.use('/api/leave', (req, res) => {
   let page = parseInt(req.body.page)
   let pageSize = parseInt(req.body.pageSize) 
   let searchText = new RegExp(req.body.searchText)
@@ -633,7 +659,7 @@ app.use('/api/leave', (req, res) => {         // 定义简单路由
   })
 })
 // 留言管理 添加留言
-app.use('/api/add-leave',function(req,res){
+app.use('/api/add-leave',function(req, res){
   if(req.body){
     let params = {
       title: req.body.title,
@@ -686,21 +712,38 @@ app.use('/api/delete-leave',function(req, res){
     })   
   }
 })
+// 个人中心 获取个人信息
+app.use('/api/get-info', function(req, res){
+  UsersModel.findOne({account: req.body.account}, function(err, data){
+    if (err) {
+      res.json({
+          status: 1,
+          data: err.message
+      });
+    } else {
+      res.json({
+        status: 0,
+        data: data
+      });
+    }
+  })
+}),
 // 个人中心 完善个人信息
-app.use('/api/perfect-info', function (req,res){
+app.use('/api/perfect-info', function (req, res){
   if(req.body) {
     let params = {
       account: req.body.account,
-      account_name: req.body.account_name,
-      role: req.body.role ,
+      userName: req.body.userName,
+      role: req.body.role,
       sex: req.body.sex,
       second_college: req.body.second_college,
       native_place: req.body.native_place,
       education: req.body.education,
-      birth_date: req.body.birth_date,
-      phone: req.body.phone 
+      phone: req.body.phone,
+      email: req.body.email
     }
-    PersonInfoModel.create(params, function (err, data){
+    var id = req.body._id;
+    UsersModel.findByIdAndUpdate(id, params, { new: true }, function (err, data){
       if (err) {
         res.json({
             status: 1,
@@ -720,6 +763,24 @@ app.use('/api/perfect-info', function (req,res){
     });
   }
 });
+// 重置密码
+app.use('/api/set-pwd',function(req, res){
+  let oldPass = req.body.oldPass
+  UsersModel.findOneAndUpdate({account: req.body.account},{password: req.body.newPass},function(err, data){
+    console.log(oldPass, data.password, req.body.newPass)
+    if(oldPass != data.password){
+      res.json({
+        status: 1,
+        data: "原密码输入错误"
+      })
+    } else {
+      res.json({
+        status: 0,
+        data: "密码重置成功"
+      })
+    }
+  })
+})
 // 定义服务启动端口 监听端口
 app.listen(4404, () => {
   console.log('app listening on port 8080.')

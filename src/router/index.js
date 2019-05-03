@@ -14,7 +14,6 @@ import AddActivity from '../page/kinds_apply/add_activity'
 import AddWork from '../page/kinds_apply/add_work'
 import QueryProject from '../page/projects_manage/query_project'
 import ApprovalProject from '../page/projects_manage/approval_manage'
-// import Fractional from '../page/fraction_statistics/fractional'
 import LeaveDetail from '../page/leave_manage/leave_detail'
 import ManageLeave from '../page/leave_manage/manage_leave'
 Vue.use(Router)

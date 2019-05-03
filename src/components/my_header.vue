@@ -7,7 +7,7 @@
       <div class="system-title">高校科研管理系统</div>
       <div class="hello">
         <el-dropdown @command="handleCommand">
-          <span class="el-dropdown-link">13198487982<i class="el-icon-arrow-down el-icon--right"></i></span>
+          <span class="el-dropdown-link">{{account}}<i class="el-icon-arrow-down el-icon--right"></i></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -21,10 +21,16 @@
 export default {
   name: "my_header",
   data() {
-    return {};
+    return {
+      account: ''
+    };
+  },
+  created(){
+    this.account = sessionStorage.getItem('account')
   },
   methods: {
     handleCommand(command) {
+      sessionStorage.clear();
       this.$router.push({
         path: "/"
       });

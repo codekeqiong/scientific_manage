@@ -69,18 +69,26 @@ app.use(function (req, res, next) {
   next()
 });
 // session 中间件
+// app.use(session({
+//   name: config.session.key, // 设置 cookie 中保存 session id 的字段名称
+//   secret: config.session.secret, // 通过设置 secret 来计算 hash 值并放在 cookie 中，使产生的 signedCookie 防篡改
+//   resave: false, // 强制更新 session
+//   saveUninitialized: false, // 设置为 false，强制创建一个 session，即使用户未登录
+//   cookie: {
+//       maxAge: config.session.maxAge// 过期时间，过期后 cookie 中的 session id 自动删除
+//   },
+//   store: new MongoStore({// 将 session 存储到 mongodb
+//       url: config.mongodb// mongodb 地址
+//   })
+// }));
 app.use(session({
-  name: config.session.key, // 设置 cookie 中保存 session id 的字段名称
-  secret: config.session.secret, // 通过设置 secret 来计算 hash 值并放在 cookie 中，使产生的 signedCookie 防篡改
-  resave: false, // 强制更新 session
-  saveUninitialized: false, // 设置为 false，强制创建一个 session，即使用户未登录
-  cookie: {
-      maxAge: config.session.maxAge// 过期时间，过期后 cookie 中的 session id 自动删除
-  },
-  store: new MongoStore({// 将 session 存储到 mongodb
-      url: config.mongodb// mongodb 地址
-  })
-}));
+  secret: 'secret',    //设置session签名
+  name: 'sessionId',
+  cookie: { maxAge: 60*1000*60*24 },   // 设置储存的时间24小时
+  resave: false,    // 每次请求都重新设置session
+  saveUninitialized: true
+}))
+
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
@@ -97,7 +105,6 @@ app.use(function(err, req, res, next) {
 });
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use('/api/users', users);
 app.use('/api/admin', admins)
 app.listen(4404, '127.0.0.1');

@@ -23,8 +23,8 @@
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="rulesForm.password" placeholder="请输入密码"></el-input>
         </el-form-item>
-        <el-form-item label="身份" prop="identity">
-         <el-radio-group v-model="rulesForm.identity">
+        <el-form-item label="身份" prop="role">
+         <el-radio-group v-model="rulesForm.role">
             <el-radio label="教师"></el-radio>
             <el-radio label="院级管理员"></el-radio>
             <el-radio label="系统管理员"></el-radio>
@@ -58,22 +58,14 @@ export default {
       rulesForm:{
         account: '',
         password: '',
-        identity: '教师',
+        role: '教师',
         verify: ''
       },
       rules:{
-        account: [
-          { required: true, message: '请输入账号', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入登录密码', trigger: 'blur' }
-        ],
-        identity: [       
-          { required: true, message: '请选择身份', trigger: 'blur' }
-        ],
-        verify:[
-          { required: true, message: '请填写验证码', trigger: 'blur' }
-        ]
+        account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入登录密码', trigger: 'blur' }],
+        role: [{ required: true, message: '请选择身份', trigger: 'blur' }],
+        verify:[{ required: true, message: '请填写验证码', trigger: 'blur' }]
       }
     }
   },
@@ -90,21 +82,22 @@ export default {
       if (this.rulesForm.verify !== this.identifyCode){
         this.$message.error("验证码输入错误")
       } else {
-        console.log("验证码输入正确")
         let params = {
           account: this.rulesForm.account,
           password: this.rulesForm.password,
-          identify: this.rulesForm.identity
+          role: this.rulesForm.role
         };
+        this.rulesForm.role = (this.rulesForm.role == "教师" ? '0' : (this.rulesForm.role == "院级管理员" ? '1' : '2'));
         this.$http.post('/api/login', this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
-            sessionStorage.setItem('role', result.data.data)
-            this.$message.success("登陆成功");
+            sessionStorage.setItem('account', this.rulesForm.account);
+            sessionStorage.setItem('role', this.rulesForm.role);
+            this.$message.success("登录成功");
             this.$router.push({
               path:'/home'
             })
           } else {
-            this.$message.error("登录失败");
+            this.$message.error(result.data.data);
           }
         });
       }

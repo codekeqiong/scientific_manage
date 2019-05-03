@@ -7,21 +7,23 @@
       @open="handleOpen"
       @close="handleClose"
       router>
+  
       <el-menu-item  v-for="(item ,i) in menulist" :index="item.menuUrl" v-if="!item.menuSubLink" :key="i">
-          <span slot="title">{{item.menuName}}</span>
+        <span slot="title">{{item.menuName}}</span>
       </el-menu-item>
-      <el-submenu  v-else :index="item.menuUrl">
+
+      <el-submenu v-else :index="item.menuUrl">
         <template slot="title">
           <span>{{item.menuName}}</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item  v-for="(subitem ,subi) in item.menuSubLink" :index="subitem.menuUrl" :key='subi' v-if="!subitem.menuSubLink"><span>{{subitem.menuName}}</span></el-menu-item>
-          <el-submenu  :index="subitem.menuUrl" v-else>
+          <el-menu-item v-for="(subitem ,subi) in item.menuSubLink" v-show="subitem.isShow" :index="subitem.menuUrl" :key='subi' v-if="!subitem.menuSubLink"><span>{{subitem.menuName}}</span></el-menu-item>
+          <el-submenu :index="subitem.menuUrl" v-else> 
             <template slot="title">
               <span>{{subitem.menuName}}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item  v-for="(lastItem ,lastId) in subitem.menuSubLink" :index="lastItem.menuUrl" :key='lastId'><span>{{lastItem.menuName}}</span></el-menu-item>
+              <el-menu-item v-for="(lastItem, lastId) in subitem.menuSubLink" :index="lastItem.menuUrl" :key='lastId'><span>{{lastItem.menuName}}</span></el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu-item-group>
@@ -44,6 +46,11 @@ export default {
     }
   },
   created: function () {
+    this.role = sessionStorage.getItem("role")
+    if(this.role == '2'){
+      this.menulist.menuSubLink[2].isShow = true
+      this.menulist.menuSubLink[5].isShow = true
+    }
     this.activePath = '/' + this.$route.path.split('/')[1]
   },
   methods:{

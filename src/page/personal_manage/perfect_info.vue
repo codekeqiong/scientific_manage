@@ -9,9 +9,6 @@
         label-width="100px"
         class="rulesForm"
       >
-        <!-- <el-form-item label="出生年月" prop="birth_date">
-          <el-date-picker v-model="rulesForm.birth_date" type="date" placeholder="选择出生日期"></el-date-picker>
-        </el-form-item>-->
         <div class="base-info">
           <div class="info">
             <i class="el-icon-info"></i><div>基本信息</div> 
@@ -23,8 +20,14 @@
             <el-form-item label="角色" prop="role">
               <el-input v-model="rulesForm.role" :disabled="true"></el-input>
             </el-form-item>
-            <el-form-item label="姓名" prop="account_name">
-              <el-input v-model="rulesForm.account_name"></el-input>
+            <el-form-item label="姓名" prop="userName">
+              <el-input v-model="rulesForm.userName"></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话" prop="phone">
+              <el-input v-model="rulesForm.phone"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱地址" prop="email">
+              <el-input v-model="rulesForm.email"></el-input>
             </el-form-item>
             <el-form-item label="性别" prop="sex">
               <el-radio-group v-model="rulesForm.sex">
@@ -34,9 +37,6 @@
             </el-form-item>
             <el-form-item label="籍贯" prop="native_place">
               <el-input v-model="rulesForm.native_place"></el-input>
-            </el-form-item>
-            <el-form-item label="联系电话" prop="phone">
-              <el-input v-model="rulesForm.phone"></el-input>
             </el-form-item>
             <el-form-item label="院系" prop="second_college">
               <el-select v-model="rulesForm.second_college" placeholder="请选择院系">
@@ -61,7 +61,7 @@
           </div>
         </div>
         <el-form-item style="text-align: left; margin-top: 30px; margin-left: 280px;">
-          <el-button style="margin-right:30px;">取消</el-button>
+          <el-button style="margin-right:30px;" @click="getInfo()">还原</el-button>
           <el-button type="primary" @click="onSubmit('rulesForm')">更新</el-button>
         </el-form-item>
       </el-form>
@@ -71,25 +71,35 @@
 <script>
 export default {
   data() {
-    //全局定义电话验证规则
+    // 全局定义电话验证规则
     const validatePhone = (rule, value, callback) => {
       let reg = /^1[345789]\d{9}$/;
       if (value != "" && reg.test(value)) {
         callback();
       } else {
-        callback(new Error("请输入正确的手机号"));
+        callback(new Error("请填写正确的手机号"));
+      }
+    };
+    // 全局定义邮箱验证规则
+    const validateEmail = (rule, value, callback) => {
+      let reg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])/;
+      if (value != "" && reg.test(value)) {
+        callback();
+      } else {
+        callback(new Error("邮箱地址输入有误请检查"));
       }
     };
     return {
       rulesForm: {
-        account: "13198487982",
-        account_name: "June",
+        account: "",
+        userName: "June",
         role: "院级管理员",
         sex: "男",
         second_college: "",
         native_place: "",
         education: "",
-        phone: ""
+        phone: "",
+        email: ""
       },
       collegeArr: [
         { label: "数学与计算机学院", value: "数计" },
@@ -122,56 +132,56 @@ export default {
         { label: "其他", value: "其他" }
       ],
       rules: {
-        account: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        account_name: [
-          { required: true, message: "请输入姓名", trigger: "blur" }
-        ],
-        role: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
-        second_college: [
-          { required: true, message: "请输选择二级学院", trigger: "blur" }
-        ],
-        native_place: [
-          { required: true, message: "请输入籍贯", trigger: "blur" }
-        ],
-        education: [{ required: true, message: "请选择学历", trigger: "blur" }],
-        // birth_date: [{ required: true, message: "请输入出生年月", trigger: "blur" }],
-        phone: [
-          {
-            required: true,
-            validator: validatePhone,
-            message: "请输入正确的11位联系电话",
-            trigger: "blur"
-          }
-        ]
+        // account: [{ required: true, message: "请输入账号", trigger: "blur" }],
+        // role: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        userName: [{ required: true, message: "请输入您的真实姓名", trigger: "blur" }],
+        phone: [{ required: true, validator: validatePhone, message: "请输入正确的11位联系电话",trigger: "blur"}],
+        email: [{ required: true, validator: validateEmail, message: "请输入正确的邮箱地址", trigger: "blur" }],
+        // sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+        // second_college: [{ required: true, message: "请输选择二级学院", trigger: "blur" }],
+        // native_place: [{ required: true, message: "请输入籍贯", trigger: "blur" }],
+        // education: [{ required: true, message: "请选择学历", trigger: "blur" }],
       }
     };
   },
-  created() {},
+  created() {
+    this.rulesForm.account = sessionStorage.getItem('account')
+    this.rulesForm.role = (sessionStorage.getItem('role') == '0' ? "教师" : (sessionStorage.getItem('role') == '1' ? "院级管理员" : "系统管理员"))
+    this.getInfo()
+  },
   methods: {
+    // 根据账号查询数据
+    getInfo(){
+      this.$http.post("/api/get-info", this.qs.stringify({ account: this.rulesForm.account })).then(result => {
+        if (result.data.status === 0) {
+          this.rulesForm = result.data.data
+          this.id = result.data.data._id
+        } else {
+          this.$message.error("获取个人信息失败");
+        }
+      });
+    },
+    // 更新操作
     onSubmit() {
-      // let t = this.rulesForm.birth_date
-      // this.rulesForm.birth_date = t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate()
       let param = {
+        _id: this.id,
         account: this.rulesForm.account,
-        account_name: this.rulesForm.account_name,
+        userName: this.rulesForm.userName,
         role: this.rulesForm.role,
         sex: this.rulesForm.sex,
         second_college: this.rulesForm.second_college,
         native_place: this.rulesForm.native_place,
         education: this.rulesForm.education,
-        // birth_date: this.rulesForm.birth_date,
-        phone: this.rulesForm.phone
+        phone: this.rulesForm.phone,
+        email: this.rulesForm.email
       };
-      this.$http
-        .post("/api/perfect-info", this.qs.stringify(param))
-        .then(result => {
-          if (result.data.status === 0) {
-            this.$message.success("个人中心信息更新成功");
-          } else {
-            this.$message.error("信息更新失败", result.data.data);
-          }
-        });
+      this.$http.post("/api/perfect-info", this.qs.stringify(param)).then(result => {
+        if (result.data.status === 0) {
+          this.$message.success("个人中心信息更新成功");
+        } else {
+          this.$message.error("信息更新失败", result.data.data);
+        }
+      });
     }
   }
 };
