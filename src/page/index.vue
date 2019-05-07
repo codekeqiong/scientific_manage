@@ -87,7 +87,7 @@ export default {
           password: this.rulesForm.password,
           role: this.rulesForm.role
         };
-        this.rulesForm.role = (this.rulesForm.role == "教师" ? '0' : (this.rulesForm.role == "院级管理员" ? '1' : '2'));
+        // this.rulesForm.role = (this.rulesForm.role == "教师" ? '0' : (this.rulesForm.role == "院级管理员" ? '1' : '2'));
         this.$http.post('/api/login', this.qs.stringify(params)).then(result => {
           if (result.data.status === 0) {
             sessionStorage.setItem('account', this.rulesForm.account);

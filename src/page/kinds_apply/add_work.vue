@@ -353,7 +353,7 @@ export default {
         remarks: this.ruleForm.remarks,
         status: "待审核",
         isConclusion: '否',
-        category: '著作'
+        category: '3'
       };
       if (this.routeId) {
         params._id = this.routeId

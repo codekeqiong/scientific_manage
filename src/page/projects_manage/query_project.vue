@@ -393,6 +393,7 @@ export default {
   name: "query_project",
   data() {
     return {
+      role: '',
       dialogVisible: false,
       search_info: "",
       kinds: "1",
@@ -458,7 +459,9 @@ export default {
         page: this.pageNum,
         pageSize: this.pageSize,
         searchText: this.search_info,
-        category: this.isShow
+        category: this.isShow,
+        account: '13198487982', //sessionStorage.getItem('role')  sessionStorage.getItem('account')
+        role: '0'
       };
       this.$http.post("/api/query-project", this.qs.stringify(param)).then(result => {
         result = result.data;
@@ -491,8 +494,10 @@ export default {
     },
     modify(index) {
       let param = this.tableData[index];
-      if (param.status == "已通过") {
-        this.$message.error("该项目已通过审核不能修改!");
+      if (param.status == "已立项") {
+        this.$message.error("该项目已立项不能修改!");
+      } else if(param.status == "已结题"){
+        this.$message.error("该项目已结题不能修改!");
       } else {
         let jump;
         switch(this.isShow){
@@ -518,8 +523,10 @@ export default {
       }
     },
     remove(index,type) {
-      if (this.tableData[index].status == "已通过") {
-        this.$message.error("该项目已通过审核不能删除!");
+      if (this.tableData[index].status == "已立项") {
+        this.$message.error("已立项的项目不能删除!");
+      } else if(this.tableData[index].status == "已结题"){
+        this.$message.error("已结题的项目不能删除!");
       } else {
         this.removeId = { _id: this.tableData[index]._id,category: type};
         this.dialogVisible = true;

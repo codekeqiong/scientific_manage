@@ -68,7 +68,7 @@ export const MENULIST = [
           menuName: '科研项目审批',
           menuUrl: '/approval',
           menuIndex: '2-2',
-          isShow: false,
+          isShow: true,
         },
       ]
     },
@@ -113,7 +113,7 @@ export const MENULIST = [
           menuName: '用户管理',
           menuUrl: '/user_manage',
           menuIndex: '5-2',
-          isShow: false,
+          isShow: true,
         }
       ]
     },

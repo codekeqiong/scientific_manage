@@ -200,7 +200,7 @@ export default {
           this.ruleForm = result.data.data;
           this.ruleForm.field = this.ruleForm.field.split("-");
         } else {
-          this.$message.error("编辑数据获取失败", result.data);
+          this.$message.error("编辑数据失败", result.data);
         }
       });
     },
@@ -266,7 +266,7 @@ export default {
         scores: this.ruleForm.scores,
         status: "待审核",
         isConclusion: '否',
-        category: '科研项目'
+        category: '1'
       };
       if (this.routeId) {
         params._id = this.routeId
@@ -296,6 +296,7 @@ export default {
     },
     handleChange(value) {
       this.ruleForm.scores = value[value.length - 1]
+      console.log(this.ruleForm.scores)
     }
   }
 };

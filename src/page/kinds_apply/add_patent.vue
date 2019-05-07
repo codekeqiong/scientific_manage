@@ -281,7 +281,7 @@ export default {
         remarks: this.ruleForm.remarks,
         status: "待审核",
         isConclusion: '否',
-        category: '注册专利'
+        category: '6'
       };
       if (this.routeId) {
         params._id = this.routeId

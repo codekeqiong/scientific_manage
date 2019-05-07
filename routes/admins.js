@@ -13,7 +13,6 @@ const LiteraryModel = require('../models/literary')
 const ArtModel = require('../models/art')
 const PatentModel = require('../models/patent')
 const ActivityModel = require('../models/activity')
-const PersonInfoModel = require('../models/personInfo')
 let kindType
 // mongoose.connect('mongodb://localhost/university', { useNewUrlParser: true }, (err) => {
 //   console.log(err)
@@ -39,35 +38,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // 登录
 app.use('/api/login', function(req, res, next) {
   let account = req.body.account,
-      password = req.body.password,
-      role = (req.body.role == "0" ? '教师' : (req.body.role == "1" ? '院级管理员' : '系统管理员'));
-  // password = hash.update(req.body.password).digest('base64');
+    password = req.body.password,
+    role = req.body.role
   UsersModel.findOne({account: req.body.account}, function(err, data){
-    // if(!account){
-    //   console.log('该用户不存在')
-    // }
-    // account.comparePassword(password, function(err, isMatch){
-    //   if(err){
-    //     console.log(err);
-    //   }
-    //   if(isMatch){
-    //     req.session.account = account;   //将账户名存入session中
-    //     console.log('登录成功'+ account);
-    //     return res.redirect('/');
-    //   } else {
-    //     return res.redirect('/login');
-    //   }
-    // })
+    // console.log("账号是"+account, "传入的密码"+password, "存储的密码"+data.password, "传入的角色"+role, "存储的角色"+data.role)
     if(+data.length === 0){
       res.json({
         status: 1,
         data: '该用户不存在'
       });
     } else if(data.password !== password){
-      console.log(data.password, password)
       res.json({
         status: 1,
-        data: '账号与密码不匹配'
+        data: '输入的密码与账号不匹配'
       });
     } else if(data.role !== role){
       res.json({
@@ -130,7 +113,7 @@ app.use('/api/add-users', (req, res) => {
     var params = {
       account: req.body.account,
       userName: req.body.userName,
-      password: req.body.password,
+      password: hash.update(req.body.password).digest('hex'),  // update表示需要加密的字符串  返回加密后结果使用hash.digest对象 一个digest实例只能调用一次
       role: req.body.role,
       sex: req.body.sex,
       second_College: req.body.second_College,
@@ -190,9 +173,8 @@ app.use('/api/update-users', function (req, res) {
     var params = {
       account: req.body.account,
       userName: req.body.userName,
-      password: req.body.password,
-      role: req.body.role,
-      // adminDate: Date.now()
+      password: hash.update(req.body.password).digest('hex'),
+      role: req.body.role
     };
     var id = req.body._id;
     UsersModel.findByIdAndUpdate(id, params, { new: true }, function (err, data) {
@@ -231,34 +213,40 @@ app.use('/api/add-project', (req, res) => {
       remarks: req.body.remarks,
       status: req.body.status,
       isConclusion: req.body.isConclusion,
-      category: req.body.category,
       scores: req.body.scores
     };
-    if(req.body.category == '科研项目'){
+    if(req.body.category == '1'){
+      params.category = '科研项目',
       params.position = req.body.position
       params.depart = req.body.depart
       kindType = ProjectModel
-    } else if(req.body.category == '学术论文'){
+    } else if(req.body.category == '2'){
+      params.category = '学术论文',
       params.tutor = req.body.tutor
       params.keywords = req.body.keywords
       kindType = AcademicModel
-    } else if(req.body.category == '著作'){
+    } else if(req.body.category == '3'){
+      params.category = '著作',
       params.keywords = req.body.keywords
       params.editMethod = req.body.editMethod
       kindType = WorkModel
-    }else if(req.body.category == '文学作品'){
+    }else if(req.body.category == '4'){
+      params.category = '文学作品',
       params.keywords = req.body.keywords
       params.tutor = req.body.tutor
       kindType = LiteraryModel
-    } else if(req.body.category == '艺体'){
+    } else if(req.body.category == '5'){
+      params.category = '艺体',
       params.keywords = req.body.keywords
       params.artArea = req.body.artArea
       kindType = ArtModel
-    } else if(req.body.category == '注册专利'){
+    } else if(req.body.category == '6'){
+      params.category = '注册专利',
       params.patentType = req.body.patentType
       params.cooperation = req.body.cooperation
       kindType = PatentModel
     } else {
+      params.category = '科研活动',
       params.keywords = req.body.keywords
       params.type = req.body.type
       kindType = ActivityModel
@@ -288,43 +276,52 @@ app.use('/api/update-project', function (req, res) {
   if (req.body) {
     var params = {
       projectName: req.body.projectName,
+      account: req.body.account,
       userName: req.body.userName,
       second_college: req.body.second_college,
-      keywords: req.body.keywords,
-      abstract: req.body.abstract,
       field: req.body.field,
       approval: req.body.approval,
       fund: req.body.fund,
       endTime: req.body.endTime,
       phone: req.body.phone,
+      status: req.body.status,
+      isConclusion: req.body.isConclusion,
+      scores: req.body.scores,
       remarks: req.body.remarks
     };
     var id = req.body._id;
     if(req.body.category == '1'){
+      params.category = "科研项目",
       params.position = req.body.position
       params.depart = req.body.depart
       kindType = ProjectModel
     } else if(req.body.category == '2'){
+      params.category = "学术论文",
       params.tutor = req.body.tutor
       params.keywords = req.body.keywords
       kindType = AcademicModel
     } else if(req.body.category == '3'){
+      params.category = "著作",
       params.keywords = req.body.keywords
       params.editMethod = req.body.editMethod
       kindType = WorkModel
     }else if(req.body.category == '4'){
+      params.category = "文学作品",
       params.keywords = req.body.keywords
       params.tutor = req.body.tutor
       kindType = LiteraryModel
     } else if(req.body.category == '5'){
+      params.category = "艺体类",
       params.keywords = req.body.keywords
       params.artArea = req.body.artArea
       kindType = ArtModel
     } else if(req.body.category == '6'){
+      params.category = "专利注册",
       params.patentType = req.body.patentType
       params.cooperation = req.body.cooperation
       kindType = PatentModel
     } else {
+      params.category = "科研活动",
       params.keywords = req.body.keywords
       params.type = req.body.type
       kindType = ActivityModel
@@ -353,6 +350,8 @@ app.use('/api/update-project', function (req, res) {
 app.use('/api/query-project', (req, res) => {
   let page = parseInt(req.body.page)
   let pageSize = parseInt(req.body.pageSize) 
+  let account = req.body.account
+  let role =  parseInt(req.body.role)
   let searchText = new RegExp(req.body.searchText)
   let category = req.body.category
   let modelType = ProjectModel
@@ -363,7 +362,7 @@ app.use('/api/query-project', (req, res) => {
     break;
     case '3': modelType = WorkModel;
     break;
-    case '4': modelType =LiteraryModel;
+    case '4': modelType = LiteraryModel;
     break;
     case '5': modelType = ArtModel;
     break;
@@ -372,34 +371,67 @@ app.use('/api/query-project', (req, res) => {
     case '7': modelType = ActivityModel;
     break;
   }
-  var query = modelType.find(function (err, data) {
-  if (err) {
-    res.json({
-      status: 1,
-      data: err.message
-    });
-    } else {
-      query.sort({'_id': -1});
-      query.skip((page - 1)*pageSize);
-      query.limit(pageSize);
-      if(searchText){
-        query.where('projectName', searchText)
-      };
-      query.exec(function(err, result){
-      if(err){
-        res.json(err)
-      } else {
-        modelType.find(function(err, results){
-          res.json({
-            status: 0,
-            data: result,
-            count: results.length
+  if(role == '0'){
+    var query = modelType.find({account: account},function (err, data) {
+      console.log(data)
+      if (err) {
+        res.json({
+          status: 1,
+          data: err.message
+        });
+        } else {
+          query.sort({'_id': -1});
+          query.skip((page - 1)*pageSize);
+          query.limit(pageSize);
+          query.where('account', account);
+          if(searchText){
+            query.where('projectName', searchText)
+          };
+          query.exec(function(err, result){
+          if(err){
+            res.json(err)
+          } else {
+            modelType.find(function(err, results){
+              res.json({
+                status: 0,
+                data: result,
+                count: results.length
+              });
+            });
+          }
           });
+        }
+      })
+  } else {
+    var query = modelType.find(function (err, data) {
+    if (err) {
+      res.json({
+        status: 1,
+        data: err.message
+      });
+      } else {
+        query.sort({'_id': -1});
+        query.skip((page - 1)*pageSize);
+        query.limit(pageSize);
+        if(searchText){
+          query.where('projectName', searchText)
+        };
+        query.exec(function(err, result){
+        if(err){
+          res.json(err)
+        } else {
+          modelType.find(function(err, results){
+            res.json({
+              status: 0,
+              data: result,
+              count: results.length
+            });
+          });
+        }
         });
       }
-      });
-    }
-  })
+    })
+  }
 })
 // 科研项目查询 根据id查询某条数据(_id)
 app.use('/api/find-one-project', function (req, res){

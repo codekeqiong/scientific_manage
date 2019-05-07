@@ -254,7 +254,7 @@ export default {
         remarks: this.ruleForm.remarks,
         status: "待审核",
         isConclusion: '否',
-        category: '文学作品'
+        category: '4'
       };
       if (this.routeId) {
         params._id = this.routeId

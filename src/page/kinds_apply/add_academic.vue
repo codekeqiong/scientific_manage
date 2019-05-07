@@ -316,7 +316,7 @@ export default {
         scores: this.ruleForm.scores,
         status: "待审核",
         isConclusion: '否',
-        category: '学术论文'
+        category: '2'
       };
       if (this.routeId) {
         params._id = this.routeId

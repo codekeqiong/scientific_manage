@@ -67,22 +67,17 @@
               <el-form-item label="添加姓名" prop="userName">
                 <el-input v-model="rulesForm.userName" style="width:90%"></el-input>
               </el-form-item>
-              <el-form-item label="设置密码" prop="pass">
-                <el-input
-                  type="password"
-                  v-model="rulesForm.pass"
-                  autocomplete="off"
-                  style="width:90%"
-                ></el-input>
+              <el-form-item label="初始密码" prop="pass">
+                <el-input type="password" :disabled="isDisabled" v-model="rulesForm.pass" style="width:90%"></el-input>
               </el-form-item>
-              <el-form-item label="确认密码" prop="checkPass">
+              <!-- <el-form-item label="确认密码" prop="checkPass">
                 <el-input
                   type="password"
                   v-model="rulesForm.checkPass"
                   autocomplete="off"
                   style="width:90%"
                 ></el-input>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="身份" prop="role">
                 <el-radio-group v-model="rulesForm.role">
                   <el-radio label="教师"></el-radio>
@@ -112,26 +107,27 @@
 <script>
 export default {
   data() {
-    var validateNewPass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入用户密码"));
-      } else {
-        if (this.rulesForm.checkPass !== "") {
-          this.$refs.rulesForm.validateField("checkPass");
-        }
-        callback();
-      }
-    };
-    var validateCheckPass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (value !== this.rulesForm.pass) {
-        callback(new Error("两次输入密码不一致!"));
-      } else {
-        callback();
-      }
-    };
+    // var validateNewPass = (rule, value, callback) => {
+    //   if (value === "") {
+    //     callback(new Error("请输入用户密码"));
+    //   } else {
+    //     if (this.rulesForm.checkPass !== "") {
+    //       this.$refs.rulesForm.validateField("checkPass");
+    //     }
+    //     callback();
+    //   }
+    // };
+    // var validateCheckPass = (rule, value, callback) => {
+    //   if (value === "") {
+    //     callback(new Error("请再次输入密码"));
+    //   } else if (value !== this.rulesForm.pass) {
+    //     callback(new Error("两次输入密码不一致!"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {
+      isDisabled: false,
       input_search: "",
       dialogRemove: false,
       tableData: [],
@@ -145,14 +141,15 @@ export default {
         account: "",
         userName: "",
         pass: "",
-        checkPass: "",
+        // checkPass: "",
         role: "教师"
       },
       rules: {
         account: [{ required: true, message: "请输入用户账号", trigger: "blur" }],
-        pass: [{ required: true, validator: validateNewPass, trigger: "blur" }],
-        checkPass: [{ required: true, validator: validateCheckPass, trigger: "blur" }],
+        pass: [{ required: true, message: "请输入用户密码", trigger: "blur" }],
         role: [{ required: true, message: "请选择身份", trigger: "blur" }]
+        // pass: [{ required: true, validator: validateNewPass, trigger: "blur" }],
+        // checkPass: [{ required: true, validator: validateCheckPass, trigger: "blur" }],
       }
     };
   },
@@ -190,18 +187,20 @@ export default {
     },
     // 新增用户
     add_user() {
-      this.dialogTitle = "添加用户";
-      this.addUserDialog = true;
+      this.isDisabled = false
+      this.dialogTitle = "添加用户"
+      this.addUserDialog = true
       this.isAdd = true
     },
     // 修改用户信息
     modify(upData) {
-      this.dialogTitle = "修改用户";
-      this.addUserDialog = true;
+      this.isDisabled = false
+      this.dialogTitle = "修改用户"
+      this.addUserDialog = true
       this.isAdd = false
-      this.rulesForm = upData;
-      this.rulesForm.pass = upData.password;
-      this.rulesForm.checkPass = upData.password;
+      this.rulesForm = upData
+      this.rulesForm.pass = upData.password 
+      this.rulesForm.checkPass = upData.password
       this._id = upData._id
     },
     // 确定提交
@@ -212,9 +211,9 @@ export default {
         password: this.rulesForm.pass,
         role: this.rulesForm.role
       };
-      if(this.rulesForm.pass !== this.rulesForm.checkPass){
-        return
-      } else {
+      // if(this.rulesForm.pass !== this.rulesForm.checkPass){
+      //   return
+      // } else {
         if(this.isAdd){
           for (const i in this.tableData) {
             if (this.tableData[i].account === key){
@@ -223,7 +222,7 @@ export default {
             }
           }
           this.$http.post("/api/add-users", this.qs.stringify(params)).then(result => {
-            if (result.data.status === 0) {
+            if (+result.data.status === 0) {
               this.getUsersInfo();
               this.$message.success("新增用户信息成功!");
               this.addUserDialog = false;
@@ -234,7 +233,7 @@ export default {
         } else {
           params._id = this._id
           this.$http.post("/api/update-users", this.qs.stringify(params)).then(result => {
-            if (result.data.status === 0) {
+            if (+result.data.status === 0) {
               this.$message.success("修改用户信息成功");
               this.getUsersInfo();
               this.addUserDialog = false;
@@ -243,7 +242,7 @@ export default {
             }
           }) 
         }
-      }
+      // }
     },
     // 删除用户
     remove: function(index) {

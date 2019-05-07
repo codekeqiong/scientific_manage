@@ -535,6 +535,8 @@ export default {
     end(index){
       if(this.tableData[index].status=='已退回' || this.tableData[index].status=='待审核'){
         this.$message.error('该项目未通过审核!')
+      } else if(this.tableData[index].status=='已结题'){
+        this.$message.error('该项目已结题，请勿重复操作!')
       }else{
         this.endDialog = true
         this.paramId = { _id: this.tableData[index]._id,category: this.isShow}

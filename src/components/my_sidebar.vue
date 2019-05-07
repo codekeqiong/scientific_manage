@@ -47,10 +47,10 @@ export default {
   },
   created: function () {
     this.role = sessionStorage.getItem("role")
-    if(this.role == '2'){
-      this.menulist.menuSubLink[2].isShow = true
-      this.menulist.menuSubLink[5].isShow = true
-    }
+    // if(this.role == '2'){
+    //   this.menulist.menuSubLink[2].isShow = true
+    //   this.menulist.menuSubLink[5].isShow = true
+    // }
     this.activePath = '/' + this.$route.path.split('/')[1]
   },
   methods:{

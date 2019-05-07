@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             {{scope.row.operation}}
             <el-button type="text" size="small" @click="detail(scope.$index)">查看详情</el-button>
-            <el-button type="text" size="small" v-if="role !== 0" @click="remove(scope.$index)">删除</el-button>
+            <el-button type="text" size="small" v-if="role != 0" @click="remove(scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -112,7 +112,7 @@ export default {
     };
   },
   created() {
-    this.role = sessionStorage.getItem('role')
+    this.role = sessionStorage.getItem('role') == "教师" ? '0' : (sessionStorage.getItem('role') == "院级管理员" ? '1' : '2')
     this.getLeaveInfo()
   },
   methods: {
@@ -204,7 +204,7 @@ export default {
     sure() {
       let param = {
         title: this.ruleForm.title,
-        autor: 'june',
+        autor: sessionStorage.getItem('account'),
         content: this.ruleForm.content
       }
       this.$http.post('/api/add-leave',this.qs.stringify(param)).then((result) => {
