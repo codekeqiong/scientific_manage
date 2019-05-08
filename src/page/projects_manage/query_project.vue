@@ -460,8 +460,8 @@ export default {
         pageSize: this.pageSize,
         searchText: this.search_info,
         category: this.isShow,
-        account: '13198487982', //sessionStorage.getItem('role')  sessionStorage.getItem('account')
-        role: '0'
+        account: '13198487982',   //sessionStorage.getItem('role')  sessionStorage.getItem('account')
+        role: '2'
       };
       this.$http.post("/api/query-project", this.qs.stringify(param)).then(result => {
         result = result.data;

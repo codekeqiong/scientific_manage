@@ -372,8 +372,7 @@ app.use('/api/query-project', (req, res) => {
     break;
   }
   if(role == '0'){
-    var query = modelType.find({account: account},function (err, data) {
-      console.log(data)
+    var query = modelType.find({account: account}, function (err, data) {
       if (err) {
         res.json({
           status: 1,
@@ -385,7 +384,7 @@ app.use('/api/query-project', (req, res) => {
           query.limit(pageSize);
           query.where('account', account);
           if(searchText){
-            query.where('projectName', searchText)
+            query.where('projectName', searchText);
           };
           query.exec(function(err, result){
           if(err){
